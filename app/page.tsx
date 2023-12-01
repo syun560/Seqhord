@@ -3,25 +3,27 @@ import { useState } from "react"
 import { Ala } from './alealert.tsx'
 import { default_text } from './default_text.ts'
 
-const song = {
+const default_notes = [
+    {
+        pitch: "C4",
+        duration: "T4",
+        channel: 0,
+        velocity: 100,
+        tick: 0
+    },
+    {
+        pitch: "C5",
+        duration: "T4",
+        channel: 0,
+        velocity: 100,
+        tick: 0
+    },
+]
+
+const default_song = {
     title: "test song",
     reso: 480,
-    note: [
-        {
-            pitch: "C4",
-            duration: "T4",
-            channel: 0,
-            velocity: 100,
-            tick: 0
-        },
-        {
-            pitch: "C5",
-            duration: "T4",
-            channel: 0,
-            velocity: 100,
-            tick: 0
-        },
-    ]
+    note: default_notes
 }
 
 export default function Main() {
@@ -29,6 +31,7 @@ export default function Main() {
     const [bpm, setBpm] = useState(120)
     const [title, setTitle] = useState('none')
     const [errMsg, setErrMsg] = useState('errMsg')
+    const [notes, setNotes] = useState('notes')
 
     const compile = (text: string) => {
         setText(text)
@@ -43,7 +46,7 @@ export default function Main() {
         lines.forEach((line, i) => {
             // 行数制限
             if (i > 500) {
-                alert('入力可能な最大行数(500行)を超えています')
+                setErrMsg('入力可能な最大行数(500行)を超えています。コンパイルを中止します。')
                 return
             }
 
@@ -74,8 +77,9 @@ export default function Main() {
                         else if (c === '_') {
                             tick += reso
                         }
-                        else if (!isNaN(c)) {
-                            const note = line[i]
+                        // 数値であればnoteとして認識する
+                        else if (!isNaN(Number(c))) {
+                            const note = Number(c)
                             console.log(note)
                             notes.push({
                                 pitch: "C5",
@@ -85,6 +89,10 @@ export default function Main() {
                                 tick: tick
                             })
                             tick += reso
+                        }
+                        else {
+                            // エラー
+                            setErrMsg(`${i}行目: 予期せぬ文字列「${c}」です。`)
                         }
                     }
                 }
@@ -108,6 +116,7 @@ export default function Main() {
                 <p>title: {title}</p>
                 <p>最高音:</p>
                 <p>最低音:</p>
+
                 <button type="button" className="btn btn-primary">Button</button>
             </div>
         </div>
