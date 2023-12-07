@@ -1,5 +1,7 @@
 import { Note } from './types.ts'
 
+const NoteName = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
+
 // 自作音楽記述言語のコンパイル
 export const compile = (text: string) => {
 
@@ -9,9 +11,10 @@ export const compile = (text: string) => {
     let tick = 0
     let reso = 480
     let errMsg = ''
-    let title = 'msg'
+    let title = 'none'
+    let scale = 'C'
     let bpm = 120
-    
+    let octarve = 0
 
     // 文字列を検索する
     lines.forEach((line, i) => {
@@ -35,34 +38,56 @@ export const compile = (text: string) => {
                 const t = line.slice(i + 1)
                 title = t
             }
-            // note
+            // スケール（調）
+            else if (line[1] === 's') {
+                const i = line.indexOf('=')
+                const t = line.slice(i + 1)
+                scale = t
+            }
+        }
+        else{
+            // コード
+            if (line[0] === 'c') {
+
+            }
+            // メロディ
             else if (line[0] === 'm') {
+                // オクターブピッチを取得する
+                const base_pitch :number = Number(line[1])
+                // メロディのスケールを取得する
+                const base_scale :number = NoteName.indexOf(scale)
+
                 for (let i = 0; i < line.length; i++) {
+
                     const c = line[i]
                     // 次のノートを一オクターブ上げる
                     if (c === '+') {
-                        
+                        octarve = 1
                     }
                     // 次のノートを一オクターブ下げる
                     else if (c === '-') {
-
+                        octarve = -1
                     }
                     // 前のノートを伸ばす
                     else if (c === '_') {
-                        tick += reso
+                        // 配列の最後の要素に対して操作
+                        tmp_notes[tmp_notes.length - 1].duration = 'T8'
                     }
                     // 数値であればnoteとして認識する
                     else if (!isNaN(Number(c))) {
                         const note = Number(c)
                         console.log(note)
+                        const note_name = ''
+
                         tmp_notes.push({
-                            pitch: 'C5',
+                            pitch: note_name + String(base_pitch),
                             duration: 'T4',
                             channel: 0,
                             velocity: 100,
                             tick: tick
                         })
                         tick += reso
+                        octarve = 0
                     }
                     else {
                         // エラー
