@@ -1,26 +1,37 @@
 import { Note } from './types.ts'
 
 const NoteName = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
+type Res = {
+    title: string
+    bpm: number
+    scale: string
+    errMsg: string
+    notes: Note[]
+}
 
 // 自作音楽記述言語のコンパイル
 export const compile = (text: string) => {
+    let res :Res = {
+        title: "none",
+        bpm: 120,
+        scale: 'C',
+        errMsg: "",
+        notes: []
+    }
 
     // 文字列を改行ごとに分割して配列に入れる
     const lines = text.split('\n')
     const tmp_notes:Note[] = []
     let tick = 0
     let reso = 480
-    let errMsg = ''
-    let title = 'none'
-    let scale = 'C'
-    let bpm = 120
     let octarve = 0
+    let mea = 0
 
     // 文字列を検索する
     lines.forEach((line, i) => {
         // 行数制限
         if (i > 500) {
-            errMsg += '入力可能な最大行数(500行)を超えています。コンパイルを中止します。\n'
+            res.errMsg += '入力可能な最大行数(500行)を超えています。コンパイルを中止します。\n'
             return
         }
 
@@ -30,19 +41,19 @@ export const compile = (text: string) => {
             if (line.indexOf('b') !== -1) {
                 const i = line.indexOf('=')
                 const b = Number(line.slice(i + 1))
-                bpm = b
+                res.bpm = b
             }
             // タイトル
             else if (line[1] === 't') {
                 const i = line.indexOf('=')
                 const t = line.slice(i + 1)
-                title = t
+                res.title = t
             }
             // スケール（調）
             else if (line[1] === 's') {
                 const i = line.indexOf('=')
                 const t = line.slice(i + 1)
-                scale = t
+                res.scale = t
             }
         }
         else{
@@ -52,14 +63,14 @@ export const compile = (text: string) => {
             }
             // メロディ
             else if (line[0] === 'm') {
-                // オクターブピッチを取得する
-                const base_pitch :number = Number(line[1])
                 // メロディのスケールを取得する
-                const base_scale :number = NoteName.indexOf(scale)
+                const base_scale :number = NoteName.indexOf(res.scale)
+                // 基準となるピッチ
+                const base_pitch :number = 12 * 5 + base_scale
 
-                for (let i = 0; i < line.length; i++) {
+                for (let j = 0; j < line.length; j++) {
 
-                    const c = line[i]
+                    const c = line[j]
                     // 次のノートを一オクターブ上げる
                     if (c === '+') {
                         octarve = 1
@@ -68,20 +79,36 @@ export const compile = (text: string) => {
                     else if (c === '-') {
                         octarve = -1
                     }
+                    // mの時は無視
+                    else if (c === 'm') {
+                        
+                    }
+                    // 前のノートを連続させる
+                    else if (c === '*'){
+
+                    }
+                    // 小節の区切り文字
+                    else if (c === '|'){
+                        mea += 1
+                    }
+                    // 休符
+                    else if (c === '.'){
+                        tick += reso
+                    }
                     // 前のノートを伸ばす
                     else if (c === '_') {
                         // 配列の最後の要素に対して操作
-                        tmp_notes[tmp_notes.length - 1].duration = 'T8'
+                        res.notes[res.notes.length - 1].duration += 1
                     }
                     // 数値であればnoteとして認識する
                     else if (!isNaN(Number(c))) {
-                        const note = Number(c)
-                        console.log(note)
-                        const note_name = ''
+                        const pitch = Number(c) + base_pitch + octarve * 12
+                        const pitch_name = ''
 
-                        tmp_notes.push({
-                            pitch: note_name + String(base_pitch),
-                            duration: 'T4',
+                        res.notes.push({
+                            pitch: pitch,
+                            pitch_name: pitch_name,
+                            duration: 1,
                             channel: 0,
                             velocity: 100,
                             tick: tick
@@ -91,11 +118,15 @@ export const compile = (text: string) => {
                     }
                     else {
                         // エラー
-                        errMsg += `${i}行目: 予期せぬ文字列「${c}」です。\n`
+                        res.errMsg += `${i+1}行${j+1}文字目: 予期せぬ文字列「${c}」です。\n`
                     }
                 }
             }
         }
     })
+
+    console.clear()
+    console.log(res)
+    return res
 
 }

@@ -17,7 +17,7 @@ export default function RootLayout({
             <body>
                 <nav className="navbar navbar-dark bg-secondary shadow">
                     <div className="container">
-                        <a className="navbar-brand" href="#">簡易音楽記述言語</a>
+                        <a className="navbar-brand" href="#">簡易音楽記述言語 - SMML</a>
                         <span className="navbar-text">Ver 1.0</span>
                     </div>
                 </nav>

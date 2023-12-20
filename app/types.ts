@@ -1,6 +1,7 @@
 export type Note = {
-    pitch: string
-    duration: string
+    pitch: number
+    pitch_name: string
+    duration: number
     channel: number
     velocity: number
     tick: number

@@ -7,15 +7,17 @@ import { compile } from './compile.ts'
 
 const default_notes:Note[] = [
     {
-        pitch: 'C4',
-        duration: 'T4',
+        pitch: 64,
+        pitch_name: 'C4',
+        duration: 1,
         channel: 0,
         velocity: 100,
         tick: 0
     },
     {
-        pitch: 'C5',
-        duration: 'T4',
+        pitch: 63,
+        pitch_name: 'C5',
+        duration: 1,
         channel: 0,
         velocity: 100,
         tick: 0
@@ -37,30 +39,37 @@ export default function Main() {
 
     const onTextChange = (text: string) => {
         setText(text)
-        const tmp_notes:Note[] = []
-        compile(text)
 
-        // notesのセット
-        setNotes([...tmp_notes])
+        const res = compile(text)
+
+        // 値のセット
+        setNotes([...res.notes])
+        setTitle(res.title)
+        setErrMsg(res.errMsg)
+    }
+
+    let estyle :React.CSSProperties = {
+        whiteSpace: 'pre-wrap'
     }
 
     return (
         <div className="container-fluid">
             <div className="row">
-                <div className="col-md-6">
+                <div className="col-md-12">
                     <textarea className="form-control" value={text} rows={20} cols={20} onChange={(e) => onTextChange(e.target.value)} />
                 </div>
-                <div className="col-md-6 border">
+                <div style={estyle} className="col-md-12 border">
                     {errMsg}
                 </div>
             </div>
             <div>
                 <p>bpm: {bpm}</p>
                 <p>title: {title}</p>
-                <p>最高音:</p>
-                <p>最低音:</p>
+                <p>notes_length: {notes.length}</p>
+                <p>最高音: {notes.sort((a,b)=>a.pitch>b.pitch ? 1: -1)[0].pitch}</p>
+                <p>最低音: {notes.sort((a,b)=>a.pitch<b.pitch ? 1: -1)[0].pitch}</p>
 
-                <button type="button" className="btn btn-primary">Button</button>
+                <button type="button" className="btn btn-primary">Generate</button>
             </div>
         </div>
     )
