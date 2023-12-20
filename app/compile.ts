@@ -26,9 +26,14 @@ export const compile = (text: string) => {
     let reso = 480
     let octarve = 0
     let mea = 0
+    let dur_cnt = 0 // 1小節をカウントする
+    let kome_cnt = 0 // 「*」の個数をカウントする。
 
     // 文字列を検索する
-    lines.forEach((line, i) => {
+    lines.forEach((l, i) => {
+        // 空白文字の削除
+        const line = l.replace(/\s+/g, "");
+
         // 行数制限
         if (i > 500) {
             res.errMsg += '入力可能な最大行数(500行)を超えています。コンパイルを中止します。\n'
@@ -85,20 +90,30 @@ export const compile = (text: string) => {
                     }
                     // 前のノートを連続させる
                     else if (c === '*'){
-
+                        kome_cnt += 1
                     }
                     // 小節の区切り文字
                     else if (c === '|'){
+                        if (mea !== 0 && dur_cnt !== 8 && kome_cnt === 0) {
+                            res.errMsg += `${mea}小節の音節が拍子と一致しません。（${dur_cnt}）\n`
+                        }
+                        if (kome_cnt > 1 ){
+                            res.errMsg += `${mea}小節でワイルドカードが2回以上使用されています。 \n`
+                        }
                         mea += 1
+                        dur_cnt = 0
+                        kome_cnt = 0
                     }
                     // 休符
                     else if (c === '.'){
                         tick += reso
+                        dur_cnt += 1
                     }
                     // 前のノートを伸ばす
                     else if (c === '_') {
                         // 配列の最後の要素に対して操作
                         res.notes[res.notes.length - 1].duration += 1
+                        dur_cnt += 1
                     }
                     // 数値であればnoteとして認識する
                     else if (!isNaN(Number(c))) {
@@ -115,6 +130,7 @@ export const compile = (text: string) => {
                         })
                         tick += reso
                         octarve = 0
+                        dur_cnt += 1
                     }
                     else {
                         // エラー
