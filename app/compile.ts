@@ -18,7 +18,6 @@ export const compile = (text: string) => {
         errMsg: "",
         notes: []
     }
-
     // 文字列を改行ごとに分割して配列に入れる
     const lines = text.split('\n')
     const tmp_notes:Note[] = []
