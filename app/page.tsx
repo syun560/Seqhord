@@ -56,7 +56,20 @@ export default function Main() {
         <div className="container-fluid">
             <div className="row">
                 <div className="col-md-12">
+                    <ul className="nav nav-tabs">
+                        <li className="nav-item">
+                            <a className="nav-link active" aria-current="page" href="#">Active</a>
+                        </li>
+                        <li className="nav-item">
+                            <a className="nav-link" href="#">Link</a>
+                        </li>
+                        <li className="nav-item">
+                            <a className="nav-link" href="#">Link</a>
+                        </li>
+                    </ul>
+
                     <textarea className="form-control" value={text} rows={20} cols={20} onChange={(e) => onTextChange(e.target.value)} />
+                
                 </div>
                 <div style={estyle} className="col-md-12 border">
                     {errMsg}
@@ -66,8 +79,10 @@ export default function Main() {
                 <p>bpm: {bpm}</p>
                 <p>title: {title}</p>
                 <p>notes_length: {notes.length}</p>
-                <p>最高音: {notes.sort((a,b)=>a.pitch>b.pitch ? 1: -1)[0].pitch}</p>
-                <p>最低音: {notes.sort((a,b)=>a.pitch<b.pitch ? 1: -1)[0].pitch}</p>
+                <p>mea: 128</p>
+                <p>最高音: {[...notes].sort((a,b)=>a.pitch>b.pitch ? 1: -1)[0].pitch}</p>
+                <p>最低音: {[...notes].sort((a,b)=>a.pitch<b.pitch ? 1: -1)[0].pitch}</p>
+                {notes.map(n=><p>{n.tick},{n.pitch},{n.duration}</p>)}
 
                 <button type="button" className="btn btn-primary">Generate</button>
             </div>

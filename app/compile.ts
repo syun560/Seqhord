@@ -27,6 +27,7 @@ export const compile = (text: string) => {
     let mea = 0
     let dur_cnt = 0 // 1小節をカウントする
     let kome_cnt = 0 // 「*」の個数をカウントする。
+    let is_note = false // 休符かnoteか
 
     // 文字列を検索する
     lines.forEach((l, i) => {
@@ -87,9 +88,20 @@ export const compile = (text: string) => {
                     else if (c === 'm') {
                         
                     }
-                    // 前のノートを連続させる
+                    // 前のノート（or休符）を適当な数連続させる特殊文字（ワイルドカード）
                     else if (c === '*'){
                         kome_cnt += 1
+                        // 次の小節まで一旦先にイテレートして、判断する
+                        let dc = dur_cnt
+                        let k = i
+                        while (line[k] !== '|' || k < line.length){
+                            let cc = line[k]
+                            if(cc === '.' || cc === '.' || cc === '.'){
+                                dc += 1
+                            }
+                        }
+                        let dur = 8 - dc
+                        // 前のノートに対して操作を加える
                     }
                     // 小節の区切り文字
                     else if (c === '|'){
@@ -107,6 +119,7 @@ export const compile = (text: string) => {
                     else if (c === '.'){
                         tick += reso
                         dur_cnt += 1
+                        is_note = false
                     }
                     // 前のノートを伸ばす
                     else if (c === '_') {
@@ -130,6 +143,7 @@ export const compile = (text: string) => {
                         tick += reso
                         octarve = 0
                         dur_cnt += 1
+                        is_note = true
                     }
                     else {
                         // エラー
