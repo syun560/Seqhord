@@ -82,7 +82,7 @@ export default function Main() {
                 <p>mea: 128</p>
                 <p>最高音: {[...notes].sort((a,b)=>a.pitch>b.pitch ? 1: -1)[0].pitch}</p>
                 <p>最低音: {[...notes].sort((a,b)=>a.pitch<b.pitch ? 1: -1)[0].pitch}</p>
-                {notes.map(n=><p>{n.tick},{n.pitch},{n.duration}</p>)}
+                <p>{notes.map(n=><>{n.tick},{n.pitch},{n.duration}<br /></>)}</p>
 
                 <button type="button" className="btn btn-primary">Generate</button>
             </div>

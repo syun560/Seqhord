@@ -22,7 +22,7 @@ export const compile = (text: string) => {
     const lines = text.split('\n')
     const tmp_notes:Note[] = []
     let tick = 0
-    let reso = 480
+    let reso = 1
     let octarve = 0
     let mea = 0
     let dur_cnt = 0 // 1小節をカウントする
@@ -94,14 +94,22 @@ export const compile = (text: string) => {
                         // 次の小節まで一旦先にイテレートして、判断する
                         let dc = dur_cnt
                         let k = i
-                        while (line[k] !== '|' || k < line.length){
+                        while (line[k] !== '|' && k < line.length){
                             let cc = line[k]
                             if(cc === '.' || cc === '.' || cc === '.'){
                                 dc += 1
                             }
+                            k += 1
                         }
                         let dur = 8 - dc
+                        if (dur < 0) dur = 0
                         // 前のノートに対して操作を加える
+                        if (is_note) {
+                            res.notes[res.notes.length - 1].duration += dur
+                        }
+                        dur_cnt += dur
+                        tick += dur * reso
+                        
                     }
                     // 小節の区切り文字
                     else if (c === '|'){
