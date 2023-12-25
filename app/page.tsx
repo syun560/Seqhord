@@ -1,4 +1,5 @@
 "use client"
+import React from "react"
 import { useState } from "react"
 import { Note } from './types.ts'
 import { Ala } from './alealert.tsx'
@@ -24,15 +25,10 @@ const default_notes:Note[] = [
     },
 ]
 
-const default_song = {
-    title: 'test song',
-    reso: 480,
-    note: default_notes
-}
-
 export default function Main() {
     const [text, setText] = useState<string>(default_text)
     const [bpm, setBpm] = useState(120)
+    const [mea, setMea] = useState(0)
     const [title, setTitle] = useState('none')
     const [errMsg, setErrMsg] = useState('errMsg')
     const [notes, setNotes] = useState<Note[]>(default_notes)
@@ -46,6 +42,8 @@ export default function Main() {
         setNotes([...res.notes])
         setTitle(res.title)
         setErrMsg(res.errMsg)
+        setBpm(res.bpm)
+        setMea(res.mea)
     }
 
     let estyle :React.CSSProperties = {
@@ -79,10 +77,10 @@ export default function Main() {
                 <p>bpm: {bpm}</p>
                 <p>title: {title}</p>
                 <p>notes_length: {notes.length}</p>
-                <p>mea: 128</p>
+                <p>mea: {mea}</p>
                 <p>最高音: {[...notes].sort((a,b)=>a.pitch>b.pitch ? 1: -1)[0].pitch}</p>
                 <p>最低音: {[...notes].sort((a,b)=>a.pitch<b.pitch ? 1: -1)[0].pitch}</p>
-                <p>{notes.map(n=><>{n.tick},{n.pitch},{n.duration}<br /></>)}</p>
+                <p>{notes.map((n,i)=><React.Fragment key={i}>{n.tick},{n.pitch},{n.duration}<br /></React.Fragment>)}</p>
 
                 <button type="button" className="btn btn-primary">Generate</button>
             </div>

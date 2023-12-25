@@ -6,6 +6,7 @@ type Res = {
     bpm: number
     scale: string
     errMsg: string
+    mea: number
     notes: Note[]
 }
 
@@ -16,6 +17,7 @@ export const compile = (text: string) => {
         bpm: 120,
         scale: 'C',
         errMsg: "",
+        mea: 0,
         notes: []
     }
     // 文字列を改行ごとに分割して配列に入れる
@@ -162,6 +164,7 @@ export const compile = (text: string) => {
         }
     })
 
+    res.mea = mea
     console.clear()
     console.log(res)
     return res
