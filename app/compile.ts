@@ -8,6 +8,7 @@ type Res = {
     errMsg: string
     mea: number
     notes: Note[]
+    chords: Note[]
 }
 
 // 自作音楽記述言語のコンパイル
@@ -18,7 +19,8 @@ export const compile = (text: string) => {
         scale: 'C',
         errMsg: "",
         mea: 0,
-        notes: []
+        notes: [],
+        chords: []
     }
     // 文字列を改行ごとに分割して配列に入れる
     const lines = text.split('\n')

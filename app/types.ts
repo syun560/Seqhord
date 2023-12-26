@@ -6,3 +6,9 @@ export type Note = {
     velocity: number
     tick: number
 }
+
+export type Chord = {
+    pitch: number
+    chord_name: string
+    tick: number
+}
