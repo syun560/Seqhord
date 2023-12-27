@@ -1,5 +1,6 @@
 "use client"
 import React from "react"
+import { notojp } from "../utiles/font.ts"
 import { useState } from "react"
 import { Note } from './types.ts'
 import { Ala } from './alealert.tsx'
@@ -56,17 +57,17 @@ export default function Main() {
                 <div className="col-md-12">
                     <ul className="nav nav-tabs">
                         <li className="nav-item">
-                            <a className="nav-link active" aria-current="page" href="#">Active</a>
+                            <a className="nav-link active" aria-current="page" href="#">Ch.1</a>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link" href="#">Link</a>
+                            <a className="nav-link" href="#">Ch.2</a>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link" href="#">Link</a>
+                            <a className="nav-link" href="#">Ch.3</a>
                         </li>
                     </ul>
 
-                    <textarea className="form-control" value={text} rows={20} cols={20} onChange={(e) => onTextChange(e.target.value)} />
+                    <textarea className={`form-control ${notojp.className}`} value={text} rows={20} cols={20} onChange={(e) => onTextChange(e.target.value)} />
                 
                 </div>
                 <div style={estyle} className="col-md-12 border">

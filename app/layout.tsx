@@ -16,7 +16,7 @@ export default function RootLayout({
         <html lang="ja" data-bs-theme="dark">
             <body>
                 <nav className="navbar navbar-dark bg-secondary shadow">
-                    <div className="container">
+                    <div className="container-fluid">
                         <a className="navbar-brand" href="#">簡易音楽記述言語 - SMML</a>
                         <span className="navbar-text">Ver 1.0</span>
                     </div>
