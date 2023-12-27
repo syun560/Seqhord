@@ -88,6 +88,10 @@ export const compile = (text: string) => {
                     else if (c === '-') {
                         octarve = -1
                     }
+                    // 前のノートを半音上げる
+                    else if (c === '-') {
+                        res.notes[res.notes.length - 1].pitch += 1
+                    }
                     // mの時は無視
                     else if (c === 'm') {
                         
