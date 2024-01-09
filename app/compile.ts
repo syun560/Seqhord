@@ -1,6 +1,6 @@
-import { Note } from './types.ts'
+import { Note, Chord } from './types.ts'
 
-const NoteName = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
+const NoteName = ['C','C#', 'D', 'D#','E', 'F', 'F#','G', 'G#','A', 'A#','B']
 type Res = {
     title: string
     bpm: number
@@ -8,7 +8,7 @@ type Res = {
     errMsg: string
     mea: number
     notes: Note[]
-    chords: Note[]
+    chords: Chord[]
 }
 
 // 自作音楽記述言語のコンパイル
@@ -25,6 +25,7 @@ export const compile = (text: string) => {
     // 文字列を改行ごとに分割して配列に入れる
     const lines = text.split('\n')
     const tmp_notes:Note[] = []
+    const tmp_chords:Chord[] = []
     let tick = 0
     let reso = 1
     let octarve = 0
@@ -68,7 +69,15 @@ export const compile = (text: string) => {
         else{
             // コード
             if (line[0] === 'c') {
-
+                // コードを小節線（|）で分割する
+                const cs = line.split('|')
+                for (let j = 0; j < cs.length; j++) {
+                    res.chords.push({
+                        pitch: 12,
+                        chord_name: cs[j],
+                        tick: 1
+                    })
+                }
             }
             // メロディ
             else if (line[0] === 'm') {
@@ -146,7 +155,7 @@ export const compile = (text: string) => {
                     // 数値であればnoteとして認識する
                     else if (!isNaN(Number(c))) {
                         const pitch = Number(c) + base_pitch + octarve * 12
-                        const pitch_name = ''
+                        const pitch_name = NoteName[pitch % NoteName.length]
 
                         res.notes.push({
                             pitch: pitch,
