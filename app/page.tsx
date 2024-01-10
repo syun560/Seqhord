@@ -43,6 +43,12 @@ export default function Main() {
     const [errMsg, setErrMsg] = useState('errMsg')
     const [notes, setNotes] = useState<Note[]>(default_notes)
     const [chords, setChords] = useState<Chord[]>(default_chords)
+    const [midiURI, setMidiURI] = useState<string>('')
+
+    const onGenerate = () => {
+        const uri = generate()
+        setMidiURI(uri)
+    }
 
     const onTextChange = (text: string) => {
         setText(text)
@@ -64,6 +70,7 @@ export default function Main() {
 
     return (
         <div className="container-fluid">
+            <Ala />
             <div className="row">
                 <div className="col-md-12">
                     <ul className="nav nav-tabs">
@@ -95,7 +102,8 @@ export default function Main() {
                 <p>{notes.map((n,i)=><React.Fragment key={i}>{n.tick},{n.pitch_name},{n.duration}<br /></React.Fragment>)}</p>
                 <p>{chords.map((c,i)=><React.Fragment key={i}>{c.tick},{c.chord_name}<br /></React.Fragment>)}</p>
 
-                <button type="button" className="btn btn-primary" onClick={generate}>Generate</button>
+                <button type="button" className="btn btn-primary" onClick={onGenerate}>Generate</button>
+                <p><a href={midiURI}>{midiURI}</a></p>
             </div>
         </div>
     )
