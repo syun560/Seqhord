@@ -3,7 +3,7 @@ import MidiWriter from 'midi-writer-js';
 import { Note, Chord } from './types.ts'
 
 // MidiWriterJS
-export const generate = (note) => {
+export const generate = (notes: Note[]) => {
     // 新しいトラックに書き込む
     const track = new MidiWriter.Track();
 
