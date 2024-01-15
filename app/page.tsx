@@ -46,7 +46,7 @@ export default function Main() {
     const [midiURI, setMidiURI] = useState<string>('')
 
     const onGenerate = () => {
-        const uri = generate(notes)
+        const uri = generate(notes, bpm)
         setMidiURI(uri)
     }
 

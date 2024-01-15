@@ -1,6 +1,8 @@
 import { Note, Chord } from './types.ts'
+import Lib from './Lib.ts'
 
 const NoteName = ['C','C#', 'D', 'D#','E', 'F', 'F#','G', 'G#','A', 'A#','B']
+const MajorScale = [0, 0, 2, 4, 5, 7, 9, 11, 12]
 type Res = {
     title: string
     bpm: number
@@ -151,11 +153,12 @@ export const compile = (text: string) => {
                         // 配列の最後の要素に対して操作
                         res.notes[res.notes.length - 1].duration += 1
                         dur_cnt += 1
+                        tick += reso
                     }
                     // 数値であればnoteとして認識する
                     else if (!isNaN(Number(c))) {
-                        const pitch = Number(c) + base_pitch + octarve * 12
-                        const pitch_name = NoteName[pitch % NoteName.length]
+                        const pitch = MajorScale[Number(c)] + base_pitch + octarve * 12
+                        const pitch_name = Lib.noteNumberToNoteName(pitch)
 
                         res.notes.push({
                             pitch: pitch,
