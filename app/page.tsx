@@ -1,13 +1,14 @@
 "use client"
 import React from "react"
-import { notojp } from "../utiles/font.ts"
-import { useState } from "react"
+// import { notojp } from "../utiles/font.ts"
+import { useState, useEffect } from "react"
 import { Note, Chord } from './types.ts'
 import { Ala } from './alealert.tsx'
 import { default_text } from './default_text.ts'
 import { compile } from './compile.ts'
 import { generate } from './generate.ts'
 import Lib from './Lib.ts'
+import './globals.css'
 
 const default_notes:Note[] = [
     {
@@ -65,6 +66,10 @@ export default function Main() {
         setChords(res.chords)
     }
 
+    useEffect(()=>{
+        onTextChange(default_text)
+    },[])
+
     let estyle :React.CSSProperties = {
         whiteSpace: 'pre-wrap'
     }
@@ -89,7 +94,8 @@ export default function Main() {
                         </li>
                     </ul>
 
-                    <textarea className={`form-control ${notojp.className}`} value={text} rows={20} cols={20} onChange={(e) => onTextChange(e.target.value)} />
+                    {/* <textarea className={`form-control ${notojp.className}`} value={text} rows={20} cols={20} onChange={(e) => onTextChange(e.target.value)} /> */}
+                    <textarea className="form-control editor" value={text} rows={20} cols={20} onChange={(e) => onTextChange(e.target.value)} />
                 
                 </div>
                 <div style={estyle} className="col-md-12 border">

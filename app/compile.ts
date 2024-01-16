@@ -69,8 +69,12 @@ export const compile = (text: string) => {
             }
         }
         else{
+            // コメント
+            if (line[0] === '#') {
+
+            }
             // コード
-            if (line[0] === 'c') {
+            else if (line[0] === 'c') {
                 // コードを小節線（|）で分割する
                 const cs = line.split('|')
                 for (let j = 0; j < cs.length; j++) {
