@@ -7,6 +7,7 @@ import { Ala } from './alealert.tsx'
 import { default_text } from './default_text.ts'
 import { compile } from './compile.ts'
 import { generate } from './generate.ts'
+import Lib from './Lib.ts'
 
 const default_notes:Note[] = [
     {
@@ -68,6 +69,9 @@ export default function Main() {
         whiteSpace: 'pre-wrap'
     }
 
+    const max_note = [...notes].sort((a,b)=>a.pitch>b.pitch ? 1: -1)[0].pitch
+    const min_note = [...notes].sort((a,b)=>a.pitch<b.pitch ? 1: -1)[0].pitch
+
     return (
         <div className="container-fluid">
             <Ala />
@@ -97,8 +101,8 @@ export default function Main() {
                 <p>title: {title}</p>
                 <p>notes_length: {notes.length}</p>
                 <p>mea: {mea}</p>
-                <p>最高音: {[...notes].sort((a,b)=>a.pitch>b.pitch ? 1: -1)[0].pitch}</p>
-                <p>最低音: {[...notes].sort((a,b)=>a.pitch<b.pitch ? 1: -1)[0].pitch}</p>
+                <p>最高音: {max_note}({Lib.noteNumberToNoteName(max_note)})</p>
+                <p>最低音: {min_note}({Lib.noteNumberToNoteName(min_note)})</p>
                 <p>{notes.map((n,i)=><React.Fragment key={i}>{n.tick},{n.pitch_name},{n.duration}<br /></React.Fragment>)}</p>
                 <p>{chords.map((c,i)=><React.Fragment key={i}>{c.tick},{c.chord_name}<br /></React.Fragment>)}</p>
 

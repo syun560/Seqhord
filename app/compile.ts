@@ -77,7 +77,7 @@ export const compile = (text: string) => {
                     res.chords.push({
                         pitch: 12,
                         chord_name: cs[j],
-                        tick: 1
+                        tick: j
                     })
                 }
             }
