@@ -4,6 +4,7 @@ export type Note = {
     duration: number
     channel: number
     velocity: number
+    mea?: number
     tick: number
 }
 

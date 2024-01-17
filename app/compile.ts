@@ -116,10 +116,10 @@ export const compile = (text: string) => {
                         kome_cnt += 1
                         // 次の小節まで一旦先にイテレートして、判断する
                         let dc = dur_cnt
-                        let k = i
+                        let k = i + 1
                         while (line[k] !== '|' && k < line.length){
                             let cc = line[k]
-                            if(cc === '.' || cc === '.' || cc === '.'){
+                            if(cc === '.' || cc === '_' || !isNaN(Number(cc))){
                                 dc += 1
                             }
                             k += 1
@@ -170,6 +170,7 @@ export const compile = (text: string) => {
                             duration: 1,
                             channel: 0,
                             velocity: 100,
+                            mea: mea,
                             tick: tick
                         })
                         tick += reso

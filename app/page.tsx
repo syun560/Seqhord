@@ -102,18 +102,46 @@ export default function Main() {
                     {errMsg}
                 </div>
             </div>
-            <div>
-                <p>bpm: {bpm}</p>
-                <p>title: {title}</p>
-                <p>notes_length: {notes.length}</p>
-                <p>mea: {mea}</p>
-                <p>最高音: {max_note}({Lib.noteNumberToNoteName(max_note)})</p>
-                <p>最低音: {min_note}({Lib.noteNumberToNoteName(min_note)})</p>
-                <p>{notes.map((n,i)=><React.Fragment key={i}>{n.tick},{n.pitch_name},{n.duration}<br /></React.Fragment>)}</p>
-                <p>{chords.map((c,i)=><React.Fragment key={i}>{c.tick},{c.chord_name}<br /></React.Fragment>)}</p>
+            <button type="button" className="btn btn-primary" onClick={onGenerate}>Generate</button>
+                <a href={midiURI}>{midiURI}</a>
+            <div className="row">
+                <div className="col-3">
+                <table className="table table-sm">
+                    <tbody>
+                    <tr><th>Title</th><td>{title}</td></tr>
+                    <tr><th>BPM</th><td>{bpm}</td></tr>
+                    <tr><th>notes_length</th><td>{notes.length}</td></tr>
+                    <tr><th>mea</th><td>{mea}</td></tr>
+                    <tr><th>最高音</th><td>{max_note}({Lib.noteNumberToNoteName(max_note)})</td></tr>
+                    <tr><th>最低音</th><td>{min_note}({Lib.noteNumberToNoteName(min_note)})</td></tr>
+                    </tbody>
+                </table>
+                </div>
 
-                <button type="button" className="btn btn-primary" onClick={onGenerate}>Generate</button>
-                <p><a href={midiURI}>{midiURI}</a></p>
+                <div className="col-3">
+                <table className="table table-sm">
+                <thead>
+                    <tr>
+                        <th>mea</th>
+                        <th>tick</th>
+                        <th>pitch</th>
+                        <th>duration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {notes.map((n,i)=><tr key={i}>
+                    <td>{n.mea}</td>
+                    <td>{n.tick % 8}({n.tick})</td>
+                    <td>{n.pitch_name}</td>
+                    <td>{n.duration}</td></tr>)}
+                </tbody></table>
+                </div>
+
+                <div className="col-3">
+                {chords.map((c,i)=><React.Fragment key={i}>{c.tick},{c.chord_name}<br /></React.Fragment>)}<br />
+                </div>
+
+                
             </div>
         </div>
     )

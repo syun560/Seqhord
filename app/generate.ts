@@ -25,15 +25,6 @@ export const generate = (notes: Note[], bpm: number) => {
         track.addEvent(note)
     })
 
-
-    // const noteEv = new MidiWriter.NoteEvent(
-    //     {
-    //         pitch: ['C4', 'D4', 'E4'],
-    //         duration: '4'
-    //     }
-    // );
-    // track.addEvent(noteEv);
-
     // data URIを生成する
     const write = new MidiWriter.Writer(track);
     return write.dataUri()
