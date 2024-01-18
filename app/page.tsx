@@ -31,9 +31,10 @@ const default_notes:Note[] = [
 
 const default_chords:Chord[] = [
     {
-        pitch: 64,
+        tick: 0,
+        pitch: 0,
         chord_name: 'C',
-        tick: 0
+        third: 'major',
     }
 ]
 
@@ -131,14 +132,28 @@ export default function Main() {
                 <tbody>
                 {notes.map((n,i)=><tr key={i}>
                     <td>{n.mea}</td>
-                    <td>{n.tick % 8}({n.tick})</td>
+                    <td>{n.tick % 8}</td>
+                    {/* <td>{n.tick % 8}({n.tick})</td> */}
                     <td>{n.pitch_name}</td>
                     <td>{n.duration}</td></tr>)}
                 </tbody></table>
                 </div>
 
                 <div className="col-3">
-                {chords.map((c,i)=><React.Fragment key={i}>{c.tick},{c.chord_name}<br /></React.Fragment>)}<br />
+                <table className="table table-sm">
+                <thead>
+                    <tr>
+                        <th>tick</th>
+                        <th>pitch</th>
+                        <th>third</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {chords.map((c,i)=><tr key={i}>
+                    <td>{c.tick}</td>
+                    <td>{c.chord_name}</td>
+                    <td>{c.third}</td></tr>)}
+                </tbody></table>
                 </div>
 
                 

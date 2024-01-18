@@ -1,15 +1,22 @@
 export type Note = {
-    pitch: number
-    pitch_name: string
-    duration: number
-    channel: number
-    velocity: number
-    mea?: number
-    tick: number
+    pitch: number   // 0~128
+    pitch_name: string // C4, D3 ...
+    duration: number // 1
+    channel: number // 0
+    velocity: number // 1~100
+    mea?: number // 
+    tick: number // 
 }
 
 export type Chord = {
-    pitch: number
-    chord_name: string
     tick: number
+
+    chord_name: string
+    pitch: number
+    third: 'omit' | 'minor' | 'major'
+    
+    seventh?: 'minor' | 'major'
+    ninth?: 'omit' | 'minor'
+    eleventh?: 'omit' | 'minor' 
+    on?: number // 0~11
 }

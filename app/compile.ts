@@ -2,6 +2,7 @@ import { Note, Chord } from './types.ts'
 import Lib from './Lib.ts'
 
 const NoteName = ['C','C#', 'D', 'D#','E', 'F', 'F#','G', 'G#','A', 'A#','B']
+const MajorNoteName = ['C', 'C', 'D', 'E', 'F','G', 'A','B']
 const MajorScale = [0, 0, 2, 4, 5, 7, 9, 11, 12]
 type Res = {
     title: string
@@ -76,13 +77,46 @@ export const compile = (text: string) => {
             // コード
             else if (line[0] === 'c') {
                 // コードを小節線（|）で分割する
-                const cs = line.split('|')
-                for (let j = 0; j < cs.length; j++) {
-                    res.chords.push({
-                        pitch: 12,
-                        chord_name: cs[j],
-                        tick: j
-                    })
+                //const cs = line.split('|')
+
+                let chord_name = ''
+                for (let j = 0; j < line.length; j++) {
+                    
+                    const c = line[j]
+                    // C, D, E
+                    if (MajorNoteName.includes(c)) {
+
+                        const pitch = NoteName.indexOf(c)
+                        chord_name = c
+                        res.chords.push({
+                            pitch: pitch,
+                            chord_name: chord_name,
+                            third: 'major',
+                            tick: j
+                        })
+                    }
+                    // #
+                    else if (c === '#') {
+                        res.chords[res.chords.length - 1].pitch += 1
+                        res.chords[res.chords.length - 1].chord_name += '#'
+                    }
+                    // m, M, sus4, dim, aug, add9
+                    else if (c === 'm') {
+                        res.chords[res.chords.length - 1].chord_name += 'm'
+                    }
+
+                    // 6, 7, 9
+                    
+
+                    // on
+
+
+                    // C, D, E
+
+
+                    // #
+                    
+
                 }
             }
             // メロディ
