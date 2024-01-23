@@ -9,6 +9,7 @@ export type Note = {
 }
 
 export type Chord = {
+    mea?: number
     tick: number
 
     chord_name: string

@@ -4,6 +4,7 @@ import Lib from './Lib.ts'
 const NoteName = ['C','C#', 'D', 'D#','E', 'F', 'F#','G', 'G#','A', 'A#','B']
 const MajorNoteName = ['C', 'C', 'D', 'E', 'F','G', 'A','B']
 const MajorScale = [0, 0, 2, 4, 5, 7, 9, 11, 12]
+
 type Res = {
     title: string
     bpm: number
@@ -36,6 +37,9 @@ export const compile = (text: string) => {
     let dur_cnt = 0 // 1小節をカウントする
     let kome_cnt = 0 // 「*」の個数をカウントする。
     let is_note = false // 休符かnoteか
+
+    let c_tick = 0
+    let c_state = 0
 
     // 文字列を検索する
     lines.forEach((l, i) => {
@@ -92,8 +96,9 @@ export const compile = (text: string) => {
                             pitch: pitch,
                             chord_name: chord_name,
                             third: 'major',
-                            tick: j
+                            tick: c_tick
                         })
+                        c_tick += 8
                     }
                     // #
                     else if (c === '#') {
@@ -103,6 +108,7 @@ export const compile = (text: string) => {
                     // m, M, sus4, dim, aug, add9
                     else if (c === 'm') {
                         res.chords[res.chords.length - 1].chord_name += 'm'
+                        res.chords[res.chords.length - 1].third = 'minor'
                     }
 
                     // 6, 7, 9
@@ -222,7 +228,7 @@ export const compile = (text: string) => {
     })
 
     res.mea = mea
-    console.clear()
+    // console.clear()
     console.log(res)
     return res
 

@@ -39,7 +39,7 @@ const default_chords:Chord[] = [
 ]
 
 export default function Main() {
-    const [text, setText] = useState<string>(default_text)
+    const [texts, setTexts] = useState<string[]>([default_text,'','',''])
     const [bpm, setBpm] = useState(120)
     const [mea, setMea] = useState(0)
     const [title, setTitle] = useState('none')
@@ -48,28 +48,31 @@ export default function Main() {
     const [chords, setChords] = useState<Chord[]>(default_chords)
     const [midiURI, setMidiURI] = useState<string>('')
 
+    const [tabnum, setTabnum] = useState(0)
+
     const onGenerate = () => {
         const uri = generate(notes, bpm)
         setMidiURI(uri)
     }
 
     const onTextChange = (text: string) => {
-        setText(text)
+        // console.log(texts)
+        setTexts(texts.map((t, i) => (i === tabnum ? text : t)))
 
-        const res = compile(text)
+        // const res = compile(text)
 
-        // 値のセット
-        setNotes([...res.notes])
-        setTitle(res.title)
-        setErrMsg(res.errMsg)
-        setBpm(res.bpm)
-        setMea(res.mea)
-        setChords(res.chords)
+        // // 値のセット
+        // setNotes([...res.notes])
+        // setTitle(res.title)
+        // setErrMsg(res.errMsg)
+        // setBpm(res.bpm)
+        // setMea(res.mea)
+        // setChords(res.chords)
     }
 
-    useEffect(()=>{
-        onTextChange(default_text)
-    },[])
+    const onTabChange = (t: number) => {
+        setTabnum(t)
+    }
 
     let estyle :React.CSSProperties = {
         whiteSpace: 'pre-wrap'
@@ -78,25 +81,26 @@ export default function Main() {
     const max_note = [...notes].sort((a,b)=>a.pitch>b.pitch ? 1: -1)[0].pitch
     const min_note = [...notes].sort((a,b)=>a.pitch<b.pitch ? 1: -1)[0].pitch
 
+    const ch_name = ['melody', 'bass', 'drum', 'memo']
+
+    useEffect(()=>{
+        onTextChange(default_text)
+    },[])
+
     return (
         <div className="container-fluid">
             <Ala />
             <div className="row">
                 <div className="col-md-12">
                     <ul className="nav nav-tabs">
-                        <li className="nav-item">
-                            <a className="nav-link active" aria-current="page" href="#">Ch.1</a>
-                        </li>
-                        <li className="nav-item">
-                            <a className="nav-link" href="#">Ch.2</a>
-                        </li>
-                        <li className="nav-item">
-                            <a className="nav-link" href="#">Ch.3</a>
-                        </li>
+                    {ch_name.map((cn, i)=>{
+                        return <li className="nav-item" key={i}>
+                            <a className={"nav-link" + (i === tabnum ? " active" : "")} onClick={()=>onTabChange(i)}>{cn}</a>
+                        </li> 
+                    })}
                     </ul>
-
                     {/* <textarea className={`form-control ${notojp.className}`} value={text} rows={20} cols={20} onChange={(e) => onTextChange(e.target.value)} /> */}
-                    <textarea className="form-control editor" value={text} rows={20} cols={20} onChange={(e) => onTextChange(e.target.value)} />
+                    <textarea className="form-control editor" value={texts[tabnum]} rows={20} cols={20} onChange={(e) => onTextChange(e.target.value)} />
                 
                 </div>
                 <div style={estyle} className="col-md-12 border">
@@ -143,6 +147,7 @@ export default function Main() {
                 <table className="table table-sm">
                 <thead>
                     <tr>
+                        <th>mea</th>
                         <th>tick</th>
                         <th>pitch</th>
                         <th>third</th>
@@ -150,13 +155,12 @@ export default function Main() {
                 </thead>
                 <tbody>
                 {chords.map((c,i)=><tr key={i}>
+                    <td>{c.mea}</td>
                     <td>{c.tick}</td>
                     <td>{c.chord_name}</td>
                     <td>{c.third}</td></tr>)}
                 </tbody></table>
                 </div>
-
-                
             </div>
         </div>
     )
