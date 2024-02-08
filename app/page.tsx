@@ -69,7 +69,9 @@ export default function Main() {
         // setMea(res.mea)
         // setChords(res.chords)
     }
-
+    const onCompile = () => {
+        compile(texts[tabnum])
+    }
     const onTabChange = (t: number) => {
         setTabnum(t)
     }
@@ -107,6 +109,7 @@ export default function Main() {
                     {errMsg}
                 </div>
             </div>
+            <button type="button" className="btn btn-primary" onClick={onCompile}>Compile</button>
             <button type="button" className="btn btn-primary" onClick={onGenerate}>Generate</button>
                 <a href={midiURI}>{midiURI}</a>
             <div className="row">

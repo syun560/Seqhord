@@ -55,19 +55,19 @@ export const compile = (text: string) => {
         // @キーワード
         if (line.indexOf('@') !== -1) {
             // BPM
-            if (line.indexOf('b') !== -1) {
+            if (line.indexOf('bpm') !== -1) {
                 const i = line.indexOf('=')
                 const b = Number(line.slice(i + 1))
                 res.bpm = b
             }
             // タイトル
-            else if (line[1] === 't') {
+            else if (line[1] === 'title') {
                 const i = line.indexOf('=')
                 const t = line.slice(i + 1)
                 res.title = t
             }
             // スケール（調）
-            else if (line[1] === 's') {
+            else if (line[1] === 'scale') {
                 const i = line.indexOf('=')
                 const t = line.slice(i + 1)
                 res.scale = t

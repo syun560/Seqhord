@@ -1,12 +1,13 @@
 export const default_drum = `
-k=0
-s=1
-c=1
-o=1
+@set k=0, s=1, c=1, o=1
 
-@p="8beat"
+@n="beat"
 o|x...............|
-c|x.x.x.x.x.x.x.x.|
-s|....x.......x...|
+h|x.x.x.x.x.x.x.x.|
+d|....x.......x...|
 k|x...x...x...x...|
+
+e| beat | beat | beat | beat |
+
 `
+// 繰り返しの命令を書く。
