@@ -5,7 +5,7 @@ import Lib from './Lib.ts'
 import { Track } from 'midi-writer-js/build/types/chunks/track';
 
 // MidiWriterJS
-export const generate = (notes: Note[], bpm: number) => {
+export const generate = (notes: Note[][], bpm: number) => {
     
     // トラックを配列で複数作る。
     let tracks: Track[] = []
@@ -22,7 +22,7 @@ export const generate = (notes: Note[], bpm: number) => {
     tracks[1].addEvent(new MidiWriter.ProgramChangeEvent({instrument: 1}));
     tracks[1].addTrackName("melody")
     tracks[1].addInstrumentName("piano")
-    notes.map(n => {
+    notes[0].map(n => {
         let note = new MidiWriter.NoteEvent({
             tick: n.tick * 64,
             pitch: Lib.noteNumberToNoteName(n.pitch),
@@ -36,7 +36,7 @@ export const generate = (notes: Note[], bpm: number) => {
 
     // コードトラックの追加
     tracks[2] = new MidiWriter.Track();
-    notes.map(n => {
+    notes[0].map(n => {
         let note = new MidiWriter.NoteEvent({
             tick: n.tick * 64 + 64,
             pitch: Lib.noteNumberToNoteName(n.pitch),
@@ -50,7 +50,7 @@ export const generate = (notes: Note[], bpm: number) => {
 
     // リズムトラックの追加
     tracks[3] = new MidiWriter.Track();
-    notes.map(n => {
+    notes[0].map(n => {
         let note = new MidiWriter.NoteEvent({
             tick: n.tick * 64 + 2,
             pitch: Lib.noteNumberToNoteName(n.pitch),

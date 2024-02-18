@@ -5,28 +5,17 @@ import { useState, useEffect } from "react"
 import { Note, Chord } from './types.ts'
 import { Ala } from './alealert.tsx'
 import { default_text } from './default_text.ts'
+import { default_drum } from './default_drum.ts'
 import { compile } from './compile.ts'
 import { generate } from './generate.ts'
 import Lib from './Lib.ts'
 import './globals.css'
 
-const default_notes:Note[] = [
-    {
-        pitch: 64,
-        pitch_name: 'C4',
-        duration: 1,
-        channel: 0,
-        velocity: 100,
-        tick: 0
-    },
-    {
-        pitch: 63,
-        pitch_name: 'C5',
-        duration: 1,
-        channel: 0,
-        velocity: 100,
-        tick: 0
-    },
+const default_notes:Note[][] = [
+    [{ pitch: 64, pitch_name: 'C4', duration: 1, channel: 0, velocity: 100, tick: 0 }],
+    [{ pitch: 64, pitch_name: 'C4', duration: 1, channel: 0, velocity: 100, tick: 0 }],
+    [{ pitch: 64, pitch_name: 'C4', duration: 1, channel: 0, velocity: 100, tick: 0 }],
+    [{ pitch: 64, pitch_name: 'C4', duration: 1, channel: 0, velocity: 100, tick: 0 }]
 ]
 
 const default_chords:Chord[] = [
@@ -39,12 +28,12 @@ const default_chords:Chord[] = [
 ]
 
 export default function Main() {
-    const [texts, setTexts] = useState<string[]>([default_text,'','',''])
+    const [texts, setTexts] = useState<string[]>([default_text,'',default_drum,''])
     const [bpm, setBpm] = useState(120)
     const [mea, setMea] = useState(0)
     const [title, setTitle] = useState('none')
     const [errMsg, setErrMsg] = useState('errMsg')
-    const [notes, setNotes] = useState<Note[]>(default_notes)
+    const [notes, setNotes] = useState<Note[][]>(default_notes)
     const [chords, setChords] = useState<Chord[]>(default_chords)
     const [midiURI, setMidiURI] = useState<string>('')
 
@@ -58,19 +47,17 @@ export default function Main() {
     const onTextChange = (text: string) => {
         // console.log(texts)
         setTexts(texts.map((t, i) => (i === tabnum ? text : t)))
-
-        // const res = compile(text)
-
-        // // 値のセット
-        // setNotes([...res.notes])
-        // setTitle(res.title)
-        // setErrMsg(res.errMsg)
-        // setBpm(res.bpm)
-        // setMea(res.mea)
-        // setChords(res.chords)
     }
     const onCompile = () => {
-        compile(texts[tabnum])
+        const res = compile(texts)
+
+        // 値のセット
+        setNotes([...res.notes])
+        setTitle(res.title)
+        setErrMsg(res.errMsg)
+        setBpm(res.bpm)
+        setMea(res.mea)
+        setChords(res.chords)
     }
     const onTabChange = (t: number) => {
         setTabnum(t)
@@ -80,13 +67,15 @@ export default function Main() {
         whiteSpace: 'pre-wrap'
     }
 
-    const max_note = [...notes].sort((a,b)=>a.pitch>b.pitch ? 1: -1)[0].pitch
-    const min_note = [...notes].sort((a,b)=>a.pitch<b.pitch ? 1: -1)[0].pitch
+    const max_note = [...notes[tabnum]].sort((a,b)=>a.pitch>b.pitch ? 1: -1)[0].pitch
+    const min_note = [...notes[tabnum]].sort((a,b)=>a.pitch<b.pitch ? 1: -1)[0].pitch
 
     const ch_name = ['melody', 'bass', 'drum', 'memo']
 
     useEffect(()=>{
         onTextChange(default_text)
+        console.log(tabnum)
+        console.log(notes)
     },[])
 
     return (
@@ -98,7 +87,7 @@ export default function Main() {
                     {ch_name.map((cn, i)=>{
                         return <li className="nav-item" key={i}>
                             <a className={"nav-link" + (i === tabnum ? " active" : "")} onClick={()=>onTabChange(i)}>{cn}</a>
-                        </li> 
+                        </li>
                     })}
                     </ul>
                     {/* <textarea className={`form-control ${notojp.className}`} value={text} rows={20} cols={20} onChange={(e) => onTextChange(e.target.value)} /> */}
@@ -118,7 +107,7 @@ export default function Main() {
                     <tbody>
                     <tr><th>Title</th><td>{title}</td></tr>
                     <tr><th>BPM</th><td>{bpm}</td></tr>
-                    <tr><th>notes_length</th><td>{notes.length}</td></tr>
+                    <tr><th>notes_length</th><td>{notes[tabnum].length}</td></tr>
                     <tr><th>mea</th><td>{mea}</td></tr>
                     <tr><th>最高音</th><td>{max_note}({Lib.noteNumberToNoteName(max_note)})</td></tr>
                     <tr><th>最低音</th><td>{min_note}({Lib.noteNumberToNoteName(min_note)})</td></tr>
@@ -137,7 +126,7 @@ export default function Main() {
                     </tr>
                 </thead>
                 <tbody>
-                {notes.map((n,i)=><tr key={i}>
+                {notes[tabnum].map((n,i)=><tr key={i}>
                     <td>{n.mea}</td>
                     <td>{n.tick % 8}</td>
                     {/* <td>{n.tick % 8}({n.tick})</td> */}

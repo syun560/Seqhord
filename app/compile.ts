@@ -11,12 +11,12 @@ type Res = {
     scale: string
     errMsg: string
     mea: number
-    notes: Note[]
+    notes: Note[][]
     chords: Chord[]
 }
 
 // 自作音楽記述言語のコンパイル
-export const compile = (text: string) => {
+export const compile = (texts: string[]) => {
     let res :Res = {
         title: "none",
         bpm: 120,
@@ -27,9 +27,7 @@ export const compile = (text: string) => {
         chords: []
     }
     // 文字列を改行ごとに分割して配列に入れる
-    const lines = text.split('\n')
-    const tmp_notes:Note[] = []
-    const tmp_chords:Chord[] = []
+    const lines = texts[0].split('\n')
     let tick = 0
     let reso = 1
     let octarve = 0
@@ -40,6 +38,9 @@ export const compile = (text: string) => {
 
     let c_tick = 0
     let c_state = 0
+
+    // 2次元配列の初期化
+    res.notes[0] = []
 
     // 文字列を検索する
     lines.forEach((l, i) => {
@@ -145,7 +146,7 @@ export const compile = (text: string) => {
                     }
                     // 前のノートを半音上げる
                     else if (c === '-') {
-                        res.notes[res.notes.length - 1].pitch += 1
+                        res.notes[0][res.notes[0].length - 1].pitch += 1
                     }
                     // mの時は無視
                     else if (c === 'm') {
@@ -168,7 +169,7 @@ export const compile = (text: string) => {
                         if (dur < 0) dur = 0
                         // 前のノートに対して操作を加える
                         if (is_note) {
-                            res.notes[res.notes.length - 1].duration += dur
+                            res.notes[0][res.notes[0].length - 1].duration += dur
                         }
                         dur_cnt += dur
                         tick += dur * reso
@@ -195,7 +196,7 @@ export const compile = (text: string) => {
                     // 前のノートを伸ばす
                     else if (c === '_') {
                         // 配列の最後の要素に対して操作
-                        res.notes[res.notes.length - 1].duration += 1
+                        res.notes[0][res.notes[0].length - 1].duration += 1
                         dur_cnt += 1
                         tick += reso
                     }
@@ -204,7 +205,7 @@ export const compile = (text: string) => {
                         const pitch = MajorScale[Number(c)] + base_pitch + octarve * 12
                         const pitch_name = Lib.noteNumberToNoteName(pitch)
 
-                        res.notes.push({
+                        res.notes[0].push({
                             pitch: pitch,
                             pitch_name: pitch_name,
                             duration: 1,
@@ -223,6 +224,9 @@ export const compile = (text: string) => {
                         res.errMsg += `${i+1}行${j+1}文字目: 予期せぬ文字列「${c}」です。\n`
                     }
                 }
+            }
+            // ドラム
+            else if (line[0] === 'd') {
             }
         }
     })

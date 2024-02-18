@@ -7,7 +7,6 @@ h|x.x.x.x.x.x.x.x.|
 d|....x.......x...|
 k|x...x...x...x...|
 
-e| beat | beat | beat | beat |
-
+@override=off
 `
 // 繰り返しの命令を書く。
