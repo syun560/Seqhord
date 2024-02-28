@@ -27,7 +27,7 @@ export const generate = (notes: Note[][], bpm: number) => {
             tick: n.tick * 64,
             pitch: Lib.noteNumberToNoteName(n.pitch),
             duration: 'T' + (n.duration * 64),
-            channel: 1,
+            channel: n.channel,
             velocity: 80
         })
         console.log(note)
@@ -51,12 +51,13 @@ export const generate = (notes: Note[][], bpm: number) => {
     // リズムトラックの追加
     tracks[3] = new MidiWriter.Track();
     notes[0].map(n => {
-        let note = new MidiWriter.NoteEvent({
+        let note = new MidiWriter.NoteEvent({   
             tick: n.tick * 64 + 2,
-            pitch: Lib.noteNumberToNoteName(n.pitch),
-            duration: 'T' + (n.duration * 64),
+            // pitch: Lib.noteNumberToNoteName(n.pitch),
+            pitch: 36,
+            duration: 'T12',
             channel: 10,
-            velocity: 40
+            velocity: 80
         })
         console.log(note)
         tracks[3].addEvent(note)

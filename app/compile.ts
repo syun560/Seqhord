@@ -1,4 +1,5 @@
-import { Note, Chord } from './types.ts'
+import { Note, Chord, Var } from './types.ts'
+import { compile_var } from './compile_var.ts'
 import Lib from './Lib.ts'
 
 const NoteName = ['C','C#', 'D', 'D#','E', 'F', 'F#','G', 'G#','A', 'A#','B']
@@ -12,7 +13,8 @@ type Res = {
     errMsg: string
     mea: number
     notes: Note[][]
-    chords: Chord[]
+    chords: Chord[],
+    vars: Var[]
 }
 
 // 自作音楽記述言語のコンパイル
@@ -24,11 +26,13 @@ export const compile = (texts: string[]) => {
         errMsg: "",
         mea: 0,
         notes: [],
-        chords: []
+        chords: [],
+        vars: []
     }
     // 文字列を改行ごとに分割して配列に入れる
     const lines = texts[0].split('\n')
     let tick = 0
+    let p_tick = 0 // パラグラフが始まる前のtick
     let reso = 1
     let octarve = 0
     let mea = 0
@@ -41,6 +45,9 @@ export const compile = (texts: string[]) => {
 
     // 2次元配列の初期化
     res.notes[0] = []
+    res.notes[1] = []
+    res.notes[2] = []
+    res.notes[3] = []
 
     // 文字列を検索する
     lines.forEach((l, i) => {
@@ -62,16 +69,28 @@ export const compile = (texts: string[]) => {
                 res.bpm = b
             }
             // タイトル
-            else if (line[1] === 'title') {
+            else if (line.indexOf('title') !== -1) {
                 const i = line.indexOf('=')
                 const t = line.slice(i + 1)
                 res.title = t
             }
             // スケール（調）
-            else if (line[1] === 'scale') {
+            else if (line.indexOf('scale') !== -1) {
                 const i = line.indexOf('=')
                 const t = line.slice(i + 1)
                 res.scale = t
+            }
+            // プログラムチェンジ
+            else if (line.indexOf('program') !== -1) {
+                const i = line.indexOf('=')
+                const t = line.slice(i + 1)
+                //res.scale = t
+            }
+            // パラグラフ
+            else if (line.indexOf('p') !== -1){
+                const i = line.indexOf('=')
+                const t = line.slice(i + 1)
+                p_tick = Number(t)
             }
         }
         else{
@@ -227,11 +246,59 @@ export const compile = (texts: string[]) => {
             }
             // ドラム
             else if (line[0] === 'd') {
+                // 順番に解釈していく
+                let d_state = 0 // 0: 変数認識, 1:アスタリスク, 2:回数認識受付状態
+                let tmp_var = '' // 変数の名前
+                for (let j = 1; j < line.length; j++) {
+                    
+                    const c = line[j]
+                    // 
+                    if (c === '*') {
+                        d_state = 1
+                        res.vars.push({
+                            tick: p_tick,
+                            name: tmp_var,
+                            repeat: 1
+                        })
+                        tmp_var = ''
+                    }
+                    // 数値であれば繰り返し回数として認識する
+                    else if (!isNaN(Number(c))) {
+                        if (d_state === 1) {
+                            res.vars[res.vars.length - 1].repeat = Number(c)
+                            d_state = 2
+                        }
+                        else if (d_state === 2) {
+                            res.vars[res.vars.length - 1].repeat *= 10
+                            res.vars[res.vars.length - 1].repeat += Number(c)
+                            d_state = 2
+                        }
+                    }
+                    else if (c === '|'){
+                        if (tmp_var !== '') {
+                            d_state = 0
+                            res.vars.push({
+                                tick: p_tick,
+                                name: tmp_var,
+                                repeat: 1
+                            })
+                            tmp_var = ''
+                        }
+                    }
+                    else {
+                        d_state = 0
+                        tmp_var += c
+                    }
+                }
             }
         }
     })
 
     res.mea = mea
+
+    // varをコンパイルする
+    compile_var(texts, res.vars, res.notes, 2)
+
     // console.clear()
     console.log(res)
     return res

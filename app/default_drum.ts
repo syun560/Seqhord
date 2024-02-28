@@ -1,10 +1,16 @@
 export const default_drum = `
-@set k=0, s=1, c=1, o=1
+@set k=35
+@set s=38
+@set h=42
+@set c=49
 
-@n="beat"
-o|x...............|
+@n="normal"
+c|x...............|
 h|x.x.x.x.x.x.x.x.|
-d|....x.......x...|
+s|....x.......x...|
+k|x...x...x...x...|
+
+@n="kick"
 k|x...x...x...x...|
 
 @override=off

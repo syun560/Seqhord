@@ -21,3 +21,10 @@ export type Chord = {
     eleventh?: 'omit' | 'minor' 
     on?: number // 0~11
 }
+
+export type Var = {
+    tick: number
+
+    name: string
+    repeat: number
+}
