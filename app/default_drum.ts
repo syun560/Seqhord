@@ -4,14 +4,16 @@ export const default_drum = `
 @set h=42
 @set c=49
 
-@n="normal"
-c|x...............|
+@n=normal
+c|................|
 h|x.x.x.x.x.x.x.x.|
 s|....x.......x...|
 k|x...x...x...x...|
+@e
 
-@n="kick"
+@n=kick
 k|x...x...x...x...|
+@e
 
 @override=off
 `

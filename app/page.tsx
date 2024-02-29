@@ -105,7 +105,7 @@ export default function Main() {
                 </div>
             </div>
             <button type="button" className="btn btn-primary" onClick={onCompile}>Compile</button>
-            <button type="button" className="btn btn-primary" onClick={onGenerate}>Generate</button>
+            <button type="button" className="btn btn-success mx-3" onClick={onGenerate}>to MIDI</button>
                 <a href={midiURI}>{midiURI}</a>
             <div className="row">
                 <div className="col-3">

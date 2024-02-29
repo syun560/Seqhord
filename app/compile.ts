@@ -32,7 +32,7 @@ export const compile = (texts: string[]) => {
     // 文字列を改行ごとに分割して配列に入れる
     const lines = texts[0].split('\n')
     let tick = 0
-    let p_tick = 0 // パラグラフが始まる前のtick
+    let p_mea = 0 // パラグラフが始まる前のmea
     let reso = 1
     let octarve = 0
     let mea = 0
@@ -90,7 +90,7 @@ export const compile = (texts: string[]) => {
             else if (line.indexOf('p') !== -1){
                 const i = line.indexOf('=')
                 const t = line.slice(i + 1)
-                p_tick = Number(t)
+                p_mea = Number(t)
             }
         }
         else{
@@ -150,7 +150,7 @@ export const compile = (texts: string[]) => {
                 // メロディのスケールを取得する
                 const base_scale :number = NoteName.indexOf(res.scale)
                 // 基準となるピッチ
-                const base_pitch :number = 12 * 5 + base_scale
+                const base_pitch :number = 12 * 6 + base_scale
 
                 for (let j = 0; j < line.length; j++) {
 
@@ -256,7 +256,7 @@ export const compile = (texts: string[]) => {
                     if (c === '*') {
                         d_state = 1
                         res.vars.push({
-                            tick: p_tick,
+                            tick: p_mea * 8,
                             name: tmp_var,
                             repeat: 1
                         })
@@ -278,7 +278,7 @@ export const compile = (texts: string[]) => {
                         if (tmp_var !== '') {
                             d_state = 0
                             res.vars.push({
-                                tick: p_tick,
+                                tick: p_mea * 8,
                                 name: tmp_var,
                                 repeat: 1
                             })
