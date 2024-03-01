@@ -4,9 +4,10 @@ import React from "react"
 import { useState, useEffect } from "react"
 import { Note, Chord, Var } from './types.ts'
 import { Ala } from './alealert.tsx'
-import { default_text } from './default_text.ts'
-import { default_drum } from './default_drum.ts'
-import { compile } from './compile.ts'
+import { default_text } from './default_txt/default_text.ts'
+import { default_bass } from './default_txt/default_bass.ts'
+import { default_drum } from './default_txt/default_drum.ts'
+import { compile } from './compile/compile.ts'
 import { generate } from './generate.ts'
 import Lib from './Lib.ts'
 import './globals.css'
@@ -29,7 +30,7 @@ const default_chords:Chord[] = [
 ]
 
 export default function Main() {
-    const [texts, setTexts] = useState<string[]>([default_text,'',default_drum,''])
+    const [texts, setTexts] = useState<string[]>([default_text,default_bass,default_drum,''])
     const [bpm, setBpm] = useState(120)
     const [mea, setMea] = useState(0)
     const [scale, setScale] = useState('C')

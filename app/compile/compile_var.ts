@@ -1,4 +1,4 @@
-import { Var, Note } from './types.ts'
+import { Var, Note } from '../types.ts'
 
 // ドラムパターン
 type DNote = {

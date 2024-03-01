@@ -1,3 +1,15 @@
+// コンパイル結果
+export type Res = {
+    title: string
+    bpm: number
+    scale: string
+    errMsg: string
+    mea: number
+    notes: Note[][]
+    chords: Chord[],
+    vars: Var[]
+}
+
 export type Note = {
     pitch: number   // 0~128
     pitch_name: string // C4, D3 ...
