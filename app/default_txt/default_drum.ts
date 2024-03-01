@@ -4,7 +4,7 @@ export const default_drum = `
 @set h=42
 @set c=49
 
-@n=normal
+@n=beat
 c|................|
 h|x.x.x.x.x.x.x.x.|
 s|....x.......x...|

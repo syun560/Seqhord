@@ -1,5 +1,5 @@
 export const default_bass = `
-@n=normal
-k|x_x_x_x_x_x_x_x_|
+@n=root
+k|0_0_0_0_0_0_0_0_|
 @e
 `
