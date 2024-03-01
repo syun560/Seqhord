@@ -19,7 +19,7 @@ export type Chord = {
     seventh?: 'minor' | 'major'
     ninth?: 'omit' | 'minor'
     eleventh?: 'omit' | 'minor' 
-    on?: number // 0~11
+    on: number // 0~11
 }
 
 export type Var = {

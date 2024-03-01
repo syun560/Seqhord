@@ -24,6 +24,7 @@ const default_chords:Chord[] = [
         pitch: 0,
         chord_name: 'C',
         third: 'major',
+        on: -1
     }
 ]
 
@@ -42,7 +43,11 @@ export default function Main() {
     const [vars, setVars] = useState<Var[]>([])
 
 
-    const onGenerate = () => {
+    const onMIDIGenerate = () => {
+        const uri = generate(notes, bpm)
+        setMidiURI(uri)
+    }
+    const onXMLGenerate = () => {
         const uri = generate(notes, bpm)
         setMidiURI(uri)
     }
@@ -105,7 +110,8 @@ export default function Main() {
                 </div>
             </div>
             <button type="button" className="btn btn-primary" onClick={onCompile}>Compile</button>
-            <button type="button" className="btn btn-success mx-3" onClick={onGenerate}>to MIDI</button>
+            <button type="button" className="btn btn-success mx-3" onClick={onMIDIGenerate}>to MIDI</button>
+            <button type="button" className="btn btn-info mx-3" onClick={onXMLGenerate}>to MusicXML</button>
                 <a href={midiURI}>{midiURI}</a>
             <div className="row">
                 <div className="col-3">
@@ -114,7 +120,7 @@ export default function Main() {
                     <tr><th>Title</th><td>{title}</td></tr>
                     <tr><th>BPM</th><td>{bpm}</td></tr>
                     <tr><th>Scale</th><td>{scale}</td></tr>
-                    <tr><th>notes_length</th><td>{notes[tabnum].length}</td></tr>
+                    <tr><th>ノーツ数</th><td>{notes[tabnum].length}</td></tr>
                     <tr><th>mea</th><td>{mea}</td></tr>
                     <tr><th>最高音</th><td>{max_note}({Lib.noteNumberToNoteName(max_note)})</td></tr>
                     <tr><th>最低音</th><td>{min_note}({Lib.noteNumberToNoteName(min_note)})</td></tr>
@@ -127,7 +133,7 @@ export default function Main() {
                 <thead>
                     <tr>
                         <th>mea</th>
-                        <th>tick</th>
+                        <th>tick%8</th>
                         <th>pitch</th>
                         <th>duration</th>
                     </tr>
@@ -147,15 +153,15 @@ export default function Main() {
                 <thead>
                     <tr>
                         <th>mea</th>
-                        <th>tick</th>
-                        <th>pitch</th>
+                        <th>tick%8</th>
+                        <th>name</th>
                         <th>third</th>
                     </tr>
                 </thead>
                 <tbody>
                 {chords.map((c,i)=><tr key={i}>
                     <td>{c.mea}</td>
-                    <td>{c.tick}</td>
+                    <td>{c.tick % 8}</td>
                     <td>{c.chord_name}</td>
                     <td>{c.third}</td></tr>)}
                 </tbody></table>

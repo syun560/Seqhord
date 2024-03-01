@@ -103,26 +103,40 @@ export const compile = (texts: string[]) => {
                 // コードを小節線（|）で分割する
                 //const cs = line.split('|')
 
+                mea = p_mea
                 let chord_name = ''
-                for (let j = 0; j < line.length; j++) {
+                let c_state = 0 // 0: 通常, 1: オンコード待機状態, 2:オンコード入力状態
+                for (let j = 2; j < line.length; j++) {
                     
                     const c = line[j]
                     // C, D, E
                     if (MajorNoteName.includes(c)) {
-
+                        
                         const pitch = NoteName.indexOf(c)
-                        chord_name = c
-                        res.chords.push({
-                            pitch: pitch,
-                            chord_name: chord_name,
-                            third: 'major',
-                            tick: c_tick
-                        })
-                        c_tick += 8
+                        if (c_state !== 1) {
+                            chord_name = c
+                            res.chords.push({
+                                mea: mea,
+                                tick: mea * 8,
+                                pitch: pitch,
+                                chord_name: chord_name,
+                                third: 'major',
+                                on: -1
+                            })
+                        }else{
+                            res.chords[res.chords.length - 1].on = pitch
+                            res.chords[res.chords.length - 1].chord_name += c
+                            c_state = 2
+                        }
                     }
                     // #
                     else if (c === '#') {
-                        res.chords[res.chords.length - 1].pitch += 1
+                        if (c_state === 2) {
+                            res.chords[res.chords.length - 1].on += 1
+                            c_state = 0
+                        }else{
+                            res.chords[res.chords.length - 1].pitch += 1
+                        }
                         res.chords[res.chords.length - 1].chord_name += '#'
                     }
                     // m, M, sus4, dim, aug, add9
@@ -130,17 +144,21 @@ export const compile = (texts: string[]) => {
                         res.chords[res.chords.length - 1].chord_name += 'm'
                         res.chords[res.chords.length - 1].third = 'minor'
                     }
-
-                    // 6, 7, 9
-                    
-
-                    // on
-
-
-                    // C, D, E
-
-
-                    // #
+                    else if (c === '/') {
+                        res.chords[res.chords.length - 1].chord_name += '/'
+                        c_state = 1
+                    }
+                    else if (c === 'M'){
+                        res.chords[res.chords.length - 1].chord_name += 'M'
+                        res.chords[res.chords.length - 1].seventh = 'major'
+                    }
+                    else if (c === '7'){
+                        res.chords[res.chords.length - 1].chord_name += '7'
+                        res.chords[res.chords.length - 1].seventh = 'minor'
+                    }
+                    else if (c === '|'){
+                        mea += 1
+                    }
                     
 
                 }
@@ -152,7 +170,10 @@ export const compile = (texts: string[]) => {
                 // 基準となるピッチ
                 const base_pitch :number = 12 * 6 + base_scale
 
-                for (let j = 0; j < line.length; j++) {
+                mea = p_mea
+                tick = p_mea * 8
+
+                for (let j = 1; j < line.length; j++) {
 
                     const c = line[j]
                     // 次のノートを一オクターブ上げる
@@ -196,7 +217,7 @@ export const compile = (texts: string[]) => {
                     }
                     // 小節の区切り文字
                     else if (c === '|'){
-                        if (mea !== 0 && dur_cnt !== 8 && kome_cnt === 0) {
+                        if (j !== 1 && dur_cnt !== 8 && kome_cnt === 0) {
                             res.errMsg += `${mea}小節の音節が拍子と一致しません。（${dur_cnt}）\n`
                         }
                         if (kome_cnt > 1 ){
