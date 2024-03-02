@@ -25,7 +25,7 @@ export const compile_chord = (line: string, i: number, res: Res, c: number) => {
                     pitch: pitch,
                     chord_name: chord_name,
                     third: 'major',
-                    on: -1
+                    on: pitch
                 })
             }else{
                 res.chords[res.chords.length - 1].on = pitch
@@ -36,11 +36,11 @@ export const compile_chord = (line: string, i: number, res: Res, c: number) => {
         // #
         else if (c === '#') {
             if (c_state === 2) {
-                res.chords[res.chords.length - 1].on += 1
                 c_state = 0
             }else{
                 res.chords[res.chords.length - 1].pitch += 1
             }
+            res.chords[res.chords.length - 1].on += 1
             res.chords[res.chords.length - 1].chord_name += '#'
         }
         // m, M, sus4, dim, aug, add9

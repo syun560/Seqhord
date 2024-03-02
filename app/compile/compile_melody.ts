@@ -65,7 +65,7 @@ export const compile_melody = (line: string, i: number, res: Res, c: number) => 
                 pitch: pitch,
                 pitch_name: pitch_name,
                 duration: 1,
-                channel: 0,
+                channel: 1,
                 velocity: 100,
                 mea: mea,
                 tick: tick

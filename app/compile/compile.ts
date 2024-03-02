@@ -1,5 +1,6 @@
 import { Res } from '../types.ts'
 import { compile_drum } from './compile_drum.ts'
+import { compile_bass } from './compile_bass.ts'
 import { compile_melody } from './compile_melody.ts'
 import { compile_chord } from './compile_chord.ts'
 import { compile_var } from './compile_var.ts'
@@ -86,11 +87,11 @@ export const compile = (texts: string[]) => {
             }
             // ベース
             else if (line[0] === 'b') {
-                
+                compile_var(line, i, res, 1)
             }
             // ドラム
             else if (line[0] === 'd') {
-                compile_var(line, i, res, 3)
+                compile_var(line, i, res, 2)
             }
         }
     })
@@ -98,6 +99,7 @@ export const compile = (texts: string[]) => {
     res.mea = mea
 
     // 変数を含むトラックをコンパイルする
+    compile_bass(texts, res, 1)
     compile_drum(texts, res.vars, res.notes, 2)
 
     // console.clear()
