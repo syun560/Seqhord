@@ -1,7 +1,11 @@
 ## SMML
-MMLのような簡易音楽記述言語をMIDI、MusicXML（NEUTRINO用）に変換します。
+SMMLはMMLのような簡易音楽記述言語です。
+MIDI、MusicXML（NEUTRINO用）に変換します。
 
 SMML is simple music markup language. 
+
+## 記法について - How to notate
+Now printing...
 
 ## 参考
 - [オンラインでMIDIから歌詞入力してMusicXMLにするツール(NEUTRINO用)をつくった話](https://note.com/romot/n/nf3a7346bfa02)
