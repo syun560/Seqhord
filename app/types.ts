@@ -1,15 +1,3 @@
-// コンパイル結果
-export type Res = {
-    title: string
-    bpm: number
-    scale: string
-    errMsg: string
-    mea: number
-    notes: Note[][]
-    chords: Chord[],
-    vars: Var[]
-}
-
 export type Note = {
     pitch: number   // 0~128
     pitch_name: string // C4, D3 ...
@@ -34,9 +22,27 @@ export type Chord = {
     on: number // 0~11
 }
 
+export type Scale = {
+    mea?: number
+    tick: number
+    scale: string
+}
+
 export type Var = {
     tick: number
 
     name: string
     repeat: number
+}
+
+// コンパイル結果
+export type Res = {
+    title: string
+    bpm: number
+    scales: Scale[]
+    errMsg: string
+    mea: number
+    notes: Note[][]
+    chords: Chord[],
+    vars: Var[]
 }

@@ -1,10 +1,10 @@
 "use client"
 import React from "react"
-// import { notojp } from "../utiles/font.ts"
 import { useState, useEffect } from "react"
 import { Note, Chord, Var } from './types.ts'
 import { Ala } from './alealert.tsx'
 import { default_text } from './default_txt/default_text.ts'
+import { default_append } from './default_txt/default_append.ts'
 import { default_bass } from './default_txt/default_bass.ts'
 import { default_drum } from './default_txt/default_drum.ts'
 import { compile } from './compile/compile.ts'
@@ -30,12 +30,11 @@ const default_chords:Chord[] = [
 ]
 
 export default function Main() {
-    const [texts, setTexts] = useState<string[]>([default_text,default_bass,default_drum,''])
+    const [texts, setTexts] = useState<string[]>([default_text,default_append,default_bass,default_drum])
     const [bpm, setBpm] = useState(120)
     const [mea, setMea] = useState(0)
-    const [scale, setScale] = useState('C')
     const [title, setTitle] = useState('none')
-    const [errMsg, setErrMsg] = useState('errMsg')
+    const [errMsg, setErrMsg] = useState('')
     const [notes, setNotes] = useState<Note[][]>(default_notes)
     const [chords, setChords] = useState<Chord[]>(default_chords)
     const [midiURI, setMidiURI] = useState<string>()
@@ -65,7 +64,6 @@ export default function Main() {
         setTitle(res.title)
         setErrMsg(res.errMsg)
         setBpm(res.bpm)
-        setScale(res.scale)
         setMea(res.mea)
         setChords(res.chords)
         setVars(res.vars)
@@ -81,13 +79,10 @@ export default function Main() {
     const max_note = [...notes[0]].sort((a,b)=>a.pitch>b.pitch ? 1: -1)[0].pitch
     const min_note = [...notes[0]].sort((a,b)=>a.pitch<b.pitch ? 1: -1)[0].pitch
 
-    const ch_name = ['melody', 'bass', 'drum', 'memo']
+    const ch_name = ['melody', 'append', 'bass', 'drum']
 
     useEffect(()=>{
         onTextChange(default_text)
-        //console.log(tabnum)
-        //console.log(notes)
-        //compile(default_text)
     },[])
 
     return (
@@ -102,7 +97,6 @@ export default function Main() {
                         </li>
                     })}
                     </ul>
-                    {/* <textarea className={`form-control ${notojp.className}`} value={text} rows={20} cols={20} onChange={(e) => onTextChange(e.target.value)} /> */}
                     <textarea className="form-control editor" value={texts[tabnum]} rows={20} cols={20} onChange={(e) => onTextChange(e.target.value)} />
                 
                 </div>
@@ -110,17 +104,17 @@ export default function Main() {
                     {errMsg}
                 </div>
             </div>
-            <button type="button" className="btn btn-primary" onClick={onCompile}>Compile</button>
-            <button type="button" className="btn btn-success mx-3" onClick={onMIDIGenerate}>to MIDI</button>
-            <button type="button" className="btn btn-info mx-3" onClick={onXMLGenerate}>to MusicXML</button>
+            <button type="button" className="btn btn-primary mr-2" onClick={onCompile}>Compile</button>
+            <button type="button" className="btn btn-success m-2" onClick={onMIDIGenerate}>to MIDI</button>
+            <button type="button" className="btn btn-info m-2" onClick={onXMLGenerate}>to MusicXML</button>
                 <a href={midiURI}>{midiURI}</a>
             <div className="row">
                 <div className="col-3">
+                <h5>Sys</h5>
                 <table className="table table-sm">
                     <tbody>
                     <tr><th>Title</th><td>{title}</td></tr>
                     <tr><th>BPM</th><td>{bpm}</td></tr>
-                    <tr><th>Scale</th><td>{scale}</td></tr>
                     <tr><th>ノーツ数</th><td>{notes[tabnum].length}</td></tr>
                     <tr><th>mea</th><td>{mea}</td></tr>
                     <tr><th>最高音</th><td>{max_note}({Lib.noteNumberToNoteName(max_note)})</td></tr>
@@ -130,6 +124,7 @@ export default function Main() {
                 </div>
 
                 <div className="col-3">
+                <h5>Note</h5>
                 <table className="table table-sm">
                 <thead>
                     <tr>
@@ -150,11 +145,12 @@ export default function Main() {
                 </div>
 
                 <div className="col-3">
+                <h5>Chord</h5>
                 <table className="table table-sm">
                 <thead>
                     <tr>
                         <th>mea</th>
-                        <th>tick%8</th>
+                        <th>tick</th>
                         <th>name</th>
                         <th>third</th>
                     </tr>
@@ -162,13 +158,14 @@ export default function Main() {
                 <tbody>
                 {chords.map((c,i)=><tr key={i}>
                     <td>{c.mea}</td>
-                    <td>{c.tick % 8}</td>
+                    <td>{c.tick}</td>
                     <td>{c.chord_name}</td>
                     <td>{c.third}</td></tr>)}
                 </tbody></table>
                 </div>
 
                 <div className="col-3">
+                <h5>Var</h5>
                 <table className="table table-sm">
                 <thead>
                     <tr>

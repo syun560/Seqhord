@@ -30,7 +30,7 @@ export const generate = (notes: Note[][], bpm: number) => {
             channel: 0,
             velocity: 80
         })
-        console.log(note)
+        //console.log(note)
         tracks[1].addEvent(note)
     })
 
@@ -38,7 +38,7 @@ export const generate = (notes: Note[][], bpm: number) => {
     tracks[2] = new MidiWriter.Track();
     tracks[2].addEvent(new MidiWriter.ProgramChangeEvent({instrument: 34, channel: 1}))
     tracks[2].addTrackName("bass")
-    notes[1].map(n => {
+    notes[2].map(n => {
         let note = new MidiWriter.NoteEvent({
             tick: n.tick * 64,
             pitch: Lib.noteNumberToNoteName(n.pitch),
@@ -46,14 +46,14 @@ export const generate = (notes: Note[][], bpm: number) => {
             channel: 2,
             velocity: 80
         })
-        console.log(note)
+        //console.log(note)
         tracks[2].addEvent(note)
     })
 
     // リズムトラックの追加
     tracks[3] = new MidiWriter.Track();
     tracks[3].addTrackName("rhythm")
-    notes[2].map(n => {
+    notes[3].map(n => {
         let note = new MidiWriter.NoteEvent({   
             tick: n.tick * 64,
             pitch: Lib.noteNumberToNoteName(n.pitch),
@@ -61,7 +61,7 @@ export const generate = (notes: Note[][], bpm: number) => {
             channel: 10,
             velocity: 64
         })
-        console.log(note)
+        //console.log(note)
         tracks[3].addEvent(note)
     })
 

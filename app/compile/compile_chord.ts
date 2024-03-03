@@ -9,7 +9,9 @@ export const compile_chord = (line: string, i: number, res: Res, c: number) => {
     //const cs = line.split('|')
 
     let mea = res.mea
+    let tick = mea * 8
     let chord_name = ''
+    const reso = 1
     let c_state = 0 // 0: 通常, 1: オンコード待機状態, 2:オンコード入力状態
     for (let j = 2; j < line.length; j++) {
         
@@ -21,7 +23,7 @@ export const compile_chord = (line: string, i: number, res: Res, c: number) => {
                 chord_name = c
                 res.chords.push({
                     mea: mea,
-                    tick: mea * 8,
+                    tick: tick++,
                     pitch: pitch,
                     chord_name: chord_name,
                     third: 'major',
@@ -62,6 +64,10 @@ export const compile_chord = (line: string, i: number, res: Res, c: number) => {
         }
         else if (c === '|'){
             mea += 1
+            tick = mea * 8
+        }
+        else if (c === '_'){
+            tick += reso
         }
     }
 }

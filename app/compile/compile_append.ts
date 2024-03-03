@@ -4,8 +4,8 @@ import Lib from '../Lib.ts'
 const MajorScale = [0, 0, 2, 4, 5, 7, 9, 11, 12]
 const NoteName = ['C','C#', 'D', 'D#','E', 'F', 'F#','G', 'G#','A', 'A#','B']
 
-// ドラムパターン
-type BNote = {
+// 伴奏パターン
+type ANote = {
     name: string
     notes: Note[]
 }
@@ -16,20 +16,14 @@ const getNowScale = (tick: number, res: Res) => {
     return sf[sf.length - 1].scale
 }
 
-// 現在のコードを取得する
-const getNowChord = (tick: number, res: Res) => {
-    const chof = [...res.chords].filter(cho=>cho.tick<=tick)
-    return chof[chof.length - 1]
-}
-
-// 変数を認識し、コンパイルする（現在はドラムのみ想定）
-export const compile_bass = (texts: string[], res: Res, ch: number) => {
+// 伴奏トラックのコンパイル
+export const compile_append = (texts: string[], res: Res, ch: number) => {
 
     // 文字列を改行ごとに分割して配列に入れる
     const lines = texts[ch].split('\n')
 
     // noteを用意する
-    const b_notes: BNote[] = []
+    const b_notes: ANote[] = []
     let tmp_notes: Note[] = []
 
     let reso = 0.5
@@ -140,12 +134,15 @@ export const compile_bass = (texts: string[], res: Res, ch: number) => {
             let pattern = bn.notes.map(b=>{
 
                 // その場所（tick）でのコードを取得する
-                const found_chord = getNowChord(b.tick + v.tick,res)
-                let root = found_chord.on
+                const found_chord = res.chords.find(cho=> cho.mea === Math.floor(v.tick / 8))
+                let root = 0
+                if (found_chord !== undefined) {
+                    root = found_chord.on
+                }
 
                 // スケールに応じたベースピッチを取得する
                 const base_pitch :number = 12 * 2 + NoteName.indexOf(getNowScale(v.tick,res))
-                //console.log(`base_pitch(bass): ${base_pitch}`)
+                console.log(`base_pitch(bass): ${base_pitch}`)
 
                 // コードのルート音を取得
                 const pitch = base_pitch + root + b.pitch
@@ -170,12 +167,15 @@ export const compile_bass = (texts: string[], res: Res, ch: number) => {
                 pattern2.push(...pattern.map((p, j)=>{
                     
                     // その場所（tick）でのコードを取得する
-                    const found_chord = getNowChord(p.tick + i*8,res)
-                    let root = found_chord.on
+                    const found_chord = res.chords.find(cho=> cho.mea === p.mea + i)
+                    let root = 0
+                    if (found_chord !== undefined) {
+                        root = found_chord.on
+                    }
 
                     // スケールに応じたベースピッチを取得する
                     const base_pitch :number = 12 * 2 + NoteName.indexOf(getNowScale(p.tick + i * 8,res))
-                    //console.log(`base_pitch(bass): ${base_pitch}`)
+                    console.log(`base_pitch(bass): ${base_pitch}`)
 
                     // コードのルート音を取得
                     const pitch = base_pitch + root + bn.notes[j].pitch

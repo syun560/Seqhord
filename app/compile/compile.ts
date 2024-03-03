@@ -1,6 +1,7 @@
 import { Res } from '../types.ts'
 import { compile_drum } from './compile_drum.ts'
 import { compile_bass } from './compile_bass.ts'
+import { compile_append } from './compile_append.ts'
 import { compile_melody } from './compile_melody.ts'
 import { compile_chord } from './compile_chord.ts'
 import { compile_var } from './compile_var.ts'
@@ -10,7 +11,7 @@ export const compile = (texts: string[]) => {
     let res :Res = {
         title: "none",
         bpm: 120,
-        scale: 'C',
+        scales: [],
         errMsg: "",
         mea: 0,
         notes: [],
@@ -57,7 +58,11 @@ export const compile = (texts: string[]) => {
             else if (line.indexOf('scale') !== -1) {
                 const i = line.indexOf('=')
                 const t = line.slice(i + 1)
-                res.scale = t
+                res.scales.push({
+                    mea: p_mea,
+                    tick: p_mea * 8,
+                    scale: t
+                })
             }
             // プログラムチェンジ
             else if (line.indexOf('program') !== -1) {
@@ -85,13 +90,17 @@ export const compile = (texts: string[]) => {
             else if (line[0] === 'm') {
                 compile_melody(line, i, res, 0)                
             }
+            // 伴奏
+            else if (line[0] === 'a') {
+                compile_var(line, i , res, 1)
+            }
             // ベース
             else if (line[0] === 'b') {
-                compile_var(line, i, res, 1)
+                compile_var(line, i, res, 2)
             }
             // ドラム
             else if (line[0] === 'd') {
-                compile_var(line, i, res, 2)
+                compile_var(line, i, res, 3)
             }
         }
     })
@@ -99,8 +108,9 @@ export const compile = (texts: string[]) => {
     res.mea = mea
 
     // 変数を含むトラックをコンパイルする
-    compile_bass(texts, res, 1)
-    compile_drum(texts, res.vars, res.notes, 2)
+    compile_append(texts, res, 1)
+    compile_bass(texts, res, 2)
+    compile_drum(texts, res.vars, res.notes, 3)
 
     // console.clear()
     console.log(res)
