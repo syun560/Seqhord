@@ -34,25 +34,41 @@ export const generate = (notes: Note[][], bpm: number) => {
         tracks[1].addEvent(note)
     })
 
-    // ベーストラックの追加
+    // コードトラックの追加
     tracks[2] = new MidiWriter.Track();
-    tracks[2].addEvent(new MidiWriter.ProgramChangeEvent({instrument: 34, channel: 1}))
-    tracks[2].addTrackName("bass")
-    notes[2].map(n => {
+    tracks[2].addEvent(new MidiWriter.ProgramChangeEvent({instrument: 4, channel: 2}))
+    tracks[2].addTrackName("chord")
+    notes[1].map(n => {
         let note = new MidiWriter.NoteEvent({
             tick: n.tick * 64,
             pitch: Lib.noteNumberToNoteName(n.pitch),
             duration: 'T' + (n.duration * 64),
-            channel: 2,
-            velocity: 80
+            channel: 3,
+            velocity: 50
         })
         //console.log(note)
         tracks[2].addEvent(note)
     })
 
-    // リズムトラックの追加
+    // ベーストラックの追加
     tracks[3] = new MidiWriter.Track();
-    tracks[3].addTrackName("rhythm")
+    tracks[3].addEvent(new MidiWriter.ProgramChangeEvent({instrument: 34, channel: 3}))
+    tracks[3].addTrackName("bass")
+    notes[2].map(n => {
+        let note = new MidiWriter.NoteEvent({
+            tick: n.tick * 64,
+            pitch: Lib.noteNumberToNoteName(n.pitch),
+            duration: 'T' + (n.duration * 64),
+            channel: 4,
+            velocity: 80
+        })
+        //console.log(note)
+        tracks[3].addEvent(note)
+    })
+
+    // リズムトラックの追加
+    tracks[4] = new MidiWriter.Track();
+    tracks[4].addTrackName("rhythm")
     notes[3].map(n => {
         let note = new MidiWriter.NoteEvent({   
             tick: n.tick * 64,
@@ -62,7 +78,7 @@ export const generate = (notes: Note[][], bpm: number) => {
             velocity: 64
         })
         //console.log(note)
-        tracks[3].addEvent(note)
+        tracks[4].addEvent(note)
     })
 
     const write = new MidiWriter.Writer(tracks);

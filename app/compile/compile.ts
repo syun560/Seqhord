@@ -2,6 +2,7 @@ import { Res } from '../types.ts'
 import { compile_drum } from './compile_drum.ts'
 import { compile_bass } from './compile_bass.ts'
 import { compile_append } from './compile_append.ts'
+import { compile_lyric } from './compile_lyric.ts'
 import { compile_melody } from './compile_melody.ts'
 import { compile_chord } from './compile_chord.ts'
 import { compile_var } from './compile_var.ts'
@@ -89,6 +90,10 @@ export const compile = (texts: string[]) => {
             // メロディ
             else if (line[0] === 'm') {
                 compile_melody(line, i, res, 0)                
+            }
+            // 歌詞
+            else if (line[0] === 'k') {
+
             }
             // 伴奏
             else if (line[0] === 'a') {

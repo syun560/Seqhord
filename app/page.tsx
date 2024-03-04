@@ -13,10 +13,10 @@ import Lib from './Lib.ts'
 import './globals.css'
 
 const default_notes:Note[][] = [
-    [{ pitch: 64, pitch_name: 'C4', duration: 1, channel: 0, velocity: 100, tick: 0 }],
-    [{ pitch: 64, pitch_name: 'C4', duration: 1, channel: 0, velocity: 100, tick: 0 }],
-    [{ pitch: 64, pitch_name: 'C4', duration: 1, channel: 0, velocity: 100, tick: 0 }],
-    [{ pitch: 64, pitch_name: 'C4', duration: 1, channel: 0, velocity: 100, tick: 0 }]
+    [{ pitch: 64, pitch_name: 'C4', duration: 1, channel: 0, velocity: 100, mea: 0, tick: 0 }],
+    [{ pitch: 64, pitch_name: 'C4', duration: 1, channel: 0, velocity: 100, mea: 0, tick: 0 }],
+    [{ pitch: 64, pitch_name: 'C4', duration: 1, channel: 0, velocity: 100, mea: 0, tick: 0 }],
+    [{ pitch: 64, pitch_name: 'C4', duration: 1, channel: 0, velocity: 100, mea: 0, tick: 0 }],
 ]
 
 const default_chords:Chord[] = [
@@ -131,16 +131,17 @@ export default function Main() {
                         <th>mea</th>
                         <th>tick%8</th>
                         <th>pitch</th>
-                        <th>duration</th>
+                        <th>dur</th>
+                        <th>lyric</th>
                     </tr>
                 </thead>
                 <tbody>
                 {notes[tabnum].map((n,i)=><tr key={i}>
                     <td>{n.mea}</td>
                     <td>{n.tick % 8}</td>
-                    {/* <td>{n.tick % 8}({n.tick})</td> */}
                     <td>{n.pitch_name}</td>
-                    <td>{n.duration}</td></tr>)}
+                    <td>{n.duration}</td>
+                    <td>{n.lyric}</td></tr>)}
                 </tbody></table>
                 </div>
 

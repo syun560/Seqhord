@@ -16,6 +16,12 @@ const getNowScale = (tick: number, res: Res) => {
     return sf[sf.length - 1].scale
 }
 
+// 現在のコードを取得する
+const getNowChord = (tick: number, res: Res) => {
+    const chof = [...res.chords].filter(cho=>cho.tick<=tick)
+    return chof[chof.length - 1]
+}
+
 // 伴奏トラックのコンパイル
 export const compile_append = (texts: string[], res: Res, ch: number) => {
 
@@ -26,6 +32,7 @@ export const compile_append = (texts: string[], res: Res, ch: number) => {
     const b_notes: ANote[] = []
     let tmp_notes: Note[] = []
 
+    const trans = 4
     let reso = 0.5
     let octarve = 0
     let dur_cnt = 0 // 1小節をカウントする
@@ -36,7 +43,6 @@ export const compile_append = (texts: string[], res: Res, ch: number) => {
     lines.forEach((l, i) => {
         // 空白文字の削除
         const line = l.replace(/\s+/g, "")
-
         let tick = 0
 
         // @キーワード
@@ -61,7 +67,7 @@ export const compile_append = (texts: string[], res: Res, ch: number) => {
             // コメント
             if (line[0] === '#') { }
             // ノート
-            else if (line[0] === 'b') {
+            else if (line[0] === 'a') {
                 tick = 0
                 const p = line[0]
 
@@ -80,7 +86,15 @@ export const compile_append = (texts: string[], res: Res, ch: number) => {
                         dur_cnt += 1
                         is_note = false
                     }
-                    
+                    // 次のノートを一オクターブ上げる
+                    else if (c === '+') {
+                        octarve = 1
+                    }
+                    // 次のノートを一オクターブ下げる
+                    else if (c === '-') {
+                        octarve = -1
+                    }
+
                     // 前のノートを伸ばす
                     else if (c === '_') {
                         // 配列の最後の要素に対して操作
@@ -92,7 +106,7 @@ export const compile_append = (texts: string[], res: Res, ch: number) => {
                     // 数値であればnoteとして認識する
                     else if (!isNaN(Number(c))) {
                         // const pitch = MajorScale[Number(c)] + base_pitch + octarve * 12
-                        const pitch = MajorScale[Number(c)]
+                        const pitch = MajorScale[Number(c)] + octarve * 12
                         const pitch_name = Lib.noteNumberToNoteName(pitch)
 
                         //console.log('pushed!!!!')
@@ -134,18 +148,25 @@ export const compile_append = (texts: string[], res: Res, ch: number) => {
             let pattern = bn.notes.map(b=>{
 
                 // その場所（tick）でのコードを取得する
-                const found_chord = res.chords.find(cho=> cho.mea === Math.floor(v.tick / 8))
-                let root = 0
-                if (found_chord !== undefined) {
+                const found_chord = getNowChord(b.tick + v.tick,res)
+                let root = found_chord.pitch
+                // オンコードにする
+                if (b.pitch % 12 === 0) {
                     root = found_chord.on
                 }
 
                 // スケールに応じたベースピッチを取得する
-                const base_pitch :number = 12 * 2 + NoteName.indexOf(getNowScale(v.tick,res))
+                const base_pitch :number = 12 * trans + NoteName.indexOf(getNowScale(v.tick,res))
                 console.log(`base_pitch(bass): ${base_pitch}`)
+     
 
                 // コードのルート音を取得
-                const pitch = base_pitch + root + b.pitch
+                let pitch = base_pitch + root + b.pitch
+
+                // コードがマイナーの場合
+                if ((b.pitch % 12) === 4 && found_chord.third === 'minor') {
+                    pitch -= 1
+                }
 
                 return {
                     pitch: pitch,
@@ -167,19 +188,27 @@ export const compile_append = (texts: string[], res: Res, ch: number) => {
                 pattern2.push(...pattern.map((p, j)=>{
                     
                     // その場所（tick）でのコードを取得する
-                    const found_chord = res.chords.find(cho=> cho.mea === p.mea + i)
-                    let root = 0
-                    if (found_chord !== undefined) {
+                    const found_chord = getNowChord(p.tick + i*8,res)
+                    let root = found_chord.pitch
+                    // オンコードにする
+                    if (bn.notes[j].pitch % 12 === 0) {
                         root = found_chord.on
                     }
 
                     // スケールに応じたベースピッチを取得する
-                    const base_pitch :number = 12 * 2 + NoteName.indexOf(getNowScale(p.tick + i * 8,res))
+                    const base_pitch :number = 12 * trans + NoteName.indexOf(getNowScale(p.tick + i * 8,res))
                     console.log(`base_pitch(bass): ${base_pitch}`)
 
                     // コードのルート音を取得
-                    const pitch = base_pitch + root + bn.notes[j].pitch
+                    let pitch = base_pitch + root + bn.notes[j].pitch
                     //console.log(`pitch: ${pitch}, root: ${root}, p.pitch: ${p.pitch}`)
+
+                    
+
+                    // コードがマイナーの場合
+                    if ((bn.notes[j].pitch % 12) === 4 && found_chord.third === 'minor') {
+                        pitch -= 1
+                    }
 
                     return {
                         pitch: pitch,

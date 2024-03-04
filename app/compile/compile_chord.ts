@@ -5,9 +5,7 @@ const NoteName = ['C','C#', 'D', 'D#','E', 'F', 'F#','G', 'G#','A', 'A#','B']
 
 // コードを取得する
 export const compile_chord = (line: string, i: number, res: Res, c: number) => {
-    // コードを小節線（|）で分割する
-    //const cs = line.split('|')
-
+    
     let mea = res.mea
     let tick = mea * 8
     let chord_name = ''

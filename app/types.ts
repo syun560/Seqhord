@@ -4,8 +4,9 @@ export type Note = {
     duration: number // 1
     channel: number // 0
     velocity: number // 1~100
-    mea?: number // 
+    mea: number // 
     tick: number // 
+    lyric?: string 
 }
 
 export type Chord = {
