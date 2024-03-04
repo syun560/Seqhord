@@ -93,7 +93,7 @@ export const compile = (texts: string[]) => {
             }
             // 歌詞
             else if (line[0] === 'k') {
-
+                compile_lyric(line, i, res)
             }
             // 伴奏
             else if (line[0] === 'a') {

@@ -13,8 +13,8 @@ export const compile_lyric = (line: string, i: number, res: Res) => {
     let kashi = '' // 一時的に歌詞を入れる変数（基本的に一文字）
 
     for (let j = 1; j < line.length; j++) {
-
         const c = line[j]
+        
         // 小節線
         if (c === '|'){
             if (j !== 1) mea += 1
@@ -29,8 +29,13 @@ export const compile_lyric = (line: string, i: number, res: Res) => {
         }
         // その他すべて歌詞として認識する
         else {
+
+            console.log(c, tick)
             // 同じ場所のNoteを検索する
             const fi = res.notes[0].findIndex(f=>f.tick === tick)
+
+            console.log(fi)
+
 
             // 同じ場所にNoteがあれば、入れる
             if (fi !== -1) {

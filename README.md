@@ -1,11 +1,16 @@
-## SMML
-SMMLはMMLのような簡易音楽記述言語です。
-記述された音楽をMIDI、MusicXML（NEUTRINO用）に変換します。
+## SMML Pad - simple music markup language
+- SMML PadはMML, ABC記法等の音楽記述言語や、Sonic PI等の音楽プログラミング言語から発想を得た
+自作の音楽記述言語（SMML）のコンパイル環境です。
 
-SMML is simple music markup language. 
+## できること - Features
+- 記述された譜面からSMF（標準MIDIファイル）、MusicXML（NEUTRINO用）等のファイルを生成します。
+- creates MIDI, MusicSML(for NEUTRINO) file
 
-## 記法について - How to notate
+## SMMLの記法について - How to notate
 Now printing...
+
+## Demo
+[demo]() (in preparation)
 
 ## 参考
 - [NEUTRINO](https://studio-neutrino.com/)

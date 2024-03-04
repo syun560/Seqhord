@@ -7,7 +7,7 @@ export const default_text = `
 @program k=1, m=2, c=3, b=12, d=4
 
 @p=1
-c|C |C |C |C |C |C |C |C  
+c|C 
 d|kick*8
 
 @p=9
