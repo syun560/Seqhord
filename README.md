@@ -9,6 +9,12 @@
 ## SMMLの記法について - How to notate
 Now printing...
 
+### 基本的な記法
+```
+```
+
+### 変数の使用
+
 ## Demo
 [demo]() (in preparation)
 

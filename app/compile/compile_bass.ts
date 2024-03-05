@@ -101,8 +101,6 @@ export const compile_bass = (texts: string[], res: Res, ch: number) => {
                         const pitch = MajorScale[Number(c)]
                         const pitch_name = Lib.noteNumberToNoteName(pitch)
 
-                        //console.log('pushed!!!!')
-                        //console.log(b_notes)
                         tmp_notes.push({
                             pitch: pitch,
                             pitch_name: pitch_name,
@@ -125,9 +123,6 @@ export const compile_bass = (texts: string[], res: Res, ch: number) => {
             }
         }
     })
-
-    //console.log('b_notes:')
-    //console.log(b_notes)
     
     
     // varsをイテレートし、noteを生成する。
@@ -145,7 +140,6 @@ export const compile_bass = (texts: string[], res: Res, ch: number) => {
 
                 // スケールに応じたベースピッチを取得する
                 const base_pitch :number = 12 * 2 + NoteName.indexOf(getNowScale(v.tick,res))
-                //console.log(`base_pitch(bass): ${base_pitch}`)
 
                 // コードのルート音を取得
                 const pitch = base_pitch + root + b.pitch
@@ -161,9 +155,6 @@ export const compile_bass = (texts: string[], res: Res, ch: number) => {
                 }
             })
 
-            //console.log('bass pattern')
-            //console.log(pattern)
-
             // 繰り返しぶん配列を複製する
             let pattern2 = [...pattern]
             for (let i = 1; i < v.repeat ; i++) {
@@ -175,11 +166,9 @@ export const compile_bass = (texts: string[], res: Res, ch: number) => {
 
                     // スケールに応じたベースピッチを取得する
                     const base_pitch :number = 12 * 2 + NoteName.indexOf(getNowScale(p.tick + i * 8,res))
-                    //console.log(`base_pitch(bass): ${base_pitch}`)
 
                     // コードのルート音を取得
                     const pitch = base_pitch + root + bn.notes[j].pitch
-                    //console.log(`pitch: ${pitch}, root: ${root}, p.pitch: ${p.pitch}`)
 
                     return {
                         pitch: pitch,
@@ -193,9 +182,6 @@ export const compile_bass = (texts: string[], res: Res, ch: number) => {
                     
                 }))
             }
-
-            //console.log('bass pattern2')
-            //console.log(pattern2)
 
             res.notes[ch].push(...pattern2)
         }

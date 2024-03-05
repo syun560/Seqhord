@@ -8,7 +8,7 @@ import { default_append } from './default_txt/default_append.ts'
 import { default_bass } from './default_txt/default_bass.ts'
 import { default_drum } from './default_txt/default_drum.ts'
 import { compile } from './compile/compile.ts'
-import { generate } from './generate.ts'
+import { generate_midi } from './generate/generate_midi.ts'
 import Lib from './Lib.ts'
 import './globals.css'
 
@@ -37,18 +37,19 @@ export default function Main() {
     const [errMsg, setErrMsg] = useState('')
     const [notes, setNotes] = useState<Note[][]>(default_notes)
     const [chords, setChords] = useState<Chord[]>(default_chords)
-    const [midiURI, setMidiURI] = useState<string>()
+    const [midiURI, setMidiURI] = useState<string>('')
 
     const [tabnum, setTabnum] = useState(0)
     const [vars, setVars] = useState<Var[]>([])
 
 
     const onMIDIGenerate = () => {
-        const uri = generate(notes, bpm)
+        const uri = generate_midi(notes, bpm)
         setMidiURI(uri)
+        window.location.href = uri
     }
     const onXMLGenerate = () => {
-        const uri = generate(notes, bpm)
+        const uri = generate_midi(notes, bpm)
         setMidiURI(uri)
     }
 
@@ -107,7 +108,7 @@ export default function Main() {
             <button type="button" className="btn btn-primary mr-2" onClick={onCompile}>Compile</button>
             <button type="button" className="btn btn-success m-2" onClick={onMIDIGenerate}>to MIDI</button>
             <button type="button" className="btn btn-info m-2" onClick={onXMLGenerate}>to MusicXML</button>
-                <a href={midiURI}>{midiURI}</a>
+            
             <div className="row">
                 <div className="col-3">
                 <h5>Sys</h5>

@@ -1,6 +1,6 @@
 import { Res } from '../types.ts'
 
-// 変数を認識し、コンパイルする（現在はドラムのみ想定）
+// 歌詞を認識し、notes内に入れる
 export const compile_lyric = (line: string, i: number, res: Res) => {
 
     let reso = 1
@@ -9,12 +9,25 @@ export const compile_lyric = (line: string, i: number, res: Res) => {
     let tick = mea * 8
 
     let isSeq = false // 前の歌詞と連続しているかどうか
+    let isComma = false // 区切り記号（,）があったかどうか
 
     let kashi = '' // 一時的に歌詞を入れる変数（基本的に一文字）
 
+    // 現在のtickより大きい最初のnoteのインデックスを見つける
+    let fi = res.notes[0].findIndex(n => n.tick >= tick)
+    
+    if (fi === -1) {
+        res.errMsg += `there was no corresponding notes for lyrics (line: ${i})\n`
+        return
+    }
+
     for (let j = 1; j < line.length; j++) {
         const c = line[j]
-        
+
+        if (isComma === false && (c === 'ん' || c === 'ゃ' || c === 'ゅ' || c === 'ょ' || c === 'っ')){
+            isSeq = true
+        }
+
         // 小節線
         if (c === '|'){
             if (j !== 1) mea += 1
@@ -23,31 +36,31 @@ export const compile_lyric = (line: string, i: number, res: Res) => {
         else if (c === '^') {
             isSeq = true
         }
+        else if (c === ',') {
+            isComma = true
+        }
         else if (c === '+' || c === '-' || c === '*' || c === '-'){
             // エラー
             res.errMsg += `${i+1}行${j+1}文字目: 予期せぬ文字列「${c}」です。\n`
         }
         // その他すべて歌詞として認識する
         else {
-
-            console.log(c, tick)
-            // 同じ場所のNoteを検索する
-            const fi = res.notes[0].findIndex(f=>f.tick === tick)
-
-            console.log(fi)
-
+            if (fi >= res.notes[0].length){
+                res.errMsg += `The number of characters in the lyrics are exceeded (mea: ${mea})\n`
+                return
+            }
 
             // 同じ場所にNoteがあれば、入れる
-            if (fi !== -1) {
                 if (isSeq) {
                     res.notes[0][fi - 1].lyric += c
                 }
                 else {
                     res.notes[0][fi].lyric = ''
                     res.notes[0][fi].lyric += c
+                    fi += 1
                 }
-                tick += reso
+                isSeq = false
+                isComma = false
             }
-        }
     }
 }
