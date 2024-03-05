@@ -9,6 +9,7 @@ import { default_bass } from './default_txt/default_bass.ts'
 import { default_drum } from './default_txt/default_drum.ts'
 import { compile } from './compile/compile.ts'
 import { generate_midi } from './generate/generate_midi.ts'
+import { generate_musicxml } from './generate/generate_musicxml.ts'
 import Lib from './Lib.ts'
 import './globals.css'
 
@@ -49,8 +50,14 @@ export default function Main() {
         window.location.href = uri
     }
     const onXMLGenerate = () => {
-        const uri = generate_midi(notes, bpm)
-        setMidiURI(uri)
+        const xml = generate_musicxml(0, notes[0], bpm)
+        const blob = new Blob([xml], {
+            type: 'text/plain;charset=utf-8',
+        });
+        const a = document.createElement('a');
+        a.download = 'score.musicxml';
+        a.href = URL.createObjectURL(blob);
+        a.click();
     }
 
     const onTextChange = (text: string) => {
