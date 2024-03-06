@@ -96,7 +96,7 @@ export default function Main() {
                     <ul className="nav nav-tabs">
                     {ch_name.map((cn, i)=>{
                         return <li className="nav-item" key={i}>
-                            <a className={"nav-link" + (i === tabnum ? " active" : "")} onClick={()=>onTabChange(i)}>{cn}</a>
+                            <a className={"pointer nav-link" + (i === tabnum ? " active" : "")} onClick={()=>onTabChange(i)}>{cn}</a>
                         </li>
                     })}
                     </ul>
