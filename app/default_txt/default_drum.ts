@@ -1,5 +1,5 @@
-export const default_drum = `
-@set k=35
+export const default_drum 
+= `@set k=35
 @set s=38
 @set h=42
 @set c=49

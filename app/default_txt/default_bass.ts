@@ -1,5 +1,5 @@
-export const default_bass = `
-@n=root
+export const default_bass = 
+`@n=root
 b|0_0_0_0_0_0_0_0_|
 @e
 
