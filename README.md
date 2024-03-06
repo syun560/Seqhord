@@ -18,6 +18,15 @@ Now printing...
 ## Demo
 [demo]() (in preparation)
 
+## Environment
+| dependencies   | version |
+--|---
+| next           | 14.0.2  |
+| react          | 18      |
+| bootstrap      | 5.3.0   |
+| midi-writer-js | 3.1.1   |
+| xml-js         | 1.6.11  |
+
 ## 参考
 - [NEUTRINO](https://studio-neutrino.com/)
 - [オンラインでMIDIから歌詞入力してMusicXMLにするツール(NEUTRINO用)をつくった話](https://note.com/romot/n/nf3a7346bfa02)
