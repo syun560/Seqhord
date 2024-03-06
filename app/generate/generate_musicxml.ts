@@ -6,7 +6,7 @@ import { midiNumberToPitchMusicXML } from './convert.ts';
 export const generate_musicxml = (trackIndex: number, allNotes: Note[], bpm: number) => {
     const reso = 1 // 8符音符の長さ
     const divisions = reso * 2 // 4部音符の長さ
-    const max_mea = allNotes[allNotes.length - 1].mea
+    const max_mea = allNotes[allNotes.length - 1].mea + 1
 
     const m_cnt = 8 // 1小節のカウントの数
     

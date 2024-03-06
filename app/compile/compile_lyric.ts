@@ -45,7 +45,7 @@ export const compile_lyric = (line: string, i: number, res: Res) => {
         }
         // その他すべて歌詞として認識する
         else {
-            if (fi >= res.notes[0].length){
+            if (fi >= res.notes[0].length && isSeq === false){
                 res.errMsg += `The number of characters in the lyrics are exceeded (mea: ${mea})\n`
                 return
             }
