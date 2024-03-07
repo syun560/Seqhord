@@ -1,0 +1,92 @@
+import React from 'react'
+import { Note } from '../../types.ts'
+import Lib from '../../Lib.ts'
+
+import { Conductor } from './Conductor.tsx'
+import PianoRollCell from './PianoRollCell.tsx'
+
+export const PianoRoll: React.FC<{notes: Note[]}> = ({ notes }) => {
+    const th = {
+        padding: '0px',
+        borderRight: '1px black solid',
+        position: 'sticky' as const,
+        background: '',
+        left: 0
+    }
+    const th_base = {
+        ...th,
+        borderBottom: '1px black solid',
+        background: ''
+    }
+    const note_name_style = {
+        fontSize: '0.8em',
+    }
+    
+    // 最小値と最大値
+    const [minNote, maxNote] = Lib.getMinMaxNote(notes)
+
+    // 分解能（できれば外からpropsで読み込みたい）
+    const reso = 1
+
+    // tickの最大値
+    let tick_max = notes[notes.length - 1].tick
+
+    // ダミーの数値（Reactのkeyのため必要？）
+    const pitchs:number[] = []
+    for (let i = 127; i >= 0; i--) pitchs.push(i)
+    const ticks:number[] = []
+    for (let i = 0; i <= tick_max; i++) ticks.push(i)
+
+    // ピアノロールに表示するデータの設定
+    const cleanData = (n :Note, pitch: number, tick: number):boolean => {
+        return n.pitch === pitch && n.tick === tick * reso
+    }
+
+    // アボイドノートで色を変える
+    const st = (note: number) => {
+        let res = th
+        const c_major = [0,2,4,5,7,9,11]
+        if (!c_major.includes(note % 12)) {
+            res = { ...res, background: '#e8faff' }
+        }
+        return res
+    } 
+    
+
+    // ピアノロール生成
+    const roll = pitchs.map((fuga, indexRow) => {
+        const pitch = 127 - indexRow
+        if (pitch < minNote || pitch > maxNote) return
+        else return (
+            <tr key={fuga}>
+                {/* 音階 */}
+                <th style={pitch % 12 ? st(pitch) : th_base}>
+                    <div style={note_name_style}>
+                        {pitch % 12 === 0 || pitch === minNote || pitch === maxNote ? Lib.noteNumberToNoteName(pitch) : ''}
+                    </div>
+                </th>
+
+                {ticks.map((tick, indexCol) => {
+                    const found = notes.find((n)=>n.pitch === pitch && n.tick === tick * reso) 
+                    const selected = found === undefined ? false : true
+                    const lyric =  found === undefined ? '' : found.lyric
+                    const duration = found === undefined ? 1 : found.duration
+                    return <PianoRollCell
+                        key={tick} note={pitch} tick={tick}
+                        selected={selected}
+                        lyric={lyric === undefined ? '' : lyric}
+                        duration={duration}
+                    />
+                })}
+            </tr>
+        )
+    })
+    return <div className="pianodiv">
+    <table className="pianotable">
+        <tbody>
+            <Conductor tickLength={tick_max}/>
+            {roll}
+        </tbody>
+    </table>
+    </div>
+}

@@ -2,3 +2,11 @@
     font-family: monospace;
 }
 .pointer{cursor: pointer}
+.pianodiv{
+    overflow: auto;
+}
+.pianotable{
+    white-space: nowrap;
+    table-layout: fixed;
+    width: 100%;
+}

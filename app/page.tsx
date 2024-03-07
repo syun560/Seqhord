@@ -3,14 +3,18 @@ import React from "react"
 import { useState, useEffect } from "react"
 import { Note, Chord, Var } from './types.ts'
 
+// component
 import { Ala } from './component/alealert.tsx'
 import { Disp } from './component/display.tsx'
+import { PianoRoll } from './component/PianoRoll/PianoRoll.tsx'
 
+// text
 import { default_text } from './default_txt/default_text.ts'
 import { default_append } from './default_txt/default_append.ts'
 import { default_bass } from './default_txt/default_bass.ts'
 import { default_drum } from './default_txt/default_drum.ts'
 
+// script
 import { compile } from './compile/compile.ts'
 import { generate_midi } from './generate/generate_midi.ts'
 import { generate_musicxml } from './generate/generate_musicxml.ts'
@@ -85,12 +89,18 @@ export default function Main() {
     const ch_name = ['melody', 'append', 'bass', 'drum']
 
     useEffect(()=>{
-        onTextChange(default_text)
+        //onTextChange(default_text)
+        onCompile()
     },[])
 
     return (
         <div className="container-fluid">
             <Ala />
+            <button type="button" className="btn btn-primary my-2" onClick={onCompile}>Compile</button>
+            <button type="button" className="btn btn-success m-2" onClick={onMIDIGenerate}>to MIDI</button>
+            <button type="button" className="btn btn-info m-2" onClick={onXMLGenerate}>to MusicXML</button>
+            
+            
             <div className="row">
                 <div className="col-md-12">
                     <ul className="nav nav-tabs">
@@ -107,12 +117,10 @@ export default function Main() {
                     {errMsg}
                 </div>
             </div>
-            <button type="button" className="btn btn-primary my-2" onClick={onCompile}>Compile</button>
             
-            { notes === undefined ? '' :<>
-            <button type="button" className="btn btn-success m-2" onClick={onMIDIGenerate}>to MIDI</button>
-            <button type="button" className="btn btn-info m-2" onClick={onXMLGenerate}>to MusicXML</button>
             
+            { notes === undefined ? '' :<>            
+            {/* <PianoRoll notes={notes[tabnum]} />  */}
             <Disp title={title} bpm={bpm} mea={mea} notes={notes} chords={chords} vars={vars} tabnum={tabnum} />
             </>}
         </div>
