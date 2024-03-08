@@ -14,7 +14,7 @@ export const compile_lyric = (line: string, i: number, res: Res) => {
     let kashi = '' // 一時的に歌詞を入れる変数（基本的に一文字）
 
     // 現在のtickより大きい最初のnoteのインデックスを見つける
-    let fi = res.notes[0].findIndex(n => n.tick >= tick)
+    let fi = res.tracks[0].notes.findIndex(n => n.tick >= tick)
     
     if (fi === -1) {
         res.errMsg += `there was no corresponding notes for lyrics (line: ${i})\n`
@@ -45,18 +45,18 @@ export const compile_lyric = (line: string, i: number, res: Res) => {
         }
         // その他すべて歌詞として認識する
         else {
-            if (fi >= res.notes[0].length && isSeq === false){
+            if (fi >= res.tracks[0].notes.length && isSeq === false){
                 res.errMsg += `The number of characters in the lyrics are exceeded (mea: ${mea})\n`
                 return
             }
 
             // 同じ場所にNoteがあれば、入れる
                 if (isSeq) {
-                    res.notes[0][fi - 1].lyric += c
+                    res.tracks[0].notes[fi - 1].lyric += c
                 }
                 else {
-                    res.notes[0][fi].lyric = ''
-                    res.notes[0][fi].lyric += c
+                    res.tracks[0].notes[fi].lyric = ''
+                    res.tracks[0].notes[fi].lyric += c
                     fi += 1
                 }
                 isSeq = false

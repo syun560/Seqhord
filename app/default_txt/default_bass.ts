@@ -1,5 +1,6 @@
 export const default_bass = 
-`@n=root
+`@track=bass
+@n=root
 b|0_0_0_0_0_0_0_0_|
 @e
 

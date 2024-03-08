@@ -23,6 +23,8 @@ export const compile_melody = (line: string, i: number, res: Res, c: number) => 
     let mea = res.mea
     let tick = mea * 8
 
+    const notes = res.tracks[0].notes
+
     for (let j = 1; j < line.length; j++) {
 
         const c = line[j]
@@ -36,7 +38,7 @@ export const compile_melody = (line: string, i: number, res: Res, c: number) => 
         }
         // 前のノートを半音上げる
         else if (c === '-') {
-            res.notes[0][res.notes[0].length - 1].pitch += 1
+            notes[notes.length - 1].pitch += 1
         }
         // 小節線
         else if (c === '|'){
@@ -55,7 +57,7 @@ export const compile_melody = (line: string, i: number, res: Res, c: number) => 
         // 前のノートを伸ばす
         else if (c === '_') {
             // 配列の最後の要素に対して操作
-            res.notes[0][res.notes[0].length - 1].duration += 1
+            notes[notes.length - 1].duration += 1
             dur_cnt += 1
             tick += reso
         }
@@ -64,7 +66,7 @@ export const compile_melody = (line: string, i: number, res: Res, c: number) => 
             const pitch = MajorScale[Number(c)] + base_pitch + octarve * 12
             const pitch_name = Lib.noteNumberToNoteName(pitch)
 
-            res.notes[0].push({
+            notes.push({
                 pitch: pitch,
                 pitch_name: pitch_name,
                 duration: 1,

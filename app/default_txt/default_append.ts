@@ -1,5 +1,6 @@
 export const default_append = 
-`@n=arp
+`@track=append
+@n=arp
 a| .......8........|
 a| ....5_0_0_0_0_0_|
 a| ..0_0_0_0_0_0_0_|

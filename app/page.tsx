@@ -1,12 +1,13 @@
 "use client"
 import React from "react"
 import { useState, useEffect } from "react"
-import { Note, Chord, Var } from './types.ts'
+import { Note, Chord, Var, Track_Info } from './types.ts'
 
 // component
 import { Ala } from './component/alealert.tsx'
 import { Disp } from './component/display.tsx'
 import { PianoRoll } from './component/PianoRoll/PianoRoll.tsx'
+import { TrackSelector } from './component/TrackSelector.tsx'
 
 // text
 import { default_text } from './default_txt/default_text.ts'
@@ -21,24 +22,38 @@ import { generate_musicxml } from './generate/generate_musicxml.ts'
 
 import './globals.css'
 
-const default_chords:Chord[] = [
+const default_tracks:Track_Info[] = [
     {
-        tick: 0,
-        pitch: 0,
-        chord_name: 'C',
-        third: 'major',
-        on: -1
+        name: 'melody',
+        ch: 0,
+        type: 'conductor',
+        notes: []
+    },{
+        name: 'append',
+        ch: 0,
+        type: 'chord',
+        notes: []
+    },{
+        name: 'bass',
+        ch: 0,
+        type: 'bass',
+        notes: []
+    },{
+        name: 'drum',
+        ch: 0,
+        type: 'drum',
+        notes: []
     }
 ]
 
 export default function Main() {
     const [texts, setTexts] = useState<string[]>([default_text,default_append,default_bass,default_drum])
+    const [tracks, setTracks] = useState<Track_Info[]>(default_tracks)
     const [bpm, setBpm] = useState(120)
     const [mea, setMea] = useState(0)
     const [title, setTitle] = useState('none')
     const [errMsg, setErrMsg] = useState('')
-    const [notes, setNotes] = useState<Note[][]>()
-    const [chords, setChords] = useState<Chord[]>(default_chords)
+    const [chords, setChords] = useState<Chord[]>([])
     const [midiURI, setMidiURI] = useState<string>('')
 
     const [tabnum, setTabnum] = useState(0)
@@ -46,14 +61,14 @@ export default function Main() {
 
 
     const onMIDIGenerate = () => {
-        if(notes === undefined) return
-        const uri = generate_midi(notes, bpm)
+        // if(notes === undefined) return
+        const uri = generate_midi(tracks, bpm)
         setMidiURI(uri)
         window.location.href = uri
     }
     const onXMLGenerate = () => {
-        if (notes === undefined) return
-        const xml = generate_musicxml(0, notes[0], bpm)
+        // if (notes === undefined) return
+        const xml = generate_musicxml(0, tracks[0].notes, bpm)
         const blob = new Blob([xml], {
             type: 'text/plain;charset=utf-8',
         });
@@ -64,14 +79,14 @@ export default function Main() {
     }
 
     const onTextChange = (text: string) => {
-        // console.log(texts)
         setTexts(texts.map((t, i) => (i === tabnum ? text : t)))
     }
     const onCompile = () => {
         const res = compile(texts)
 
         // 値のセット
-        setNotes([...res.notes])
+        // setNotes([...res.notes])
+        setTracks([...res.tracks])
         setTitle(res.title)
         setErrMsg(res.errMsg)
         setBpm(res.bpm)
@@ -82,15 +97,28 @@ export default function Main() {
     const onTabChange = (t: number) => {
         setTabnum(t)
     }
+    const onAddTrack = () => {
+        setTracks([...tracks,
+            {
+            name: 'new_track',
+            ch: 0,
+            type: 'bass',
+            notes: []
+            }
+        ])
+    }
+    const onDeleteTab = (t:number) => {
+        const tmp_tracks = [...tracks]
+        tmp_tracks.splice(t,1)
+        setTracks(tmp_tracks)
+    }
+
     let estyle :React.CSSProperties = {
         whiteSpace: 'pre-wrap'
     }
 
-    const ch_name = ['melody', 'append', 'bass', 'drum']
-
     useEffect(()=>{
-        //onTextChange(default_text)
-        onCompile()
+        // onCompile()
     },[])
 
     return (
@@ -103,13 +131,8 @@ export default function Main() {
             
             <div className="row">
                 <div className="col-md-12">
-                    <ul className="nav nav-tabs">
-                    {ch_name.map((cn, i)=>{
-                        return <li className="nav-item" key={i}>
-                            <a className={"pointer nav-link" + (i === tabnum ? " active" : "")} onClick={()=>onTabChange(i)}>{cn}</a>
-                        </li>
-                    })}
-                    </ul>
+                    
+                    <TrackSelector tracks={tracks} tabnum={tabnum} onAddTrack={onAddTrack} onTabChange={onTabChange} onDeleteTab={onDeleteTab} />
                     <textarea className="form-control editor" value={texts[tabnum]} rows={20} cols={20} onChange={(e) => onTextChange(e.target.value)} />
                 
                 </div>
@@ -117,11 +140,10 @@ export default function Main() {
                     {errMsg}
                 </div>
             </div>
-            
-            
-            { notes === undefined ? '' :<>            
+                        
+            { tracks[tabnum] === undefined || tracks[tabnum].notes === undefined ? '' :<>            
             {/* <PianoRoll notes={notes[tabnum]} />  */}
-            <Disp title={title} bpm={bpm} mea={mea} notes={notes} chords={chords} vars={vars} tabnum={tabnum} />
+            <Disp title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords} vars={vars} />
             </>}
         </div>
     )

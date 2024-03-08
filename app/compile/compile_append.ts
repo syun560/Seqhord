@@ -210,7 +210,7 @@ export const compile_append = (texts: string[], res: Res, ch: number) => {
                 }))
             }
 
-            res.notes[ch].push(...pattern2)
+            res.tracks[ch].notes.push(...pattern2)
         }
     })
 }

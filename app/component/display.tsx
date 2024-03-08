@@ -1,7 +1,7 @@
 import React from "react"
 import { Note, Chord, Var } from '../types.ts'
 
-export const Disp : React.FC<{title: string; bpm: number; mea: number; notes: Note[][]; chords: Chord[]; vars: Var[]; tabnum: number}> = ({title, bpm, mea, notes, chords, vars, tabnum}) =>{
+export const Disp : React.FC<{title: string; bpm: number; mea: number; notes: Note[]; chords: Chord[]; vars: Var[]}> = ({title, bpm, mea, notes, chords, vars}) =>{
     return (
         <div className="row">
         <div className="col-3">
@@ -28,7 +28,7 @@ export const Disp : React.FC<{title: string; bpm: number; mea: number; notes: No
             </tr>
         </thead>
         <tbody>
-        {notes === undefined ? '' : notes[tabnum].map((n,i)=><tr key={i}>
+        {notes === undefined ? '' : notes.map((n,i)=><tr key={i}>
             <td>{n.mea}</td>
             <td>{n.tick % 8}</td>
             <td>{n.pitch_name}</td>
