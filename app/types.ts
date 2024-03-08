@@ -28,6 +28,7 @@ export type Track_Info = {
     ch: number
     type: 'conductor' | 'chord' | 'bass' | 'drum'
     notes: Note[]
+    texts: string
 }
 
 export type Scale = {

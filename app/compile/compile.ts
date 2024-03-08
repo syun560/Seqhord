@@ -11,7 +11,8 @@ const default_track:Track_Info = {
     name: 'melody',
     ch: 0,
     type: 'conductor',
-    notes: []
+    notes: [],
+    texts: ''
 }
 
 // 自作音楽記述言語のコンパイル

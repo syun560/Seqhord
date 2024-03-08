@@ -1,5 +1,4 @@
 import React from "react"
-import { useState } from "react"
 import { Track_Info } from '../types.ts'
 
 interface Props {
@@ -12,13 +11,11 @@ interface Props {
 
 export const TrackSelector : React.FC<Props> = ({tracks, tabnum, onTabChange, onAddTrack, onDeleteTab}) => {
 
-    const [state, setState] = useState(0)
-
     return <ul className="nav nav-tabs">
     {tracks.map((cn, i)=>{
         return <li className="nav-item" key={i}>
             <a className={"pointer nav-link" + (i === tabnum ? " active" : "")} onClick={()=>onTabChange(i)}>{cn.name}
-            {tabnum===i ?<button type="button" onClick={()=>onDeleteTab(i)} className="btn btn-sm ps-2 pe-0 py-0">✕</button>:<></>}
+            {tabnum===i ?<button type="button" onClick={()=>onDeleteTab(i)} className="btn btn-sm ms-2 me-0 p-0">✕</button>:<></>}
             </a>
         </li>
     })}

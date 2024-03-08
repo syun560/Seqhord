@@ -27,27 +27,30 @@ const default_tracks:Track_Info[] = [
         name: 'melody',
         ch: 0,
         type: 'conductor',
-        notes: []
+        notes: [],
+        texts: default_text
     },{
         name: 'append',
         ch: 0,
         type: 'chord',
-        notes: []
+        notes: [],
+        texts: default_append
     },{
         name: 'bass',
         ch: 0,
         type: 'bass',
-        notes: []
+        notes: [],
+        texts: default_bass
     },{
         name: 'drum',
-        ch: 0,
+        ch: 10,
         type: 'drum',
-        notes: []
+        notes: [],
+        texts: default_drum
     }
 ]
 
 export default function Main() {
-    const [texts, setTexts] = useState<string[]>([default_text,default_append,default_bass,default_drum])
     const [tracks, setTracks] = useState<Track_Info[]>(default_tracks)
     const [bpm, setBpm] = useState(120)
     const [mea, setMea] = useState(0)
@@ -79,10 +82,14 @@ export default function Main() {
     }
 
     const onTextChange = (text: string) => {
-        setTexts(texts.map((t, i) => (i === tabnum ? text : t)))
+        // setTexts(texts.map((t, i) => (i === tabnum ? text : t)))
+        const tk = [...tracks]
+        tk[tabnum].texts = text
+        setTracks(tk)
     }
     const onCompile = () => {
-        const res = compile(texts)
+        const ttt = tracks.map(t=>t.texts)
+        const res = compile(ttt)
 
         // 値のセット
         // setNotes([...res.notes])
@@ -98,19 +105,24 @@ export default function Main() {
         setTabnum(t)
     }
     const onAddTrack = () => {
+        if (tracks.length > 16) return
         setTracks([...tracks,
             {
             name: 'new_track',
             ch: 0,
             type: 'bass',
-            notes: []
+            notes: [],
+            texts: ''
             }
         ])
     }
     const onDeleteTab = (t:number) => {
+        const conf = confirm('トラックを削除しますか？（取り消し不可）')
+        if (!conf) return
         const tmp_tracks = [...tracks]
         tmp_tracks.splice(t,1)
         setTracks(tmp_tracks)
+        setTabnum(0)
     }
 
     let estyle :React.CSSProperties = {
@@ -133,15 +145,16 @@ export default function Main() {
                 <div className="col-md-12">
                     
                     <TrackSelector tracks={tracks} tabnum={tabnum} onAddTrack={onAddTrack} onTabChange={onTabChange} onDeleteTab={onDeleteTab} />
-                    <textarea className="form-control editor" value={texts[tabnum]} rows={20} cols={20} onChange={(e) => onTextChange(e.target.value)} />
-                
+                    { tracks[tabnum] === undefined  ? '' :
+                    <textarea className="form-control editor" value={tracks[tabnum].texts} rows={20} cols={20} onChange={(e) => onTextChange(e.target.value)} />
+                    }
                 </div>
                 <div style={estyle} className="col-md-12 border">
                     {errMsg}
                 </div>
             </div>
                         
-            { tracks[tabnum] === undefined || tracks[tabnum].notes === undefined ? '' :<>            
+            { tracks[tabnum] === undefined || tracks[tabnum].notes === undefined ? '' :<>
             {/* <PianoRoll notes={notes[tabnum]} />  */}
             <Disp title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords} vars={vars} />
             </>}
