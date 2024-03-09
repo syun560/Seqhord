@@ -37,7 +37,7 @@ export const compile_drum = (texts: string, vars: Var[], notes: Note[], c: numbe
         // @キーワード
         if (line.indexOf('@') !== -1) {            
             // tmp_notesの追加
-            if (line.indexOf('n') !== -1) {
+            if (line[1] === 'n') {
 
                 const i = line.indexOf('=')
                 const b = line.slice(i + 1)

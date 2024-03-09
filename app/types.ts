@@ -26,7 +26,7 @@ export type Chord = {
 export type Track_Info = {
     name: string
     ch: number
-    type: 'conductor' | 'chord' | 'bass' | 'drum'
+    type: 'conductor' |'chord' | 'bass' | 'drum'
     notes: Note[]
     texts: string
 }

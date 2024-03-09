@@ -6,6 +6,7 @@ import { compile_lyric } from './compile_lyric.ts'
 import { compile_melody } from './compile_melody.ts'
 import { compile_chord } from './compile_chord.ts'
 import { compile_var } from './compile_var.ts'
+import { compile_var2 } from './compile_var2.ts'
 
 
 // 自作音楽記述言語のコンパイル
@@ -21,7 +22,7 @@ export const compile = (tracks: Track_Info[]) => {
         vars: []
     }
     // 2次元配列の初期化
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < tracks.length; i++) {
         res.tracks.push({
             name: `Track${i}`,
             ch: i,
@@ -32,6 +33,7 @@ export const compile = (tracks: Track_Info[]) => {
     }
     
     // 変数のコンパイルを行う
+    //compile_var2(tracks, res.vars)
 
     // 文字列を改行ごとに分割して配列に入れる
     const lines = tracks[0].texts.split('\n')
@@ -58,6 +60,9 @@ export const compile = (tracks: Track_Info[]) => {
                 const i = line.indexOf('=')
                 const b = Number(line.slice(i + 1))
                 res.bpm = b
+            }
+            else if (line.indexOf('type') !== -1){
+
             }
             // タイトル
             else if (line.indexOf('title') !== -1) {

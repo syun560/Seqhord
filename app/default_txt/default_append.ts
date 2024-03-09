@@ -1,5 +1,6 @@
 export const default_append = 
 `@track=append
+@type=chord
 @n=arp
 a| .......8........|
 a| ....5_0_0_0_0_0_|

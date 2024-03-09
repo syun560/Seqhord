@@ -1,5 +1,6 @@
 export const default_drum 
 = `@track=drum
+@type=drum
 @set k=35
 @set s=38
 @set h=42

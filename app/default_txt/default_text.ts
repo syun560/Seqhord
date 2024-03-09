@@ -1,5 +1,6 @@
 export const default_text = 
 `@track   = melody
+@type    = conductor
 @bpm     = 184
 @scale   = E
 @title   = 忘れてやらない
