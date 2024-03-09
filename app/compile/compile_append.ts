@@ -23,10 +23,10 @@ const getNowChord = (tick: number, res: Res) => {
 }
 
 // 伴奏トラックのコンパイル
-export const compile_append = (texts: string[], res: Res, ch: number) => {
+export const compile_append = (text: string, res: Res, ch: number) => {
 
     // 文字列を改行ごとに分割して配列に入れる
-    const lines = texts[ch].split('\n')
+    const lines = text.split('\n')
 
     // noteを用意する
     const b_notes: ANote[] = []

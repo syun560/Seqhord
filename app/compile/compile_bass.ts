@@ -23,10 +23,10 @@ const getNowChord = (tick: number, res: Res) => {
 }
 
 // 変数を認識し、コンパイルする（現在はドラムのみ想定）
-export const compile_bass = (texts: string[], res: Res, ch: number) => {
+export const compile_bass = (text: string, res: Res, ch: number) => {
 
     // 文字列を改行ごとに分割して配列に入れる
-    const lines = texts[ch].split('\n')
+    const lines = text.split('\n')
 
     // noteを用意する
     const b_notes: BNote[] = []

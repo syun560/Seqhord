@@ -88,8 +88,7 @@ export default function Main() {
         setTracks(tk)
     }
     const onCompile = () => {
-        const ttt = tracks.map(t=>t.texts)
-        const res = compile(ttt)
+        const res = compile(tracks)
 
         // 値のセット
         // setNotes([...res.notes])

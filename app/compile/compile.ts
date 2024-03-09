@@ -7,16 +7,9 @@ import { compile_melody } from './compile_melody.ts'
 import { compile_chord } from './compile_chord.ts'
 import { compile_var } from './compile_var.ts'
 
-const default_track:Track_Info = {
-    name: 'melody',
-    ch: 0,
-    type: 'conductor',
-    notes: [],
-    texts: ''
-}
 
 // 自作音楽記述言語のコンパイル
-export const compile = (texts: string[]) => {
+export const compile = (tracks: Track_Info[]) => {
     let res :Res = {
         title: "none",
         bpm: 120,
@@ -29,16 +22,23 @@ export const compile = (texts: string[]) => {
     }
     // 2次元配列の初期化
     for (let i = 0; i < 4; i++) {
-        res.tracks[i] = default_track
-        res.tracks[i].notes = []
+        res.tracks.push({
+            name: `Track${i}`,
+            ch: i,
+            type: 'conductor',
+            notes: [],
+            texts: tracks[i].texts
+        })
     }
     
     // 変数のコンパイルを行う
 
     // 文字列を改行ごとに分割して配列に入れる
-    const lines = texts[0].split('\n')
+    const lines = tracks[0].texts.split('\n')
     let p_mea = 0 // パラグラフが始まる前のmea
     let mea = 0
+
+    console.log(res)
 
     // 文字列を検索する
     lines.forEach((l, i) => {
@@ -122,13 +122,15 @@ export const compile = (texts: string[]) => {
 
     res.mea = mea
 
+    console.log(res)
+
     // 変数を含むトラックをコンパイルする
-    compile_append(texts, res, 1)
-    compile_bass(texts, res, 2)
-    compile_drum(texts, res.vars, res.tracks[3].notes, 3)
+    compile_append(tracks[1].texts, res, 1)
+    compile_bass(tracks[2].texts, res, 2)
+    compile_drum(tracks[3].texts, res.vars, res.tracks[3].notes, 3)
 
     // console.clear()
-    console.log(res)
+    //console.log(res)
     return res
 
 }

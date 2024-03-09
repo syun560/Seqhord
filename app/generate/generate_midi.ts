@@ -74,7 +74,7 @@ export const generate_midi = (t: Track_Info[], bpm: number) => {
             tick: n.tick * 64,
             pitch: Lib.noteNumberToNoteName(n.pitch),
             duration: 'T12',
-            channel: t[3].ch,
+            channel: 10,
             velocity: 64
         })
         //console.log(note)
