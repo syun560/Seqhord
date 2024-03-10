@@ -2,6 +2,14 @@ import xmljs from 'xml-js';
 import { Note } from '../types.ts'
 import { midiNumberToPitchMusicXML } from './convert.ts';
 
+const getStemType = (duration: number) => {
+    let stem = ''
+    if (duration >= 1) stem = 'eighth'
+    if (duration >= 2) stem = 'quarter'
+    if (duration >= 4) stem = 'half'
+    if (duration >= 8) stem = 'whole'
+    return stem
+}
 
 export const generate_musicxml = (trackIndex: number, allNotes: Note[], bpm: number) => {
     const reso = 1 // 8符音符の長さ
@@ -31,7 +39,8 @@ export const generate_musicxml = (trackIndex: number, allNotes: Note[], bpm: num
             const cnt = m_cnt - dur_cnt
             notes.push({
                 rest: {},
-                duration: (m_cnt - dur_cnt) * reso
+                duration: (m_cnt - dur_cnt) * reso,
+                type: 'whole'
             });
             tick += cnt
             dur_cnt = 0
@@ -47,7 +56,8 @@ export const generate_musicxml = (trackIndex: number, allNotes: Note[], bpm: num
                     const rest = fn.tick - tick
                     notes.push({
                         rest: {},
-                        duration: reso * rest
+                        duration: reso * rest,
+                        type: getStemType(reso*rest)
                     })
                     tick += rest
                     dur_cnt += rest
@@ -58,6 +68,7 @@ export const generate_musicxml = (trackIndex: number, allNotes: Note[], bpm: num
                     },
                     pitch: midiNumberToPitchMusicXML(fn.pitch),
                     duration: fn.duration * reso,
+                    type: getStemType(fn.duration * reso),
                     lyric: {
                         text: fn.lyric !== '' ? fn.lyric : 'ら',
                     }
@@ -91,6 +102,7 @@ export const generate_musicxml = (trackIndex: number, allNotes: Note[], bpm: num
                             type: 'stop',
                        },
                     },
+                    type: getStemType(cnt *reso),
                     lyric: {
                         text: 'ー',
                     }
@@ -114,10 +126,22 @@ export const generate_musicxml = (trackIndex: number, allNotes: Note[], bpm: num
         }
         measures.push({
             _attributes: {
-                number: mea + 1,
+                number: mea,
             },
             note: notes,
         })
+        // 最後に全休符を追加する
+        if (mea === max_mea - 1) {
+            measures.push({
+                _attributes: {
+                    number: mea + 1,
+                },
+                note: {
+                    rest: {},
+                    duration: m_cnt * reso
+                },
+            })
+        }
     }
 
     measures.unshift({
@@ -145,7 +169,8 @@ export const generate_musicxml = (trackIndex: number, allNotes: Note[], bpm: num
         },
         note: {
             rest: {},
-            duration: 'test',
+            duration: 8,
+            type: 'whole'
         },
     })
 
