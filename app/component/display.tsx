@@ -45,6 +45,7 @@ export const Disp : React.FC<{title: string; bpm: number; mea: number; notes: No
                 <th>mea</th>
                 <th>tick</th>
                 <th>name</th>
+                <th>on</th>
                 <th>third</th>
             </tr>
         </thead>
@@ -53,6 +54,7 @@ export const Disp : React.FC<{title: string; bpm: number; mea: number; notes: No
             <td>{c.mea}</td>
             <td>{c.tick}</td>
             <td>{c.chord_name}</td>
+            <td>{c.on}</td>
             <td>{c.third}</td></tr>)}
         </tbody></table>
         </div>

@@ -37,6 +37,7 @@ export const compile = (tracks: Track_Info[]) => {
     compile_var2(tracks, vars2, res)
     res.tracks[0].name = 'melody'
     res.tracks[0].type = 'conductor'
+    console.log(vars2)
 
     // 文字列を改行ごとに分割して配列に入れる
     const lines = tracks[0].texts.split('\n')
@@ -120,6 +121,7 @@ export const compile = (tracks: Track_Info[]) => {
             // ベース
             else if (line[0] === 'b') {
                 compile_var(line, i, res, 2)
+                compile_bass(line, res, 2, vars2)
             }
             // ドラム
             else if (line[0] === 'd') {
@@ -134,7 +136,6 @@ export const compile = (tracks: Track_Info[]) => {
 
     // 変数を含むトラックをコンパイルする
     compile_append(tracks[1].texts, res, 1)
-    compile_bass(tracks[2].texts, res, 2)
     compile_drum(tracks[3].texts, res.vars, res.tracks[3].notes, 3)
 
     // console.clear()
