@@ -84,7 +84,7 @@ export const compile_drum = (texts: string, vars: Var[], notes: Note[], c: numbe
         }
     })
 
-    console.log(d_notes)
+    // console.log(d_notes)
 
     // varsをイテレートし、noteを生成する。
     vars.forEach(v=>{

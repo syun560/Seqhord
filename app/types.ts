@@ -26,7 +26,7 @@ export type Chord = {
 export type Track_Info = {
     name: string
     ch: number
-    type: 'conductor' |'chord' | 'bass' | 'drum'
+    type: string
     notes: Note[]
     texts: string
 }
@@ -42,6 +42,11 @@ export type Var = {
 
     name: string
     repeat: number
+}
+
+export type Var2 = {
+    name :string
+    notes: Note[]
 }
 
 // コンパイル結果

@@ -1,4 +1,4 @@
-import { Res , Track_Info } from '../types.ts'
+import { Res , Track_Info, Var2 } from '../types.ts'
 import { compile_drum } from './compile_drum.ts'
 import { compile_bass } from './compile_bass.ts'
 import { compile_append } from './compile_append.ts'
@@ -33,7 +33,10 @@ export const compile = (tracks: Track_Info[]) => {
     }
     
     // 変数のコンパイルを行う
-    //compile_var2(tracks, res.vars)
+    let vars2:Var2[] = []
+    compile_var2(tracks, vars2, res)
+    res.tracks[0].name = 'melody'
+    res.tracks[0].type = 'conductor'
 
     // 文字列を改行ごとに分割して配列に入れる
     const lines = tracks[0].texts.split('\n')

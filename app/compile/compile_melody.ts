@@ -9,8 +9,6 @@ export const compile_melody = (line: string, i: number, res: Res, c: number) => 
     // メロディのスケールを取得する
     const base_scale :number = NoteName.indexOf(res.scales[res.scales.length - 1].scale)
 
-    console.log(`base_scale(melody): ${base_scale}`)
-
     // 基準となるピッチ
     const base_pitch :number = 12 * 5 + base_scale
 
