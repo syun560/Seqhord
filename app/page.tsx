@@ -57,28 +57,27 @@ export default function Main() {
     const [title, setTitle] = useState('none')
     const [errMsg, setErrMsg] = useState('')
     const [chords, setChords] = useState<Chord[]>([])
-    const [midiURI, setMidiURI] = useState<string>('')
+    const [piano, setPiano] = useState(false)
 
     const [tabnum, setTabnum] = useState(0)
     const [vars, setVars] = useState<Var[]>([])
 
-
     const onMIDIGenerate = () => {
-        // if(notes === undefined) return
         const uri = generate_midi(tracks, bpm)
-        setMidiURI(uri)
-        window.location.href = uri
+        const a = document.createElement('a')
+        a.download = `${title}.mid`
+        a.href = uri
+        a.click()
     }
     const onXMLGenerate = () => {
-        // if (notes === undefined) return
         const xml = generate_musicxml(0, tracks[0].notes, bpm)
         const blob = new Blob([xml], {
             type: 'text/plain;charset=utf-8',
         });
-        const a = document.createElement('a');
-        a.download = 'score.musicxml';
-        a.href = URL.createObjectURL(blob);
-        a.click();
+        const a = document.createElement('a')
+        a.download = `${title}.musicxml`
+        a.href = URL.createObjectURL(blob)
+        a.click()
     }
 
     const onTextChange = (text: string) => {
@@ -128,17 +127,25 @@ export default function Main() {
         whiteSpace: 'pre-wrap'
     }
 
-    useEffect(()=>{
-        // onCompile()
-    },[])
+    const handleBeforeUnload = (e:any) => {
+        e.preventDefault()
+        e.returnValue = "本当にページを離れますか？"
+    }
+
+    useEffect(() => {
+        window.addEventListener("beforeunload", handleBeforeUnload);
+        return () => {
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+        }
+    }, [])
 
     return (
         <div className="container-fluid">
             <Ala />
             <button type="button" className="btn btn-primary my-2" onClick={onCompile}>Compile</button>
             <button type="button" className="btn btn-success m-2" onClick={onMIDIGenerate}>to MIDI</button>
-            <button type="button" className="btn btn-info m-2" onClick={onXMLGenerate}>to MusicXML</button>
-            
+            <button type="button" className="btn btn-secondary m-2" onClick={onXMLGenerate}>to MusicXML</button>
+            <button type="button" className="btn btn-info m-2" onClick={()=>setPiano(!piano)}>PianoRoll</button>
             
             <div className="row">
                 <div className="col-md-12">
@@ -153,10 +160,10 @@ export default function Main() {
                 </div>
             </div>
                         
-            { tracks[tabnum] === undefined || tracks[tabnum].notes === undefined ? '' :<>
-            {/* <PianoRoll notes={notes[tabnum]} />  */}
-            <Disp title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords} vars={vars} />
-            </>}
+            { tracks[tabnum] === undefined || tracks[tabnum].notes === undefined ? '' :
+            piano ? <PianoRoll notes={tracks[tabnum].notes} />
+            :<Disp title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords} vars={vars} />
+            }
         </div>
     )
 }
