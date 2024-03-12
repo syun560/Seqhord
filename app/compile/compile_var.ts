@@ -9,7 +9,7 @@ interface DrumProgram {  [key: string]: number }
 const program: DrumProgram = { k: 35, s: 38, h: 42, c: 49 }
 
 // 変数を認識し、コンパイルする
-export const compile_var2 = (tracks: Track_Info[], vars: Var2[], res: Res) => {
+export const compile_var = (tracks: Track_Info[], vars: Var2[], res: Res) => {
     // すべてのトラックのテキストをイテレート
     tracks.forEach((track, t) => {
         if (t === 0) return

@@ -3,7 +3,7 @@ import { expand_vars } from './expand_vars.ts'
 import { compile_lyric } from './compile_lyric.ts'
 import { compile_melody } from './compile_melody.ts'
 import { compile_chord } from './compile_chord.ts'
-import { compile_var2 } from './compile_var2.ts'
+import { compile_var } from './compile_var.ts'
 
 
 // 自作音楽記述言語のコンパイル
@@ -31,7 +31,7 @@ export const compile = (tracks: Track_Info[]) => {
     
     // 変数のコンパイルを行う
     let vars2:Var2[] = []
-    compile_var2(tracks, vars2, res)
+    compile_var(tracks, vars2, res)
     res.tracks[0].name = 'main'
     res.tracks[0].type = 'conductor'
     console.log(vars2)
