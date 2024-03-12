@@ -3,7 +3,7 @@ export const default_text =
 @scale   = E
 @trans   = 5
 @title   = 忘れてやらない
-@program k=1, m=2, c=3, b=12, d=4
+@program = 73
 
 @p=1
 c|F               |G              |C/E            |Am              |F              |G            |Am          |C

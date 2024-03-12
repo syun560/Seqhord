@@ -1,10 +1,7 @@
 export const default_drum 
-= `@name = drum
-@type = drum
-@set k=35
-@set s=38
-@set h=42
-@set c=49
+=`@name    = drum
+@type    = drum
+@program = 0
 
 @n=beat
 c|................|

@@ -1,7 +1,8 @@
 export const default_bass = 
-`@name  = bass
-@type  = bass
-@trans = 2
+`@name    = bass
+@type    = bass
+@trans   = 2
+@program = 34
 @n=root
 n|0_0_0_0_0_0_0_0_|
 @e

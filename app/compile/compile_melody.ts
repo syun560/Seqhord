@@ -38,6 +38,13 @@ export const compile_melody = (line: string, i: number, res: Res, c: number, tra
         else if (c === '-') {
             notes[notes.length - 1].pitch += 1
         }
+        // 前のノートのdurationを半分にする
+        else if (c === '^'){
+            const dur = reso/2
+            notes[notes.length - 1].duration = reso / 2
+            dur_cnt -= dur
+            tick -= dur
+        }
         // 小節線
         else if (c === '|'){
             if (j !== 1 && dur_cnt !== 8) {
@@ -63,19 +70,20 @@ export const compile_melody = (line: string, i: number, res: Res, c: number, tra
         else if (!isNaN(Number(c))) {
             const pitch = MajorScale[Number(c)] + base_pitch + octarve * 12
             const pitch_name = Lib.noteNumberToNoteName(pitch)
+            const duration = reso
 
             notes.push({
                 pitch: pitch,
                 pitch_name: pitch_name,
-                duration: 1,
+                duration: duration,
                 channel: 1,
                 velocity: 100,
                 mea: mea,
                 tick: tick
             })
-            tick += reso
+            tick += duration
             octarve = 0
-            dur_cnt += 1
+            dur_cnt += duration
             is_note = true
         }
         else {

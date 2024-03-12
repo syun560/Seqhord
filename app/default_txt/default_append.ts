@@ -1,7 +1,8 @@
 export const default_append = 
-`@name  = append
-@type  = chord
-@trans = 4
+`@name    = chord
+@type    = chord
+@trans   = 4
+@program = 4
 @n=arp
 n| .......8........|
 n| ....5_0_0_0_0_0_|

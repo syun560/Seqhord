@@ -25,20 +25,23 @@ import './globals.css'
 const default_tracks:Track_Info[] = [
     {
         name: 'melody',
+        program: 73,
         ch: 0,
         trans: 5,
         type: 'conductor',
         notes: [],
-        texts: default_text
+        texts: default_text,
     },{
         name: 'append',
+        program: 4,
         ch: 0,
         trans: 5,
         type: 'chord',
         notes: [],
-        texts: default_append
+        texts: default_append,
     },{
         name: 'bass',
+        program: 34,
         ch: 0,
         trans: 5,
         type: 'bass',
@@ -46,6 +49,7 @@ const default_tracks:Track_Info[] = [
         texts: default_bass
     },{
         name: 'drum',
+        program: 0,
         ch: 10,
         trans: 5,
         type: 'drum',
@@ -109,6 +113,7 @@ export default function Main() {
         setTracks([...tracks,
             {
             name: 'new_track',
+            program: 0,
             ch: 0,
             trans: 5,
             type: 'bass',

@@ -21,6 +21,7 @@ export const compile = (tracks: Track_Info[]) => {
     for (let i = 0; i < tracks.length; i++) {
         res.tracks.push({
             name: `Track${i}`,
+            program: 0,
             ch: i,
             type: 'conductor',
             trans: 5,
@@ -58,23 +59,17 @@ export const compile = (tracks: Track_Info[]) => {
         if (line.indexOf('@') !== -1) {
             // BPM
             if (line.indexOf('bpm') !== -1) {
-                const i = line.indexOf('=')
-                const b = Number(line.slice(i + 1))
-                res.bpm = b
+                res.bpm = Number(line.slice(line.indexOf('=') + 1))
             }
             else if (line.indexOf('type') !== -1){
 
             }
             else if (line.indexOf('trans') !== -1){
-                const i = line.indexOf('=')
-                const b = Number(line.slice(i + 1))
-                res.tracks[0].trans = b
+                res.tracks[0].trans = Number(line.slice(line.indexOf('=') + 1))
             }
             // タイトル
             else if (line.indexOf('title') !== -1) {
-                const i = line.indexOf('=')
-                const t = line.slice(i + 1)
-                res.title = t
+                res.title = line.slice(line.indexOf('=') + 1)
             }
             // スケール（調）
             else if (line.indexOf('scale') !== -1) {
@@ -88,15 +83,11 @@ export const compile = (tracks: Track_Info[]) => {
             }
             // プログラムチェンジ
             else if (line.indexOf('program') !== -1) {
-                const i = line.indexOf('=')
-                const t = line.slice(i + 1)
-                //res.scale = t
+                res.tracks[0].program = Number(line.slice(line.indexOf('=') + 1))
             }
             // パラグラフ
             else if (line.indexOf('p') !== -1){
-                const i = line.indexOf('=')
-                const t = line.slice(i + 1)
-                p_mea = Number(t)
+                p_mea = Number(line.slice(line.indexOf('=') + 1))
                 res.mea = p_mea
             }
         }
@@ -116,17 +107,12 @@ export const compile = (tracks: Track_Info[]) => {
             else if (line[0] === 'k') {
                 compile_lyric(line, i, res)
             }
-            // 伴奏
-            else if (line[0] === '1') {
-                expand_vars(line, res, 1, vars2)
-            }
-            // ベース
-            else if (line[0] === '2') {
-                expand_vars(line, res, 2, vars2)
-            }
-            // ドラム
-            else if (line[0] === '3') {
-                expand_vars(line, res, 3, vars2)
+            // 数値の場合は別のトラック
+            else if (!isNaN(Number(line[0]))) {
+                const t = Number(line[0])
+                if (t < tracks.length) {
+                    expand_vars(line, res, t, vars2)
+                }
             }
         }
     })
