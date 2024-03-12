@@ -1,7 +1,7 @@
 "use client"
 import React from "react"
 import { useState, useEffect } from "react"
-import { Note, Chord, Var, Track_Info } from './types.ts'
+import { Chord, Track_Info } from './types.ts'
 
 // component
 import { Ala } from './component/alealert.tsx'
@@ -26,24 +26,28 @@ const default_tracks:Track_Info[] = [
     {
         name: 'melody',
         ch: 0,
+        trans: 5,
         type: 'conductor',
         notes: [],
         texts: default_text
     },{
         name: 'append',
         ch: 0,
+        trans: 5,
         type: 'chord',
         notes: [],
         texts: default_append
     },{
         name: 'bass',
         ch: 0,
+        trans: 5,
         type: 'bass',
         notes: [],
         texts: default_bass
     },{
         name: 'drum',
         ch: 10,
+        trans: 5,
         type: 'drum',
         notes: [],
         texts: default_drum
@@ -60,7 +64,6 @@ export default function Main() {
     const [piano, setPiano] = useState(false)
 
     const [tabnum, setTabnum] = useState(0)
-    const [vars, setVars] = useState<Var[]>([])
 
     const onMIDIGenerate = () => {
         const uri = generate_midi(tracks, bpm)
@@ -97,7 +100,6 @@ export default function Main() {
         setBpm(res.bpm)
         setMea(res.mea)
         setChords(res.chords)
-        setVars(res.vars)
     }
     const onTabChange = (t: number) => {
         setTabnum(t)
@@ -108,6 +110,7 @@ export default function Main() {
             {
             name: 'new_track',
             ch: 0,
+            trans: 5,
             type: 'bass',
             notes: [],
             texts: ''
@@ -162,7 +165,7 @@ export default function Main() {
                         
             { tracks[tabnum] === undefined || tracks[tabnum].notes === undefined ? '' :
             piano ? <PianoRoll notes={tracks[tabnum].notes} />
-            :<Disp title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords} vars={vars} />
+            :<Disp title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords} />
             }
         </div>
     )

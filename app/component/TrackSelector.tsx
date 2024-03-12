@@ -14,8 +14,9 @@ export const TrackSelector : React.FC<Props> = ({tracks, tabnum, onTabChange, on
     return <ul className="nav nav-tabs">
     {tracks.map((cn, i)=>{
         return <li className="nav-item" key={i}>
-            <a className={"pointer nav-link" + (i === tabnum ? " active" : "")} onClick={()=>onTabChange(i)}>{cn.name}
-            {tabnum===i ?<button type="button" onClick={()=>onDeleteTab(i)} className="btn btn-sm ms-2 me-0 p-0">✕</button>:<></>}
+            <a className={"pointer nav-link" + (i === tabnum ? " active" : "")} onClick={()=>onTabChange(i)}>
+                {`${i}: ${cn.name}`}
+                {tabnum===i && i !==0 ?<button type="button" onClick={()=>onDeleteTab(i)} className="btn btn-sm ms-2 me-0 p-0">✕</button>:<></>}
             </a>
         </li>
     })}

@@ -1,11 +1,12 @@
 export const default_bass = 
-`@track=bass
-@type=bass
+`@name  = bass
+@type  = bass
+@trans = 2
 @n=root
-b|0_0_0_0_0_0_0_0_|
+n|0_0_0_0_0_0_0_0_|
 @e
 
 @n=oct
-b|0_8_0_8_0_8_0_8_|
+n|0_8_0_8_0_8_0_8_|
 @e
 `

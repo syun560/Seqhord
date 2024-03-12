@@ -4,13 +4,13 @@ import Lib from '../Lib.ts'
 const MajorScale = [0, 0, 2, 4, 5, 7, 9, 11, 12]
 const NoteName = ['C','C#', 'D', 'D#','E', 'F', 'F#','G', 'G#','A', 'A#','B']
 
-// 変数を認識し、コンパイルする（現在はドラムのみ想定）
-export const compile_melody = (line: string, i: number, res: Res, c: number) => {
+// 変数を認識し、コンパイルする
+export const compile_melody = (line: string, i: number, res: Res, c: number, trans:number) => {
     // メロディのスケールを取得する
     const base_scale :number = NoteName.indexOf(res.scales[res.scales.length - 1].scale)
 
     // 基準となるピッチ
-    const base_pitch :number = 12 * 5 + base_scale
+    const base_pitch :number = 12 * trans + base_scale
 
 
     let reso = 1

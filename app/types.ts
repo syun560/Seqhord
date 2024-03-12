@@ -27,6 +27,7 @@ export type Track_Info = {
     name: string
     ch: number
     type: string
+    trans: number
     notes: Note[]
     texts: string
 }
@@ -35,13 +36,6 @@ export type Scale = {
     mea?: number
     tick: number
     scale: string
-}
-
-export type Var = {
-    tick: number
-
-    name: string
-    repeat: number
 }
 
 export type Var2 = {
@@ -58,5 +52,4 @@ export type Res = {
     mea: number
     tracks: Track_Info[]
     chords: Chord[]
-    vars: Var[]
 }

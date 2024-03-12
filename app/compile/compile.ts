@@ -1,11 +1,8 @@
 import { Res , Track_Info, Var2 } from '../types.ts'
-import { compile_drum } from './compile_drum.ts'
-import { compile_bass } from './compile_bass.ts'
-import { compile_append } from './compile_append.ts'
+import { expand_vars } from './expand_vars.ts'
 import { compile_lyric } from './compile_lyric.ts'
 import { compile_melody } from './compile_melody.ts'
 import { compile_chord } from './compile_chord.ts'
-import { compile_var } from './compile_var.ts'
 import { compile_var2 } from './compile_var2.ts'
 
 
@@ -19,7 +16,6 @@ export const compile = (tracks: Track_Info[]) => {
         mea: 0,
         tracks: [],
         chords: [],
-        vars: []
     }
     // 2次元配列の初期化
     for (let i = 0; i < tracks.length; i++) {
@@ -27,15 +23,16 @@ export const compile = (tracks: Track_Info[]) => {
             name: `Track${i}`,
             ch: i,
             type: 'conductor',
+            trans: 5,
             notes: [],
-            texts: tracks[i].texts
+            texts: tracks[i].texts,
         })
     }
     
     // 変数のコンパイルを行う
     let vars2:Var2[] = []
     compile_var2(tracks, vars2, res)
-    res.tracks[0].name = 'melody'
+    res.tracks[0].name = 'main'
     res.tracks[0].type = 'conductor'
     console.log(vars2)
 
@@ -67,6 +64,11 @@ export const compile = (tracks: Track_Info[]) => {
             }
             else if (line.indexOf('type') !== -1){
 
+            }
+            else if (line.indexOf('trans') !== -1){
+                const i = line.indexOf('=')
+                const b = Number(line.slice(i + 1))
+                res.tracks[0].trans = b
             }
             // タイトル
             else if (line.indexOf('title') !== -1) {
@@ -107,39 +109,30 @@ export const compile = (tracks: Track_Info[]) => {
                 compile_chord(line, i, res, 0)
             }
             // メロディ
-            else if (line[0] === 'm') {
-                compile_melody(line, i, res, 0)                
+            else if (line[0] === 'n') {
+                compile_melody(line, i, res, 0, res.tracks[0].trans)                
             }
             // 歌詞
             else if (line[0] === 'k') {
                 compile_lyric(line, i, res)
             }
             // 伴奏
-            else if (line[0] === 'a') {
-                compile_var(line, i , res, 1)
+            else if (line[0] === '1') {
+                expand_vars(line, res, 1, vars2)
             }
             // ベース
-            else if (line[0] === 'b') {
-                compile_var(line, i, res, 2)
-                compile_bass(line, res, 2, vars2)
+            else if (line[0] === '2') {
+                expand_vars(line, res, 2, vars2)
             }
             // ドラム
-            else if (line[0] === 'd') {
-                compile_var(line, i, res, 3)
+            else if (line[0] === '3') {
+                expand_vars(line, res, 3, vars2)
             }
         }
     })
 
     res.mea = mea
-
     console.log(res)
 
-    // 変数を含むトラックをコンパイルする
-    compile_append(tracks[1].texts, res, 1)
-    compile_drum(tracks[3].texts, res.vars, res.tracks[3].notes, 3)
-
-    // console.clear()
-    //console.log(res)
     return res
-
 }

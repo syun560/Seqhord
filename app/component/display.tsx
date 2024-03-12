@@ -1,10 +1,10 @@
 import React from "react"
-import { Note, Chord, Var } from '../types.ts'
+import { Note, Chord } from '../types.ts'
 
-export const Disp : React.FC<{title: string; bpm: number; mea: number; notes: Note[]; chords: Chord[]; vars: Var[]}> = ({title, bpm, mea, notes, chords, vars}) =>{
+export const Disp : React.FC<{title: string; bpm: number; mea: number; notes: Note[]; chords: Chord[];}> = ({title, bpm, mea, notes, chords}) =>{
     return (
         <div className="row">
-        <div className="col-3">
+        <div className="col-4">
         <h5>Sys</h5>
         <table className="table table-sm">
             <tbody>
@@ -15,7 +15,7 @@ export const Disp : React.FC<{title: string; bpm: number; mea: number; notes: No
         </table>
         </div>
 
-        <div className="col-3">
+        <div className="col-4">
         <h5>Note</h5>
         <table className="table table-sm">
         <thead>
@@ -37,7 +37,7 @@ export const Disp : React.FC<{title: string; bpm: number; mea: number; notes: No
         </tbody></table>
         </div>
 
-        <div className="col-3">
+        <div className="col-4">
         <h5>Chord</h5>
         <table className="table table-sm">
         <thead>
@@ -56,25 +56,6 @@ export const Disp : React.FC<{title: string; bpm: number; mea: number; notes: No
             <td>{c.chord_name}</td>
             <td>{c.on}</td>
             <td>{c.third}</td></tr>)}
-        </tbody></table>
-        </div>
-
-        <div className="col-3">
-        <h5>Var</h5>
-        <table className="table table-sm">
-        <thead>
-            <tr>
-                <th>tick</th>
-                <th>name</th>
-                <th>repeat</th>
-            </tr>
-        </thead>
-        <tbody>
-        {vars.map((c,i)=><tr key={i}>
-            <td>{c.tick}</td>
-            <td>{c.name}</td>
-            <td>{c.repeat}</td>
-        </tr>)}
         </tbody></table>
         </div>
 

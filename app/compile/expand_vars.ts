@@ -20,25 +20,40 @@ const getNowChord = (tick: number, res: Res) => {
 const setVar2Note = (vars2: Var2[], name: string, repeat: number, nowTick: number, res:Res, ch:number) => {
     // vars2をイテレートし、noteを生成する。
 
+    const trans = res.tracks[ch].trans
+    const type = res.tracks[ch].type
+
     const bn = vars2.find(v=> v.name === name)
     if (bn !== undefined) {
 
         // tickとNoteをずらしたパターンを作る
         let pattern = bn.notes.map(b=>{
+            let pitch = 0
+            if(type !== 'drum') {
+                // その場所（tick）でのコードを取得する
+                const found_chord = getNowChord(b.tick + nowTick, res)
+            
+                // 「0」が指定された場合、コードのルート音ではなく、オンコードの音へ変更する（ex. G/B→ルート音はGではなくB）
+                pitch = found_chord.pitch
+                if ((type === 'bass' || type === 'chord') && b.pitch % 12 === 0) {
+                    pitch = found_chord.on
+                }
 
-            // その場所（tick）でのコードを取得する
-            const found_chord = getNowChord(b.tick + nowTick, res)
-            let root = found_chord.on
+                // スケールに応じたベースピッチを取得する
+                const base_pitch :number = 12 * trans + NoteName.indexOf(getNowScale(nowTick, res))
 
-            // スケールに応じたベースピッチを取得する
-            const base_pitch :number = 12 * 2 + NoteName.indexOf(getNowScale(nowTick, res))
+                // コードのルート音を取得
+                pitch += base_pitch + b.pitch
 
-            // コードのルート音を取得
-            const pitch = base_pitch + root + b.pitch
+                // コードがマイナーの場合
+                if ((b.pitch % 12) === 4 && found_chord.third === 'minor') {
+                    pitch -= 1
+                }
+            }
 
             return {
-                pitch: pitch,
-                pitch_name: Lib.noteNumberToNoteName(pitch),
+                pitch: type !== 'drum' ? pitch : b.pitch,
+                pitch_name: type !== 'drum' ? Lib.noteNumberToNoteName(pitch) : b.pitch_name,
                 duration: b.duration,
                 channel: b.channel,
                 velocity: b.velocity,
@@ -51,20 +66,31 @@ const setVar2Note = (vars2: Var2[], name: string, repeat: number, nowTick: numbe
         let pattern2 = [...pattern]
         for (let i = 1; i < repeat ; i++) {
             pattern2.push(...pattern.map((p, j)=>{
-                    
-                // その場所（tick）でのコードを取得する
-                const found_chord = getNowChord(p.tick + i*8, res)
-                let root = found_chord.on
+                let pitch = 0
+                if (type !== 'drum') {
+                    // その場所（tick）でのコードを取得する
+                    const found_chord = getNowChord(p.tick + i*8, res)
 
-                // スケールに応じたベースピッチを取得する
-                const base_pitch :number = 12 * 2 + NoteName.indexOf(getNowScale(p.tick + i * 8,res))
+                    // 「0」が指定された場合、コードのルート音ではなく、オンコードの音へ変更する（ex. G/B→ルート音はGではなくB）
+                    pitch = found_chord.pitch
+                    if ((type === 'bass' || type === 'chord') && bn.notes[j].pitch % 12 === 0) {
+                        pitch = found_chord.on
+                    }
 
-                // コードのルート音を取得
-                const pitch = base_pitch + root + bn.notes[j].pitch
+                    // スケールに応じたベースピッチを取得する
+                    const base_pitch :number = 12 * trans + NoteName.indexOf(getNowScale(p.tick + i * 8,res))
 
+                    // コードのルート音を取得
+                    pitch += base_pitch + bn.notes[j].pitch
+
+                    // コードがマイナーの場合
+                    if ((bn.notes[j].pitch % 12) === 4 && found_chord.third === 'minor') {
+                        pitch -= 1
+                    }
+                }
                 return {
-                    pitch: pitch,
-                    pitch_name: Lib.noteNumberToNoteName(pitch),
+                    pitch: type !== 'drum' ? pitch : p.pitch,
+                    pitch_name: type !== 'drum' ? Lib.noteNumberToNoteName(pitch) : p.pitch_name,
                     duration: p.duration,
                     channel: p.channel,
                     velocity: p.velocity,
@@ -78,8 +104,8 @@ const setVar2Note = (vars2: Var2[], name: string, repeat: number, nowTick: numbe
     }
 }
 
-// 変数を認識し、コンパイルする（現在はドラムのみ想定）
-export const compile_bass = (line: string, res: Res, ch: number, vars2: Var2[]) => {
+// 変数を認識し、コンパイルする
+export const expand_vars = (line: string, res: Res, ch: number, vars2: Var2[]) => {
     // noteを用意する
     let reso = 0.5
     let dur_cnt = 0 // 1小節をカウントする
@@ -90,6 +116,7 @@ export const compile_bass = (line: string, res: Res, ch: number, vars2: Var2[]) 
     let tmp_var = ''
     let tmp_repeat = 1
 
+    
     // 一文字目を飛ばして行をイテレート開始
     for (let j = 1; j < line.length; j++) {
     
@@ -134,5 +161,11 @@ export const compile_bass = (line: string, res: Res, ch: number, vars2: Var2[]) 
             d_state = 0
             tmp_var += c
         }
-    }   
+    }
+    // 行末までイテレートした場合。
+    if (tmp_var !== '') {
+        setVar2Note(vars2,tmp_var,tmp_repeat,tick,res,ch)
+        tmp_var = ''
+        tmp_repeat = 1
+    }
 }

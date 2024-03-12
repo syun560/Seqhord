@@ -1,18 +1,18 @@
 import { Track_Info, Var2, Note, Res } from '../types.ts'
-
 import Lib from '../Lib.ts'
 
 const MajorScale = [0, 0, 2, 4, 5, 7, 9, 11, 12]
 const NoteName = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 
-// 変数を認識し、コンパイルする（現在はドラムのみ想定）
+// 連想配列のインタフェース
+interface DrumProgram {  [key: string]: number }
+const program: DrumProgram = { k: 35, s: 38, h: 42, c: 49 }
+
+// 変数を認識し、コンパイルする
 export const compile_var2 = (tracks: Track_Info[], vars: Var2[], res: Res) => {
     // すべてのトラックのテキストをイテレート
     tracks.forEach((track, t) => {
         if (t === 0) return
-
-        // typeを把握する
-        const type = 'bass'
 
         // 文字列を改行ごとに分割して配列に入れる
         const lines = track.texts.split('\n')
@@ -35,21 +35,18 @@ export const compile_var2 = (tracks: Track_Info[], vars: Var2[], res: Res) => {
             if (line.indexOf('@') !== -1) {
 
                 // tmp_notesの追加
-                if (line.indexOf('track') !== -1 ) {
-                    const i = line.indexOf('=')
-                    const b = line.slice(i + 1)
-                    res.tracks[t].name = b
+                if (line.indexOf('name') !== -1 ) {
+                    res.tracks[t].name = line.slice(line.indexOf('=') + 1)
                 }
                 else if (line.indexOf('type') !== -1 ) {
-                    const i = line.indexOf('=')
-                    const b = line.slice(i + 1)
-                    res.tracks[t].type = b
+                    res.tracks[t].type = line.slice(line.indexOf('=') + 1)
+                }
+                else if (line.indexOf('trans') !== -1 ) {
+                    res.tracks[t].trans = Number(line.slice(line.indexOf('=') + 1))
                 }
                 else if (line[1] === 'n') {
-                    const i = line.indexOf('=')
-                    const b = line.slice(i + 1)
                     vars.push({
-                        name: b,
+                        name: line.slice(line.indexOf('=') + 1),
                         notes: []
                     })
                     tick = 0
@@ -63,7 +60,7 @@ export const compile_var2 = (tracks: Track_Info[], vars: Var2[], res: Res) => {
                 // コメント
                 if (line[0] === '#') { }
                 // ノート
-                else if (line[0] === 'a' || line[0] === 'b') {
+                else if (line[0] === 'n') {
                     tick = 0
                     const p = line[0]
 
@@ -72,8 +69,7 @@ export const compile_var2 = (tracks: Track_Info[], vars: Var2[], res: Res) => {
                         const c = line[j]
 
                         // 小節の区切り文字
-                        if (c === '|') {
-                        }
+                        if (c === '|') {  }
 
                         // 休符
                         else if (c === '.') {
@@ -101,7 +97,7 @@ export const compile_var2 = (tracks: Track_Info[], vars: Var2[], res: Res) => {
                         // 数値であればnoteとして認識する
                         else if (!isNaN(Number(c))) {
                             // const pitch = MajorScale[Number(c)] + base_pitch + octarve * 12
-                            const pitch = MajorScale[Number(c)]
+                            const pitch = MajorScale[Number(c)] + octarve * 12
                             const pitch_name = Lib.noteNumberToNoteName(pitch)
 
                             tmp_notes.push({
@@ -121,6 +117,31 @@ export const compile_var2 = (tracks: Track_Info[], vars: Var2[], res: Res) => {
                         else {
                             // エラー
                             console.log(`${i + 1}行${j + 1}文字目(Track: ${t}): 予期せぬ文字列「${c}」です。\n`)
+                        }
+                    }
+                }
+                else if (line[0] === 'c' || line[0] === 'h' || line[0] === 's' || line[0] === 'k') {
+                    tick = 0
+                    const p = line[0]
+                    for (let j = 1; j < line.length; j++) {
+                        const c = line[j]
+                        // 小節の区切り文字
+                        if (c === '|'){
+                        }
+                        else if (c === 'x') {
+                            tmp_notes.push({
+                                pitch: program[p],
+                                pitch_name: 'drum',
+                                duration: 1,
+                                channel: 0,
+                                velocity: 100,
+                                mea: 0,
+                                tick: tick
+                            })
+                            tick += 0.5
+                        }
+                        else if (c === '.') {
+                            tick += 0.5
                         }
                     }
                 }
