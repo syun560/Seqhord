@@ -3,7 +3,7 @@ import { Note, Chord } from '../types.ts'
 
 export const Disp : React.FC<{title: string; bpm: number; mea: number; notes: Note[]; chords: Chord[];}> = ({title, bpm, mea, notes, chords}) =>{
     return (
-        <div className="row">
+        <div className="row mt-3">
         <div className="col-4">
         <h5>Sys</h5>
         <table className="table table-sm">

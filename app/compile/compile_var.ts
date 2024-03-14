@@ -144,6 +144,18 @@ export const compile_var = (tracks: Track_Info[], vars: Var2[], res: Res) => {
                             })
                             tick += 0.5
                         }
+                        else if (c === 'o') { // オープンハイハット
+                            tmp_notes.push({
+                                pitch: 46,
+                                pitch_name: 'Open Hi-Hat',
+                                duration: 1,
+                                channel: 0,
+                                velocity: 100,
+                                mea: 0,
+                                tick: tick
+                            })
+                            tick += 0.5
+                        }
                         else if (c === '.') {
                             tick += 0.5
                         }

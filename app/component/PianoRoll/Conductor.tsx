@@ -52,7 +52,9 @@ export const Conductor = (props: Props) => {
                 <td key={tick} style={tdStyle(tick)} ref={refs.current[tick]}
                     className={nowTick - 1 === tick ? 'table-danger' : ''}
                     onClick={()=>doClick(tick)} >
-                    {tick % a === 0 ? tick / a : ''}
+                    {tick % a === 0 ? 
+                    tick / a
+                    : ''}
                 </td>
             )
         }

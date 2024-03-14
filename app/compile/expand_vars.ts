@@ -143,17 +143,11 @@ export const expand_vars = (line: string, res: Res, ch: number, vars2: Var2[]) =
                 d_state = 2
             }
         }
-        else if (c === '|'){
+        else if (c === '|' || c === ','){
             if (tmp_var !== '') {
                 setVar2Note(vars2,tmp_var,tmp_repeat,tick,res,ch)
                 tmp_var = ''
-                tmp_repeat = 1
-            }
-        }
-        else if (c === ','){
-            if (tmp_var !== '') {
-                setVar2Note(vars2,tmp_var,tmp_repeat,tick,res,ch)
-                tmp_var = ''
+                tick += tmp_repeat * 8 // とりあえず、変数の長さは1小節ぶん（8tick）と仮定する
                 tmp_repeat = 1
             }
         }
@@ -166,6 +160,7 @@ export const expand_vars = (line: string, res: Res, ch: number, vars2: Var2[]) =
     if (tmp_var !== '') {
         setVar2Note(vars2,tmp_var,tmp_repeat,tick,res,ch)
         tmp_var = ''
+        tick += tmp_repeat * 8 // とりあえず、変数の長さは1小節ぶん（8tick）と仮定する
         tmp_repeat = 1
     }
 }

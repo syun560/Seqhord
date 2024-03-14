@@ -8,6 +8,8 @@ import { compile_var } from './compile_var.ts'
 
 // 自作音楽記述言語のコンパイル
 export const compile = (tracks: Track_Info[]) => {
+    const start_time = performance.now()
+
     let res :Res = {
         title: "none",
         bpm: 120,
@@ -119,6 +121,13 @@ export const compile = (tracks: Track_Info[]) => {
 
     res.mea = mea
     console.log(res)
+ 
+    // 実行時間を計測
+    const end_time = performance.now()
+    let time = (end_time - start_time) * 10
+    time = Math.round(time)
+    time = time / 10
 
+    res.errMsg += `compile complete...(${time} ms)\n`
     return res
 }

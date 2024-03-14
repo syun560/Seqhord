@@ -9,6 +9,9 @@ import { Disp } from './component/display.tsx'
 import { PianoRoll } from './component/PianoRoll/PianoRoll.tsx'
 import { TrackSelector } from './component/TrackSelector.tsx'
 
+// image
+import Image from "next/image"
+
 // text
 import { default_text } from './default_txt/default_text.ts'
 import { default_append } from './default_txt/default_append.ts'
@@ -63,7 +66,7 @@ export default function Main() {
     const [bpm, setBpm] = useState(120)
     const [mea, setMea] = useState(0)
     const [title, setTitle] = useState('none')
-    const [errMsg, setErrMsg] = useState('')
+    const [errMsg, setErrMsg] = useState('SMML Pad Ver0.1 ready...')
     const [chords, setChords] = useState<Chord[]>([])
     const [piano, setPiano] = useState(false)
 
@@ -84,6 +87,12 @@ export default function Main() {
         const a = document.createElement('a')
         a.download = `${title}.musicxml`
         a.href = URL.createObjectURL(blob)
+        a.click()
+    }
+    const onSave = (text :string) => {
+        const a = document.createElement('a')
+        a.download = `${title}.txt`
+        a.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(text)
         a.click()
     }
 
@@ -123,7 +132,7 @@ export default function Main() {
         ])
     }
     const onDeleteTab = (t:number) => {
-        const conf = confirm('トラックを削除しますか？（取り消し不可）')
+        const conf = confirm('トラックを削除しますか？（この操作は取り消しできません）')
         if (!conf) return
         const tmp_tracks = [...tracks]
         tmp_tracks.splice(t,1)
@@ -149,22 +158,42 @@ export default function Main() {
 
     return (
         <div className="container-fluid">
-            <Ala />
-            <button type="button" className="btn btn-primary my-2" onClick={onCompile}>Compile</button>
-            <button type="button" className="btn btn-success m-2" onClick={onMIDIGenerate}>to MIDI</button>
-            <button type="button" className="btn btn-secondary m-2" onClick={onXMLGenerate}>to MusicXML</button>
-            <button type="button" className="btn btn-info m-2" onClick={()=>setPiano(!piano)}>PianoRoll</button>
-            
+            {/* <Ala /> */}
+            <button type="button" className="btn btn-sm btn-primary" onClick={onCompile}>
+                {/* <Image src="/midi.png" width={40} height={40} alt="Compile" /> */}
+                Compile
+            </button>
+            <button type="button" className="btn btn-sm btn-secondary" onClick={onMIDIGenerate}>
+                {/* <Image src="/midi.png" width={40} height={40} alt="to MIDI" /> */}
+                to MIDI
+            </button>
+            <button type="button" className="btn btn-sm btn-success" onClick={onXMLGenerate}>
+                {/* <Image src="/midi2.png" width={40} height={40} alt="to MusicXML" /> */}
+                to MusicXML
+            </button>
+            <button type="button" className="btn btn-sm btn-primary" onClick={()=>setPiano(!piano)}>
+                {/* <Image src="/piano.png" width={40} height={40} alt="PianoRoll" /> */}
+                PianoRoll
+            </button>
+            <button type="button" className="btn btn-sm btn-info" onClick={()=>onSave(tracks[tabnum].texts)}>
+                {/* <Image src="/save.png" width={40} height={40} alt="save" /> */}
+                Save
+            </button>
+
             <div className="row">
-                <div className="col-md-12">
-                    
+                <div className="col-md-8 pe-0">                   
                     <TrackSelector tracks={tracks} tabnum={tabnum} onAddTrack={onAddTrack} onTabChange={onTabChange} onDeleteTab={onDeleteTab} />
                     { tracks[tabnum] === undefined  ? '' :
-                    <textarea className="form-control editor" value={tracks[tabnum].texts} rows={20} cols={20} onChange={(e) => onTextChange(e.target.value)} />
+                    <textarea className="form-control m-0 editor bar" value={tracks[tabnum].texts} rows={32} cols={20} onChange={(e) => onTextChange(e.target.value)}  wrap="off" />
                     }
                 </div>
-                <div style={estyle} className="col-md-12 border">
-                    {errMsg}
+                <div style={estyle} className="col-md-4 ps-0">
+                    <ul className="nav nav-tabs"><li className="nav-item">
+                        <a className="pointer nav-link active">
+                        console
+                        </a>
+                    </li></ul>
+                    <textarea className="form-control m-0" value={errMsg} rows={32} cols={20} onChange={()=>{}}/>
                 </div>
             </div>
                         

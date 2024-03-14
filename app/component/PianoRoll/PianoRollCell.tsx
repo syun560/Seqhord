@@ -25,7 +25,7 @@ export default function PianoRollCell(props: Props) {
         overflow: 'visible',
         fontSize: '0.8em',
     }
-    let pianodiv = {
+    let pianodiv: {[key: string]: string}= {
         background: 'lightgray',
         position: 'relative',
         // right: '-50px',
@@ -51,7 +51,6 @@ export default function PianoRollCell(props: Props) {
     // tick4つごとに区切り線を追加
     // 拍子はa/bで表される
     let a = 4
-    let b = 4
 
     if (props.tick % 2 === 0) td = { ...td, borderLeft: '1px solid #e7e7e7' }    // 1拍ごとの線
     if (props.tick % (a * 2) === 0) td = { ...td, borderLeft: '1px solid #111' } // 1小節ごとの線
