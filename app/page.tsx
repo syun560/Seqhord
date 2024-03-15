@@ -159,25 +159,25 @@ export default function Main() {
     return (
         <div className="container-fluid">
             {/* <Ala /> */}
-            <button type="button" className="btn btn-sm btn-primary" onClick={onCompile}>
-                {/* <Image src="/midi.png" width={40} height={40} alt="Compile" /> */}
-                Compile
+            <button type="button" className="btn btn-warning m-1" onClick={()=>onSave(tracks[tabnum].texts)}>
+                {/* <Image src="/save.png" width={40} height={40} alt="save" /> */}
+                Save
             </button>
-            <button type="button" className="btn btn-sm btn-secondary" onClick={onMIDIGenerate}>
+            <button type="button" className="btn btn-success m-1" onClick={onMIDIGenerate}>
                 {/* <Image src="/midi.png" width={40} height={40} alt="to MIDI" /> */}
                 to MIDI
             </button>
-            <button type="button" className="btn btn-sm btn-success" onClick={onXMLGenerate}>
+            <button type="button" className="btn btn-success m-1" onClick={onXMLGenerate}>
                 {/* <Image src="/midi2.png" width={40} height={40} alt="to MusicXML" /> */}
                 to MusicXML
             </button>
-            <button type="button" className="btn btn-sm btn-primary" onClick={()=>setPiano(!piano)}>
+            <button type="button" className="btn btn-primary m-1" onClick={onCompile}>
+                {/* <Image src="/midi.png" width={40} height={40} alt="Compile" /> */}
+                Compile
+            </button>
+            <button type="button" className="btn btn-info m-1" onClick={()=>setPiano(!piano)}>
                 {/* <Image src="/piano.png" width={40} height={40} alt="PianoRoll" /> */}
                 PianoRoll
-            </button>
-            <button type="button" className="btn btn-sm btn-info" onClick={()=>onSave(tracks[tabnum].texts)}>
-                {/* <Image src="/save.png" width={40} height={40} alt="save" /> */}
-                Save
             </button>
 
             <div className="row">
