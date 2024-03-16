@@ -34,6 +34,7 @@ const default_tracks:Track_Info[] = [
         type: 'conductor',
         notes: [],
         texts: default_text,
+        volume: 100
     },{
         name: 'append',
         program: 4,
@@ -42,6 +43,7 @@ const default_tracks:Track_Info[] = [
         type: 'chord',
         notes: [],
         texts: default_append,
+        volume: 100
     },{
         name: 'bass',
         program: 34,
@@ -49,7 +51,8 @@ const default_tracks:Track_Info[] = [
         trans: 5,
         type: 'bass',
         notes: [],
-        texts: default_bass
+        texts: default_bass,
+        volume: 100
     },{
         name: 'drum',
         program: 0,
@@ -57,7 +60,8 @@ const default_tracks:Track_Info[] = [
         trans: 5,
         type: 'drum',
         notes: [],
-        texts: default_drum
+        texts: default_drum,
+        volume: 100
     }
 ]
 
@@ -127,7 +131,8 @@ export default function Main() {
             trans: 5,
             type: 'bass',
             notes: [],
-            texts: ''
+            texts: '',
+            volume: 100
             }
         ])
     }
@@ -183,8 +188,9 @@ export default function Main() {
             <div className="row">
                 <div className="col-md-8 pe-0">                   
                     <TrackSelector tracks={tracks} tabnum={tabnum} onAddTrack={onAddTrack} onTabChange={onTabChange} onDeleteTab={onDeleteTab} />
+                    
                     { tracks[tabnum] === undefined  ? '' :
-                    <textarea className="form-control m-0 editor bar" value={tracks[tabnum].texts} rows={32} cols={20} onChange={(e) => onTextChange(e.target.value)}  wrap="off" />
+                        <textarea className="form-control editor m-0 bar" value={tracks[tabnum].texts} rows={32} cols={20} onChange={(e) => onTextChange(e.target.value)}  wrap="off" />
                     }
                 </div>
                 <div style={estyle} className="col-md-4 ps-0">

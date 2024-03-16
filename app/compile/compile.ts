@@ -29,6 +29,7 @@ export const compile = (tracks: Track_Info[]) => {
             trans: 5,
             notes: [],
             texts: tracks[i].texts,
+            volume: 100
         })
     }
     
@@ -86,6 +87,9 @@ export const compile = (tracks: Track_Info[]) => {
             // プログラムチェンジ
             else if (line.indexOf('program') !== -1) {
                 res.tracks[0].program = Number(line.slice(line.indexOf('=') + 1))
+            }
+            else if (line.indexOf('volume') !== -1) {
+                res.tracks[0].volume = Number(line.slice(line.indexOf('=') + 1))
             }
             // パラグラフ
             else if (line.indexOf('p') !== -1){

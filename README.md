@@ -16,7 +16,7 @@ Now printing...
 ### 変数の使用
 
 ## Demo
-[demo]() (in preparation)
+[demo](https://mugic-mu.vercel.app/) (in preparation)
 
 ## Environment
 | dependencies   | version |

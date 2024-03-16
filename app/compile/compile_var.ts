@@ -48,6 +48,10 @@ export const compile_var = (tracks: Track_Info[], vars: Var2[], res: Res) => {
                 else if (line.indexOf('program') !== -1) {
                     res.tracks[t].program = Number(line.slice(line.indexOf('=') + 1))
                 }
+                // ボリューム
+                else if (line.indexOf('volume') !== -1) {
+                    res.tracks[t].volume = Number(line.slice(line.indexOf('=') + 1))
+                }
                 else if (line[1] === 'n') {
                     vars.push({
                         name: line.slice(line.indexOf('=') + 1),

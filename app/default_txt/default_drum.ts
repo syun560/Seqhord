@@ -2,6 +2,7 @@ export const default_drum
 =`@name    = drum
 @type    = drum
 @program = 0
+@volume  = 90
 
 @n=beat
 c|................|
@@ -12,6 +13,13 @@ k|x...x...x...x...|
 
 @n=p_norm
 c|................|
+h|o...o...o...o...|
+s|....x.......x...|
+k|x.x.....x.x.....|
+@e
+
+@n=fp_norm
+c|x...............|
 h|o...o...o...o...|
 s|....x.......x...|
 k|x.x.....x.x.....|
@@ -32,6 +40,11 @@ k|x.......x.x.....|
 @e
 
 @n=kick
+k|x...x...x...x...|
+@e
+
+@n=h_kick
+h|..x...x...x...x.|
 k|x...x...x...x...|
 @e
 

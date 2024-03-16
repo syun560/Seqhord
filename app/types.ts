@@ -31,6 +31,7 @@ export type Track_Info = {
     notes: Note[]
     texts: string
     program: number // プログラムナンバー(1～128)
+    volume: number
 }
 
 export type Scale = {

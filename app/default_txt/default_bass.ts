@@ -3,8 +3,14 @@ export const default_bass =
 @type    = bass
 @trans   = 2
 @program = 34
+@volume = 100
+
 @n=root
 n|0_0_0_0_0_0_0_0_|
+@e
+
+@n=high_root
+n|+8_+8_+8_+8_+8_+8_+8_+8_|
 @e
 
 @n=oct

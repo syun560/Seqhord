@@ -1,4 +1,4 @@
-.editor {
+.editor{
     font-family: monospace;
 }
 
@@ -9,7 +9,6 @@
 .pianodiv {
     overflow: auto;
 }
-
 .pianotable {
     white-space: nowrap;
     table-layout: fixed;
@@ -20,16 +19,13 @@
     width: 8px;
     height: 8px;
 }
-
 .bar::-webkit-scrollbar-thumb {
     background: #777;
     border-radius: 10px;
 }
-
 .bar::-webkit-scrollbar-track-piece:start {
     background: #DDD;
 }
-
 .bar::-webkit-scrollbar-track-piece:end {
     background: #DDD;
 }

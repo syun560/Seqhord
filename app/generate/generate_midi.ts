@@ -24,6 +24,8 @@ export const generate_midi = (tracks: Track_Info[], bpm: number) => {
         midi_tracks[t] = new MidiWriter.Track()
         midi_tracks[t].addEvent(new MidiWriter.ProgramChangeEvent({instrument: track.program, channel: ch}))
         midi_tracks[t].addTrackName(track.name)
+        // ボリュームの設定
+        midi_tracks[t].addEvent(new MidiWriter.ControllerChangeEvent({controllerNumber: 7, controllerValue: track.volume, channel: ch+1}))
         // midi_tracks[t].addInstrumentName("flute")
         track.notes.map(n => {
             let note = new MidiWriter.NoteEvent({
