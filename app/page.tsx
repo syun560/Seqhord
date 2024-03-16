@@ -1,6 +1,6 @@
 "use client"
 import React from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Chord, Track_Info } from './types.ts'
 
 // component
@@ -22,6 +22,7 @@ import { default_drum } from './default_txt/default_drum.ts'
 import { compile } from './compile/compile.ts'
 import { generate_midi } from './generate/generate_midi.ts'
 import { generate_musicxml } from './generate/generate_musicxml.ts'
+import { loadJSON } from './importJSON.ts'
 
 import './globals.css'
 
@@ -70,12 +71,13 @@ export default function Main() {
     const [bpm, setBpm] = useState(120)
     const [mea, setMea] = useState(0)
     const [title, setTitle] = useState('none')
-    const [errMsg, setErrMsg] = useState('SMML Pad Ver0.1 ready...')
+    const [errMsg, setErrMsg] = useState('SMML Pad Ver0.1 ready...\n')
     const [chords, setChords] = useState<Chord[]>([])
     const [piano, setPiano] = useState(false)
-
     const [tabnum, setTabnum] = useState(0)
 
+    const timer = useRef<NodeJS.Timeout | null>(null);
+    
     const onMIDIGenerate = () => {
         const uri = generate_midi(tracks, bpm)
         const a = document.createElement('a')
@@ -99,12 +101,22 @@ export default function Main() {
         a.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(text)
         a.click()
     }
+    const onJson = () => {
+        const a = document.createElement('a')
+        a.download = `${title}.json`
+        a.href = URL.createObjectURL(new Blob([JSON.stringify(tracks)], { type: 'text/json' }))
+        a.click()
+    }
 
     const onTextChange = (text: string) => {
         // setTexts(texts.map((t, i) => (i === tabnum ? text : t)))
         const tk = [...tracks]
         tk[tabnum].texts = text
         setTracks(tk)
+        if (timer.current) { clearTimeout(timer.current); }
+            timer.current = setTimeout(() => {
+            onCompile()
+        }, 3000)
     }
     const onCompile = () => {
         const res = compile(tracks)
@@ -113,7 +125,7 @@ export default function Main() {
         // setNotes([...res.notes])
         setTracks([...res.tracks])
         setTitle(res.title)
-        setErrMsg(res.errMsg)
+        setErrMsg(errMsg + res.errMsg)
         setBpm(res.bpm)
         setMea(res.mea)
         setChords(res.chords)
@@ -156,6 +168,7 @@ export default function Main() {
 
     useEffect(() => {
         window.addEventListener("beforeunload", handleBeforeUnload);
+        onCompile()
         return () => {
             window.removeEventListener("beforeunload", handleBeforeUnload);
         }
@@ -164,9 +177,13 @@ export default function Main() {
     return (
         <div className="container-fluid">
             {/* <Ala /> */}
+            <button type="button" className="btn btn-warning m-1" onClick={onJson}>
+                Save
+            </button>
+            <input type='file' accept='.json' onChange={(e)=>loadJSON(e, setTracks)} />
             <button type="button" className="btn btn-warning m-1" onClick={()=>onSave(tracks[tabnum].texts)}>
                 {/* <Image src="/save.png" width={40} height={40} alt="save" /> */}
-                Save
+                to Text
             </button>
             <button type="button" className="btn btn-success m-1" onClick={onMIDIGenerate}>
                 {/* <Image src="/midi.png" width={40} height={40} alt="to MIDI" /> */}
