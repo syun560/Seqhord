@@ -17,6 +17,7 @@ import { default_text } from './default_txt/default_text.ts'
 import { default_append } from './default_txt/default_append.ts'
 import { default_bass } from './default_txt/default_bass.ts'
 import { default_drum } from './default_txt/default_drum.ts'
+import { default_guitar } from './default_txt/default_guitar.ts'
 
 // script
 import { compile } from './compile/compile.ts'
@@ -35,16 +36,28 @@ const default_tracks:Track_Info[] = [
         type: 'conductor',
         notes: [],
         texts: default_text,
-        volume: 100
+        volume: 100,
+        panpot: 64,
     },{
-        name: 'append',
+        name: 'rhythm guitar',
         program: 4,
         ch: 0,
         trans: 5,
         type: 'chord',
         notes: [],
         texts: default_append,
-        volume: 100
+        volume: 100,
+        panpot: 64
+    },{
+        name: 'lead guitar',
+        program: 4,
+        ch: 0,
+        trans: 5,
+        type: 'chord',
+        notes: [],
+        texts: default_guitar,
+        volume: 100,
+        panpot: 64
     },{
         name: 'bass',
         program: 34,
@@ -53,7 +66,8 @@ const default_tracks:Track_Info[] = [
         type: 'bass',
         notes: [],
         texts: default_bass,
-        volume: 100
+        volume: 100,
+        panpot: 64
     },{
         name: 'drum',
         program: 0,
@@ -62,7 +76,8 @@ const default_tracks:Track_Info[] = [
         type: 'drum',
         notes: [],
         texts: default_drum,
-        volume: 100
+        volume: 100,
+        panpot: 64
     }
 ]
 
@@ -144,7 +159,8 @@ export default function Main() {
             type: 'bass',
             notes: [],
             texts: '',
-            volume: 100
+            volume: 100,
+            panpot: 64
             }
         ])
     }

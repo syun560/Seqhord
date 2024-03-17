@@ -38,12 +38,14 @@ const setVar2Note = (vars2: Var2[], name: string, repeat: number, nowTick: numbe
                 if ((type === 'bass' || type === 'chord') && b.pitch % 12 === 0) {
                     pitch = found_chord.on
                 }
+                if (type === 'melody') pitch = 0
 
                 // スケールに応じたベースピッチを取得する
                 const base_pitch :number = 12 * trans + NoteName.indexOf(getNowScale(nowTick, res))
 
                 // コードのルート音を取得
                 pitch += base_pitch + b.pitch
+                
 
                 // コードがマイナーの場合
                 if ((b.pitch % 12) === 4 && found_chord.third === 'minor') {
@@ -76,6 +78,7 @@ const setVar2Note = (vars2: Var2[], name: string, repeat: number, nowTick: numbe
                     if ((type === 'bass' || type === 'chord') && bn.notes[j].pitch % 12 === 0) {
                         pitch = found_chord.on
                     }
+                    if (type === 'melody') pitch = 0
 
                     // スケールに応じたベースピッチを取得する
                     const base_pitch :number = 12 * trans + NoteName.indexOf(getNowScale(p.tick + i * 8,res))
@@ -102,6 +105,7 @@ const setVar2Note = (vars2: Var2[], name: string, repeat: number, nowTick: numbe
 
         res.tracks[ch].notes.push(...pattern2)
     }
+    return bn
 }
 
 // 変数を認識し、コンパイルする
@@ -132,7 +136,7 @@ export const expand_vars = (line: string, res: Res, ch: number, vars2: Var2[]) =
         }
 
         // 数値であれば繰り返し回数として認識する
-        else if (!isNaN(Number(c))) {
+        else if (!isNaN(Number(c)) && d_state !== 0) {
             if (d_state === 1) {
                 tmp_repeat = Number(c)
                 d_state = 2
@@ -145,9 +149,11 @@ export const expand_vars = (line: string, res: Res, ch: number, vars2: Var2[]) =
         }
         else if (c === '|' || c === ','){
             if (tmp_var !== '') {
-                setVar2Note(vars2,tmp_var,tmp_repeat,tick,res,ch)
+                const bn = setVar2Note(vars2,tmp_var,tmp_repeat,tick,res,ch)
                 tmp_var = ''
-                tick += tmp_repeat * 8 // とりあえず、変数の長さは1小節ぶん（8tick）と仮定する
+                if (bn !== undefined){
+                    tick += tmp_repeat * bn.len
+                }
                 tmp_repeat = 1
             }
         }
@@ -158,9 +164,11 @@ export const expand_vars = (line: string, res: Res, ch: number, vars2: Var2[]) =
     }
     // 行末までイテレートした場合。
     if (tmp_var !== '') {
-        setVar2Note(vars2,tmp_var,tmp_repeat,tick,res,ch)
+        const bn = setVar2Note(vars2,tmp_var,tmp_repeat,tick,res,ch)
         tmp_var = ''
-        tick += tmp_repeat * 8 // とりあえず、変数の長さは1小節ぶん（8tick）と仮定する
+        if (bn !== undefined){
+            tick += tmp_repeat * bn.len
+        }
         tmp_repeat = 1
     }
 }

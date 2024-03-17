@@ -29,7 +29,8 @@ export const compile = (tracks: Track_Info[]) => {
             trans: 5,
             notes: [],
             texts: tracks[i].texts,
-            volume: 100
+            volume: 100,
+            panpot: 64
         })
     }
     

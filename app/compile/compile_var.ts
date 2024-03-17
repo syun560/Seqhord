@@ -10,6 +10,8 @@ const program: DrumProgram = { k: 35, s: 38, h: 42, c: 49 }
 
 // 変数を認識し、コンパイルする
 export const compile_var = (tracks: Track_Info[], vars: Var2[], res: Res) => {
+    console.log('compile_var')
+    
     // すべてのトラックのテキストをイテレート
     tracks.forEach((track, t) => {
         if (t === 0) return
@@ -20,9 +22,9 @@ export const compile_var = (tracks: Track_Info[], vars: Var2[], res: Res) => {
         let reso = 0.5
         let octarve = 0
         let dur_cnt = 0 // 1小節をカウントする
-        let is_note = false // 休符かnoteか
 
         let tmp_notes: Note[] = []
+        let max_tick = 0
 
         // ベースノートを生成する
         // 文字列を検索する
@@ -52,15 +54,22 @@ export const compile_var = (tracks: Track_Info[], vars: Var2[], res: Res) => {
                 else if (line.indexOf('volume') !== -1) {
                     res.tracks[t].volume = Number(line.slice(line.indexOf('=') + 1))
                 }
+                // パンポット
+                else if (line.indexOf('panpot') !== -1) {
+                    res.tracks[t].panpot = Number(line.slice(line.indexOf('=') + 1))
+                }
                 else if (line[1] === 'n') {
                     vars.push({
                         name: line.slice(line.indexOf('=') + 1),
-                        notes: []
+                        notes: [],
+                        len: 8
                     })
                     tick = 0
                 }
                 if (line[1] === 'e') {
                     vars[vars.length - 1].notes = [...tmp_notes]
+                    vars[vars.length - 1].len = max_tick
+                    console.log(tick)
                     tmp_notes = []
                 }
             }
@@ -83,7 +92,6 @@ export const compile_var = (tracks: Track_Info[], vars: Var2[], res: Res) => {
                         else if (c === '.') {
                             tick += reso
                             dur_cnt += 1
-                            is_note = false
                         }
 
                          // 次のノートを一オクターブ上げる
@@ -93,6 +101,10 @@ export const compile_var = (tracks: Track_Info[], vars: Var2[], res: Res) => {
                         // 次のノートを一オクターブ下げる
                         else if (c === '-') {
                             octarve = -1
+                        }
+                        // 前のノートを半音上げる
+                        else if (c === '#') {
+                            tmp_notes[tmp_notes.length - 1].pitch += 1
                         }
                         // 前のノートを伸ばす
                         else if (c === '_') {
@@ -120,7 +132,6 @@ export const compile_var = (tracks: Track_Info[], vars: Var2[], res: Res) => {
                             tick += reso
                             octarve = 0
                             dur_cnt += 1
-                            is_note = true
                         }
                         else {
                             // エラー
@@ -166,6 +177,8 @@ export const compile_var = (tracks: Track_Info[], vars: Var2[], res: Res) => {
                     }
                 }
             }
+
+            max_tick = tick
         })
 
         // 変数を認識する

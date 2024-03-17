@@ -35,7 +35,7 @@ export const compile_melody = (line: string, i: number, res: Res, c: number, tra
             octarve = -1
         }
         // 前のノートを半音上げる
-        else if (c === '-') {
+        else if (c === '#') {
             notes[notes.length - 1].pitch += 1
         }
         // 前のノートのdurationを半分にする

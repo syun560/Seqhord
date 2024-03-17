@@ -32,6 +32,7 @@ export type Track_Info = {
     texts: string
     program: number // プログラムナンバー(1～128)
     volume: number
+    panpot: number
 }
 
 export type Scale = {
@@ -43,6 +44,7 @@ export type Scale = {
 export type Var2 = {
     name :string
     notes: Note[]
+    len: number
 }
 
 // コンパイル結果
