@@ -16,7 +16,7 @@ export const loadJSON = (e: ChangeEvent<HTMLInputElement>, setTracks: any) => {
             console.log(jsonData)
             setTracks(jsonData)
         } catch (error) {
-            console.error('JSONファイルを解析できませんでした。', error)
+            console.error('SMMLファイルを解析できませんでした。', error)
         }
     }
 

@@ -118,9 +118,12 @@ export default function Main() {
     }
     const onJson = () => {
         const a = document.createElement('a')
-        a.download = `${title}.json`
+        a.download = `${title}.smml`
         a.href = URL.createObjectURL(new Blob([JSON.stringify(tracks)], { type: 'text/json' }))
         a.click()
+    }
+    const onFormat = () => {
+
     }
 
     const onTextChange = (text: string) => {
@@ -196,7 +199,7 @@ export default function Main() {
             <button type="button" className="btn btn-warning m-1" onClick={onJson}>
                 Save
             </button>
-            <input type='file' accept='.json' onChange={(e)=>loadJSON(e, setTracks)} />
+            <input type='file' accept='.json, .smml' onChange={(e)=>loadJSON(e, setTracks)} />
             <button type="button" className="btn btn-warning m-1" onClick={()=>onSave(tracks[tabnum].texts)}>
                 {/* <Image src="/save.png" width={40} height={40} alt="save" /> */}
                 to Text
@@ -217,7 +220,12 @@ export default function Main() {
                 {/* <Image src="/piano.png" width={40} height={40} alt="PianoRoll" /> */}
                 PianoRoll
             </button>
-
+            <div className="form-check">
+                <input className="form-check-input" type="checkbox" value="" />
+                <label className="form-check-label">
+                    Default checkbox
+                </label>
+            </div>
             <div className="row">
                 <div className="col-md-8 pe-0">                   
                     <TrackSelector tracks={tracks} tabnum={tabnum} onAddTrack={onAddTrack} onTabChange={onTabChange} onDeleteTab={onDeleteTab} />
