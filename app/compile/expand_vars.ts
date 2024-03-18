@@ -26,6 +26,8 @@ const setVar2Note = (vars2: Var2[], name: string, repeat: number, nowTick: numbe
     const bn = vars2.find(v=> v.name === name)
     if (bn !== undefined) {
 
+        const len = bn.len
+
         // tickとNoteをずらしたパターンを作る
         let pattern = bn.notes.map(b=>{
             let pitch = 0
@@ -48,7 +50,7 @@ const setVar2Note = (vars2: Var2[], name: string, repeat: number, nowTick: numbe
                 
 
                 // コードがマイナーの場合
-                if ((b.pitch % 12) === 4 && found_chord.third === 'minor') {
+                if (type !== 'melody' && (b.pitch % 12) === 4 && found_chord.third === 'minor') {
                     pitch -= 1
                 }
             }
@@ -81,13 +83,13 @@ const setVar2Note = (vars2: Var2[], name: string, repeat: number, nowTick: numbe
                     if (type === 'melody') pitch = 0
 
                     // スケールに応じたベースピッチを取得する
-                    const base_pitch :number = 12 * trans + NoteName.indexOf(getNowScale(p.tick + i * 8,res))
+                    const base_pitch :number = 12 * trans + NoteName.indexOf(getNowScale(p.tick + i * len,res))
 
                     // コードのルート音を取得
                     pitch += base_pitch + bn.notes[j].pitch
 
                     // コードがマイナーの場合
-                    if ((bn.notes[j].pitch % 12) === 4 && found_chord.third === 'minor') {
+                    if (type !== 'melody' && (bn.notes[j].pitch % 12) === 4 && found_chord.third === 'minor') {
                         pitch -= 1
                     }
                 }
@@ -97,8 +99,8 @@ const setVar2Note = (vars2: Var2[], name: string, repeat: number, nowTick: numbe
                     duration: p.duration,
                     channel: p.channel,
                     velocity: p.velocity,
-                    mea: Math.floor((p.tick + i*8) / 8),
-                    tick: p.tick + i * 8
+                    mea: Math.floor((p.tick + i*len) / 8),
+                    tick: p.tick + i * len
                 }
             }))
         }

@@ -2,15 +2,13 @@
 import React from "react"
 import { useState, useEffect, useRef } from "react"
 import { Chord, Track_Info } from './types.ts'
+import Image from "next/image"
 
 // component
 import { Ala } from './component/alealert.tsx'
 import { Disp } from './component/display.tsx'
 import { PianoRoll } from './component/PianoRoll/PianoRoll.tsx'
 import { TrackSelector } from './component/TrackSelector.tsx'
-
-// image
-import Image from "next/image"
 
 // text
 import { default_text } from './default_txt/default_text.ts'
@@ -82,6 +80,7 @@ const default_tracks:Track_Info[] = [
 ]
 
 export default function Main() {
+    // useState
     const [tracks, setTracks] = useState<Track_Info[]>(default_tracks)
     const [bpm, setBpm] = useState(120)
     const [mea, setMea] = useState(0)
@@ -90,6 +89,8 @@ export default function Main() {
     const [chords, setChords] = useState<Chord[]>([])
     const [piano, setPiano] = useState(false)
     const [tabnum, setTabnum] = useState(0)
+    const [autoCompile, setAutoCompile] = useState(true)
+    const [autoFormat, setAutoFormat] = useState(true)
 
     const timer = useRef<NodeJS.Timeout | null>(null);
     
@@ -131,10 +132,12 @@ export default function Main() {
         const tk = [...tracks]
         tk[tabnum].texts = text
         setTracks(tk)
-        if (timer.current) { clearTimeout(timer.current); }
+        if (autoCompile){    
+            if (timer.current) { clearTimeout(timer.current); }
             timer.current = setTimeout(() => {
-            onCompile()
-        }, 3000)
+                onCompile()
+            }, 3000)
+        }
     }
     const onCompile = () => {
         const res = compile(tracks)
@@ -220,11 +223,13 @@ export default function Main() {
                 {/* <Image src="/piano.png" width={40} height={40} alt="PianoRoll" /> */}
                 PianoRoll
             </button>
-            <div className="form-check">
-                <input className="form-check-input" type="checkbox" value="" />
-                <label className="form-check-label">
-                    Default checkbox
-                </label>
+            <div className="form-check form-check-inline">
+                <input className="form-check-input" type="checkbox" checked={autoCompile} onChange={()=>setAutoCompile(!autoCompile)}/>
+                <label className="form-check-label">auto compile</label>
+            </div>
+            <div className="form-check form-check-inline">
+                <input className="form-check-input" type="checkbox" checked={autoFormat} onChange={()=>setAutoFormat(!autoFormat)}/>
+                <label className="form-check-label">auto format</label>
             </div>
             <div className="row">
                 <div className="col-md-8 pe-0">                   

@@ -28,11 +28,11 @@ export const compile_melody = (line: string, i: number, res: Res, c: number, tra
         const c = line[j]
         // 次のノートを一オクターブ上げる
         if (c === '+') {
-            octarve = 1
+            octarve += 1
         }
         // 次のノートを一オクターブ下げる
         else if (c === '-') {
-            octarve = -1
+            octarve -= 1
         }
         // 前のノートを半音上げる
         else if (c === '#') {

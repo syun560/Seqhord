@@ -21,7 +21,7 @@ c|C
 @p=9
 c|C/E             |F            |G           |E/G#              |Am             |D/F#            |Dm___C/E___F|___G_____
 1|all_stroke*8
-2|riff3
+2|riff3, riff4
 3|root*8
 4|fp_norm, p_norm*7,
 
@@ -54,6 +54,7 @@ c|C          |C           |G           |E           |Am           |Am           
 n|-5___1___  |2___1___    |5_3_2_1_    |2___3__.    |-5___1___    |2___3___     |5_3_2_1_     |2___3__.
 k|あお       |いは        |るな,んて   |もん  わ    |ぼく         |にわ         |わからな     |いん  だ
 1|all_stroke*8
+2|sabi*2
 3|root*8,
 4|fp_norm, p_norm*7
 
