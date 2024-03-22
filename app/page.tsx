@@ -9,6 +9,8 @@ import { Ala } from './component/alealert.tsx'
 import { Disp } from './component/display.tsx'
 import { PianoRoll } from './component/PianoRoll/PianoRoll.tsx'
 import { TrackSelector } from './component/TrackSelector.tsx'
+import { CustomLanguageRule, EditorComponent } from './component/EditorComponent.tsx'
+import { Instrument } from "./component/Instrument.tsx"
 
 // text
 import { default_text } from './default_txt/default_text.ts'
@@ -79,6 +81,14 @@ const default_tracks:Track_Info[] = [
     }
 ]
 
+function getCode() {
+    return [
+        "public static void main() {",
+        "   System.out,println('test')",
+        "}"
+    ].join("\n");
+}
+
 export default function Main() {
     // useState
     const [tracks, setTracks] = useState<Track_Info[]>(default_tracks)
@@ -93,6 +103,11 @@ export default function Main() {
     const [autoFormat, setAutoFormat] = useState(true)
 
     const timer = useRef<NodeJS.Timeout | null>(null);
+
+    const test: CustomLanguageRule[] = [
+        { token: "custom-error", tokenPattern: "public", foreground: "ff0000", fontStyle: "bold" },
+        { token: "custom-notice", tokenPattern: /'.*'/, foreground: "FFA500" },
+    ];
     
     const onMIDIGenerate = () => {
         const uri = generate_midi(tracks, bpm)
@@ -199,6 +214,7 @@ export default function Main() {
     return (
         <div className="container-fluid">
             {/* <Ala /> */}
+            <Instrument />
             <button type="button" className="btn btn-warning m-1" onClick={onJson}>
                 Save
             </button>
@@ -223,6 +239,7 @@ export default function Main() {
                 {/* <Image src="/piano.png" width={40} height={40} alt="PianoRoll" /> */}
                 PianoRoll
             </button>
+            {/* <EditorComponent rules={test} value={getCode()} height={"100vh"} width={"100vw"} /> */}
             <div className="form-check form-check-inline">
                 <input className="form-check-input" type="checkbox" checked={autoCompile} onChange={()=>setAutoCompile(!autoCompile)}/>
                 <label className="form-check-label">auto compile</label>
