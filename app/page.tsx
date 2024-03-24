@@ -1,33 +1,41 @@
 "use client"
+
+// react
 import React from "react"
 import { useState, useEffect, useRef } from "react"
-import { Chord, Track_Info } from './types.ts'
 import Image from "next/image"
 
+// types
+import { Chord, Track_Info } from 'types'
+
+// custom hook
+import { useSequencer } from "./component/useSequencer"
+import { useInstrument } from "./component/useInstrument"
+
 // component
-import { Ala } from './component/alealert.tsx'
-import { Disp } from './component/display.tsx'
-import { PianoRoll } from './component/PianoRoll/PianoRoll.tsx'
-import { TrackSelector } from './component/TrackSelector.tsx'
-import { CustomLanguageRule, EditorComponent } from './component/EditorComponent.tsx'
-import { Instrument } from "./component/Instrument.tsx"
+import { Ala } from './component/alealert'
+import { Disp } from './component/display'
+import { PianoRoll } from './component/PianoRoll/PianoRoll'
+import { TrackSelector } from './component/TrackSelector'
+import { CustomLanguageRule, EditorComponent } from './component/EditorComponent'
+import { Instrument } from "./component/Instrument"
 
 // text
-import { default_text } from './default_txt/default_text.ts'
-import { default_append } from './default_txt/default_append.ts'
-import { default_bass } from './default_txt/default_bass.ts'
-import { default_drum } from './default_txt/default_drum.ts'
-import { default_guitar } from './default_txt/default_guitar.ts'
+import { default_text } from './default_txt/default_text'
+import { default_append } from './default_txt/default_append'
+import { default_bass } from './default_txt/default_bass'
+import { default_drum } from './default_txt/default_drum'
+import { default_guitar } from './default_txt/default_guitar'
 
 // script
-import { compile } from './compile/compile.ts'
-import { generate_midi } from './generate/generate_midi.ts'
-import { generate_musicxml } from './generate/generate_musicxml.ts'
-import { loadJSON } from './importJSON.ts'
+import { compile } from './compile/compile'
+import { generate_midi } from './generate/generate_midi'
+import { generate_musicxml } from './generate/generate_musicxml'
+import { loadJSON } from './importJSON'
 
 import './globals.css'
 
-const default_tracks:Track_Info[] = [
+const default_tracks: Track_Info[] = [
     {
         name: 'melody',
         program: 73,
@@ -38,7 +46,7 @@ const default_tracks:Track_Info[] = [
         texts: default_text,
         volume: 100,
         panpot: 64,
-    },{
+    }, {
         name: 'rhythm guitar',
         program: 4,
         ch: 0,
@@ -48,7 +56,7 @@ const default_tracks:Track_Info[] = [
         texts: default_append,
         volume: 100,
         panpot: 64
-    },{
+    }, {
         name: 'lead guitar',
         program: 4,
         ch: 0,
@@ -58,7 +66,7 @@ const default_tracks:Track_Info[] = [
         texts: default_guitar,
         volume: 100,
         panpot: 64
-    },{
+    }, {
         name: 'bass',
         program: 34,
         ch: 0,
@@ -68,7 +76,7 @@ const default_tracks:Track_Info[] = [
         texts: default_bass,
         volume: 100,
         panpot: 64
-    },{
+    }, {
         name: 'drum',
         program: 0,
         ch: 10,
@@ -97,10 +105,14 @@ export default function Main() {
     const [title, setTitle] = useState('none')
     const [errMsg, setErrMsg] = useState('SMML Pad Ver0.1 ready...\n')
     const [chords, setChords] = useState<Chord[]>([])
-    const [piano, setPiano] = useState(false)
+    const [piano, setPiano] = useState(true)
     const [tabnum, setTabnum] = useState(0)
     const [autoCompile, setAutoCompile] = useState(true)
     const [autoFormat, setAutoFormat] = useState(true)
+
+    // custom hook
+    const seq = useSequencer()
+    const midi = useInstrument()
 
     const timer = useRef<NodeJS.Timeout | null>(null);
 
@@ -108,7 +120,7 @@ export default function Main() {
         { token: "custom-error", tokenPattern: "public", foreground: "ff0000", fontStyle: "bold" },
         { token: "custom-notice", tokenPattern: /'.*'/, foreground: "FFA500" },
     ];
-    
+
     const onMIDIGenerate = () => {
         const uri = generate_midi(tracks, bpm)
         const a = document.createElement('a')
@@ -126,7 +138,7 @@ export default function Main() {
         a.href = URL.createObjectURL(blob)
         a.click()
     }
-    const onSave = (text :string) => {
+    const onSave = (text: string) => {
         const a = document.createElement('a')
         a.download = `${title}.txt`
         a.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(text)
@@ -139,7 +151,7 @@ export default function Main() {
         a.click()
     }
     const onFormat = () => {
-
+        // 文字列をフォーマットする
     }
 
     const onTextChange = (text: string) => {
@@ -147,7 +159,7 @@ export default function Main() {
         const tk = [...tracks]
         tk[tabnum].texts = text
         setTracks(tk)
-        if (autoCompile){    
+        if (autoCompile) {
             if (timer.current) { clearTimeout(timer.current); }
             timer.current = setTimeout(() => {
                 onCompile()
@@ -172,7 +184,7 @@ export default function Main() {
     const onAddTrack = () => {
         if (tracks.length > 16) return
         setTracks([...tracks,
-            {
+        {
             name: 'new_track',
             program: 0,
             ch: 0,
@@ -182,23 +194,23 @@ export default function Main() {
             texts: '',
             volume: 100,
             panpot: 64
-            }
+        }
         ])
     }
-    const onDeleteTab = (t:number) => {
+    const onDeleteTab = (t: number) => {
         const conf = confirm('トラックを削除しますか？（この操作は取り消しできません）')
         if (!conf) return
         const tmp_tracks = [...tracks]
-        tmp_tracks.splice(t,1)
+        tmp_tracks.splice(t, 1)
         setTracks(tmp_tracks)
         setTabnum(0)
     }
 
-    let estyle :React.CSSProperties = {
+    let estyle: React.CSSProperties = {
         whiteSpace: 'pre-wrap'
     }
 
-    const handleBeforeUnload = (e:any) => {
+    const handleBeforeUnload = (e: any) => {
         e.preventDefault()
         e.returnValue = "本当にページを離れますか？"
     }
@@ -214,12 +226,21 @@ export default function Main() {
     return (
         <div className="container-fluid">
             {/* <Ala /> */}
-            <Instrument />
+            <Instrument midi={midi} />
+            <span>
+                <button className="btn btn-secondary mx-1" onClick={seq.first}>
+                    l＜
+                </button>
+                <button className="btn btn-primary me-1" onClick={seq.playToggle}>
+                    {seq.isPlaying ? 'II' : '▶'}
+                </button>
+                <span>{seq.nowTick}</span>
+            </span>
             <button type="button" className="btn btn-warning m-1" onClick={onJson}>
                 Save
             </button>
-            <input type='file' accept='.json, .smml' onChange={(e)=>loadJSON(e, setTracks)} />
-            <button type="button" className="btn btn-warning m-1" onClick={()=>onSave(tracks[tabnum].texts)}>
+            <input type='file' accept='.json, .smml' onChange={(e) => loadJSON(e, setTracks)} />
+            <button type="button" className="btn btn-warning m-1" onClick={() => onSave(tracks[tabnum].texts)}>
                 {/* <Image src="/save.png" width={40} height={40} alt="save" /> */}
                 to Text
             </button>
@@ -235,41 +256,42 @@ export default function Main() {
                 {/* <Image src="/midi.png" width={40} height={40} alt="Compile" /> */}
                 Compile
             </button>
-            <button type="button" className="btn btn-info m-1" onClick={()=>setPiano(!piano)}>
+            <button type="button" className="btn btn-info m-1" onClick={() => setPiano(!piano)}>
                 {/* <Image src="/piano.png" width={40} height={40} alt="PianoRoll" /> */}
                 PianoRoll
             </button>
             {/* <EditorComponent rules={test} value={getCode()} height={"100vh"} width={"100vw"} /> */}
             <div className="form-check form-check-inline">
-                <input className="form-check-input" type="checkbox" checked={autoCompile} onChange={()=>setAutoCompile(!autoCompile)}/>
+                <input className="form-check-input" type="checkbox" checked={autoCompile} onChange={() => setAutoCompile(!autoCompile)} />
                 <label className="form-check-label">auto compile</label>
             </div>
             <div className="form-check form-check-inline">
-                <input className="form-check-input" type="checkbox" checked={autoFormat} onChange={()=>setAutoFormat(!autoFormat)}/>
+                <input className="form-check-input" type="checkbox" checked={autoFormat} onChange={() => setAutoFormat(!autoFormat)} />
                 <label className="form-check-label">auto format</label>
             </div>
             <div className="row">
-                <div className="col-md-8 pe-0">                   
+                <div className="col-md-6 pe-0">
                     <TrackSelector tracks={tracks} tabnum={tabnum} onAddTrack={onAddTrack} onTabChange={onTabChange} onDeleteTab={onDeleteTab} />
-                    
-                    { tracks[tabnum] === undefined  ? '' :
-                        <textarea className="form-control editor m-0 bar" value={tracks[tabnum].texts} rows={32} cols={20} onChange={(e) => onTextChange(e.target.value)}  wrap="off" />
+
+                    {tracks[tabnum] === undefined ? '' :
+                        <textarea className="form-control editor m-0 bar" value={tracks[tabnum].texts} rows={32} cols={20} onChange={(e) => onTextChange(e.target.value)} wrap="off" />
                     }
                 </div>
-                <div style={estyle} className="col-md-4 ps-0">
+                <div style={estyle} className="col-md-6 ps-0">
                     <ul className="nav nav-tabs"><li className="nav-item">
                         <a className="pointer nav-link active">
-                        console
+                            console
                         </a>
                     </li></ul>
-                    <textarea className="form-control m-0" value={errMsg} rows={32} cols={20} onChange={()=>{}}/>
+                    {tracks[tabnum] === undefined || tracks[tabnum].notes === undefined ? '' :
+                        piano ? <PianoRoll notes={tracks[tabnum].notes} />
+                            : <Disp title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords} />
+                    }
+                    <textarea className="form-control m-0" value={errMsg} rows={32} cols={20} onChange={() => { }} />
                 </div>
             </div>
-                        
-            { tracks[tabnum] === undefined || tracks[tabnum].notes === undefined ? '' :
-            piano ? <PianoRoll notes={tracks[tabnum].notes} />
-            :<Disp title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords} />
-            }
+
+
         </div>
     )
 }

@@ -1,6 +1,6 @@
 import React from 'react'
-import { Note } from '../../types.ts'
-import Lib from '../../Lib.ts'
+import { Note } from 'types'
+import Lib from 'Lib'
 
 import { Conductor } from './Conductor.tsx'
 import PianoRollCell from './PianoRollCell.tsx'
@@ -29,7 +29,7 @@ export const PianoRoll: React.FC<{notes: Note[]}> = ({ notes }) => {
     const reso = 1
 
     // tickの最大値
-    let tick_max = notes[notes.length - 1].tick
+    let tick_max = notes.length > 0 ? notes[notes.length - 1].tick : 0
 
     // ダミーの数値（Reactのkeyのため必要？）
     const pitchs:number[] = []
