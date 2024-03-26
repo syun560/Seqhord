@@ -1,11 +1,12 @@
-import React, { useRef, createRef, useState, useEffect } from 'react'
+import React, { useRef, createRef, useEffect } from 'react'
+import { Sequencer } from '@/types'
 
 interface Props {
     tickLength: number
+    seq: Sequencer
 }
 
 export const Conductor = (props: Props) => {
-    const [nowTick, setNowTick] = useState<number>(1)
 
     // ピアノロールを最適な箇所に自動でスクロールする
     // refをtickLengthぶん作ってみる
@@ -14,8 +15,6 @@ export const Conductor = (props: Props) => {
         refs.current[i] = (createRef<HTMLTableCellElement>())
     }
     const scrollToCenter = (i: number) => {
-        // console.log(refs.current[i])
-        // if (refs.current[i])console.log('scrolled!')
         if (i < props.tickLength)
             refs.current[i].current?.scrollIntoView({
                 behavior: 'smooth',
@@ -24,13 +23,13 @@ export const Conductor = (props: Props) => {
             })
     }
     const doClick = (tick: number) => {
-        setNowTick(tick)
+        props.seq.setNowTick(tick)
     }
     
     // いい感じのところでスクロールする。
-    // useEffect(()=> {
-    //     if (seqState.nowTick % 20 === 0 && seqState.isPlaying) scrollToCenter(seqState.nowTick + 10)
-    // }, [seqState.nowTick, seqState.isPlaying])
+    useEffect(()=> {
+         if (props.seq.nowTick % 20 === 0 && props.seq.isPlaying) scrollToCenter(props.seq.nowTick + 10)
+    }, [props.seq.nowTick, props.seq.isPlaying])
     
     //let a = state.timeSignatures[0].timeSignature[0] * 2
     let a = 8 // 拍子
@@ -50,7 +49,7 @@ export const Conductor = (props: Props) => {
         for (let tick = 0; tick <= props.tickLength; tick++) {
             res.push(
                 <td key={tick} style={tdStyle(tick)} ref={refs.current[tick]}
-                    className={nowTick - 1 === tick ? 'table-danger' : ''}
+                    className={props.seq.nowTick - 1 === tick ? 'bg-info' : ''}
                     onClick={()=>doClick(tick)} >
                     {tick % a === 0 ? 
                     tick / a
@@ -62,7 +61,7 @@ export const Conductor = (props: Props) => {
     })()
 
     return <tr>
-        <th style={tdStyle(1)} className={nowTick === 0 ? 'table-danger' : ''}></th>
+        <th style={tdStyle(1)} className={props.seq.nowTick === 0 ? 'bg-info' : ''}></th>
         {cells}
     </tr>
 }

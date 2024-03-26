@@ -1,28 +1,31 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { MIDI } from '@/types'
 
-export const useInstrument = () => {
+export const useInstrument = (): MIDI => {
     const [selectedOutPortID, setSelectedOutPortID] = useState('')
     const [outPorts, setOutPorts]: [any, any] = useState([])
     const [outputs, setOutputs] = useState<any>()
+    // const [output, setOutput] = useState<MIDIOutput>()
+    const output = useRef<MIDIOutput>()
 
     const registerOutput = () => {
 
     }
 
     const programChange = (program: number, ch: number) => {
-        const output = outputs.get(selectedOutPortID)
-        output.send([0xC0 + ch, program])
+        // const output = outputs.get(selectedOutPortID)
+        output.current?.send([0xC0 + ch, program])
     }
 
     const noteOn = (pitch: number) => {
-        const output = outputs.get(selectedOutPortID)
+        // const output = outputs.get(selectedOutPortID)
         const ch = 0
-        output.send([0x90 + ch, pitch, 40])
-        output.send([0x80 + ch, pitch, 40], window.performance.now() + 1000) // 1秒後にノートオフ
+        output.current?.send([0x90 + ch, pitch, 64])
+        output.current?.send([0x80 + ch, pitch, 64], window.performance.now() + 100) // 1秒後にノートオフ
     }
     const allNoteOff = () => {
-        const output = outputs.get(selectedOutPortID)
-        output.send([0xB0, 0x7B, 0])
+        // const output = outputs.get(selectedOutPortID)
+        output.current?.send([0xB0, 0x7B, 0])
     }
 
     // 読み込み時に実行
@@ -45,8 +48,11 @@ export const useInstrument = () => {
                     setSelectedOutPortID(outPorts[0].ID)
                 }
                 setOutPorts(outPorts)
-                console.log("MIDI READY!!!");
-
+                const op:MIDIOutput = tmpOutputs.get(outPorts[0].ID)
+                console.log(op)
+                output.current = op
+                console.log(outPorts[0].ID)
+                console.log("MIDI READY!!!")
             },
 
             // 失敗時
@@ -54,5 +60,5 @@ export const useInstrument = () => {
         )
     }, [])
 
-    return {noteOn ,setSelectedOutPortID, outPorts}
+    return {noteOn , programChange,setSelectedOutPortID, outPorts}
 }

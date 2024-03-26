@@ -1,6 +1,13 @@
 import React  from 'react'
+import { MIDI } from '@/types'
 
-export const Instrument = (midi: any) => {
+interface Props {
+    midi: MIDI
+}
+
+export const Instrument = (props: Props) => {
+
+    const midi = props.midi
 
     const test = ()=>{
         midi.noteOn(60)

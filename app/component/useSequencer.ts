@@ -1,13 +1,14 @@
-import React, { useRef, useState } from 'react'
-import { Instrument } from './Instrument'
+import { useRef, useState } from 'react'
+import { Sequencer, MIDI, Track_Info } from '@/types'
 
-export function useSequencer () {
-    const bpm = useRef(120)
+
+export const useSequencer = (m: MIDI, tracks: Track_Info[], bpm: number):Sequencer => {
     const [isPlaying, setIsPlaying] = useState(false)
     const [nowTick, setNowTick] = useState(0)
+    const [midi, setMIDI] = useState<MIDI>(m)
 
     const timer = useRef<any>()
-    const delayTime = 60 * 1000 / (bpm.current * 4)
+    const delayTime = useRef(60 * 1000 / (bpm * 2))
     
     // setTimeOutから正しくnowTickを参照するため
     const nowTickRef = useRef(nowTick)
@@ -18,23 +19,19 @@ export function useSequencer () {
     // tickが進むごとに実行される関数
     const proceed = () => {
         setNowTick(n=>n+1)
-        timer.current = setTimeout(proceed, delayTime)
-        // if (nowTickRef.current < tickLengthRef.current) {
-        //     play()
-        //     // seqDispatch({type: 'nextTick'})
-        //     timer.current = setTimeout(proceed, delayTime )
-        // }
-        // else {
-        //     // seqDispatch({type: 'stop'})
-        //     clearTimeout(timer.current)
-        // }
+        delayTime.current = 60 * 1000 / (bpm * 2)
+        timer.current = setTimeout(proceed, delayTime.current)
+        play()
     }
 
     const play = () => {
-        // const nowTick = nowTickRef.current
-        //noteDataArray[nowTick].forEach(n=>{
-            //seqDispatch({type: 'NOTE_ON', note: n, channel: 0})
-        //})
+        tracks.forEach(track=>{
+            const notes = track.notes.filter(n=>n.tick === nowTickRef.current)
+            // console.log(notes)
+            notes.forEach(n=>{
+                midi.noteOn(n.pitch)
+            })
+        })
     }
     const stop = () => {
         setIsPlaying(false)
@@ -43,15 +40,19 @@ export function useSequencer () {
     const first = () => {
         setNowTick(0)
     }
+    const setup = () => {
+    }
     const playToggle = () => {
         if (isPlaying) {
             stop()
         }
         else {
+            setup()
             setIsPlaying(true)
-            timer.current = setTimeout(proceed, delayTime)
+            // setMIDI(m)
+            timer.current = setTimeout(proceed, delayTime.current)
         }
     }
 
-    return {play, bpm, nowTick, isPlaying, stop, first, playToggle}
+    return {nowTick, isPlaying, setNowTick, setMIDI, play, stop, first, playToggle}
 }

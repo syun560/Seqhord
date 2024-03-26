@@ -111,8 +111,8 @@ export default function Main() {
     const [autoFormat, setAutoFormat] = useState(true)
 
     // custom hook
-    const seq = useSequencer()
     const midi = useInstrument()
+    const seq = useSequencer(midi, tracks, bpm)
 
     const timer = useRef<NodeJS.Timeout | null>(null);
 
@@ -180,6 +180,7 @@ export default function Main() {
     }
     const onTabChange = (t: number) => {
         setTabnum(t)
+        midi.noteOn(60)
     }
     const onAddTrack = () => {
         if (tracks.length > 16) return
@@ -284,7 +285,7 @@ export default function Main() {
                         </a>
                     </li></ul>
                     {tracks[tabnum] === undefined || tracks[tabnum].notes === undefined ? '' :
-                        piano ? <PianoRoll notes={tracks[tabnum].notes} />
+                        piano ? <PianoRoll notes={tracks[tabnum].notes} seq={seq} />
                             : <Disp title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords} />
                     }
                     <textarea className="form-control m-0" value={errMsg} rows={32} cols={20} onChange={() => { }} />

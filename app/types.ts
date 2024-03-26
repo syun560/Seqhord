@@ -1,3 +1,5 @@
+import React, { Dispatch, SetStateAction } from "react"
+
 export type Note = {
     pitch: number   // 0~128
     pitch_name: string // C4, D3 ...
@@ -46,6 +48,25 @@ export type Var2 = {
     notes: Note[]
     len: number
 }
+
+export type MIDI = {
+    noteOn: (pitch :number)=>void
+    programChange: (program: number, ch:number)=>void
+    outPorts: any
+    setSelectedOutPortID: Dispatch<SetStateAction<string>>
+}
+
+export type Sequencer = {
+    play: ()=>void
+    stop: ()=>void
+    first: ()=>void
+    playToggle: ()=>void
+    setNowTick: Dispatch<SetStateAction<number>>
+    setMIDI: Dispatch<SetStateAction<MIDI>>
+    nowTick: number
+    isPlaying: boolean
+}
+
 
 // コンパイル結果
 export type Res = {

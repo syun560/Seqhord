@@ -1,11 +1,11 @@
 import React from 'react'
-import { Note } from 'types'
+import { Note, Sequencer } from 'types'
 import Lib from 'Lib'
 
 import { Conductor } from './Conductor.tsx'
 import PianoRollCell from './PianoRollCell.tsx'
 
-export const PianoRoll: React.FC<{notes: Note[]}> = ({ notes }) => {
+export const PianoRoll: React.FC<{notes: Note[]; seq: Sequencer}> = ({ notes, seq }) => {
     const th = {
         padding: '0px',
         borderRight: '1px black solid',
@@ -84,7 +84,7 @@ export const PianoRoll: React.FC<{notes: Note[]}> = ({ notes }) => {
     return <div className="pianodiv">
     <table className="pianotable">
         <tbody>
-            <Conductor tickLength={tick_max}/>
+            <Conductor tickLength={tick_max} seq={seq} />
             {roll}
         </tbody>
     </table>
