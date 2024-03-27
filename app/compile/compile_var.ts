@@ -42,6 +42,7 @@ export const compile_var = (tracks: Track_Info[], vars: Var2[], res: Res) => {
                 }
                 else if (line.indexOf('type') !== -1 ) {
                     res.tracks[t].type = line.slice(line.indexOf('=') + 1)
+                    if (res.tracks[t].type === 'drum') res.tracks[t].ch = 9
                 }
                 else if (line.indexOf('trans') !== -1 ) {
                     res.tracks[t].trans = Number(line.slice(line.indexOf('=') + 1))

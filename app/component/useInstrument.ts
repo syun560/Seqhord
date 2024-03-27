@@ -8,20 +8,15 @@ export const useInstrument = (): MIDI => {
     // const [output, setOutput] = useState<MIDIOutput>()
     const output = useRef<MIDIOutput>()
 
-    const registerOutput = () => {
-
-    }
-
     const programChange = (program: number, ch: number) => {
         // const output = outputs.get(selectedOutPortID)
         output.current?.send([0xC0 + ch, program])
     }
 
-    const noteOn = (pitch: number) => {
+    const noteOn = (pitch: number, ch:number, duration: number) => {
         // const output = outputs.get(selectedOutPortID)
-        const ch = 0
         output.current?.send([0x90 + ch, pitch, 64])
-        output.current?.send([0x80 + ch, pitch, 64], window.performance.now() + 100) // 1秒後にノートオフ
+        output.current?.send([0x80 + ch, pitch, 64], window.performance.now() + duration - 1) // 1秒後にノートオフ
     }
     const allNoteOff = () => {
         // const output = outputs.get(selectedOutPortID)

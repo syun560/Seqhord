@@ -50,7 +50,7 @@ export type Var2 = {
 }
 
 export type MIDI = {
-    noteOn: (pitch :number)=>void
+    noteOn: (pitch :number, ch:number, duration: number)=>void
     programChange: (program: number, ch:number)=>void
     outPorts: any
     setSelectedOutPortID: Dispatch<SetStateAction<string>>

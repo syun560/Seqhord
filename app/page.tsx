@@ -49,7 +49,7 @@ const default_tracks: Track_Info[] = [
     }, {
         name: 'rhythm guitar',
         program: 4,
-        ch: 0,
+        ch: 1,
         trans: 5,
         type: 'chord',
         notes: [],
@@ -59,7 +59,7 @@ const default_tracks: Track_Info[] = [
     }, {
         name: 'lead guitar',
         program: 4,
-        ch: 0,
+        ch: 2,
         trans: 5,
         type: 'chord',
         notes: [],
@@ -69,7 +69,7 @@ const default_tracks: Track_Info[] = [
     }, {
         name: 'bass',
         program: 34,
-        ch: 0,
+        ch: 3,
         trans: 5,
         type: 'bass',
         notes: [],
@@ -180,7 +180,6 @@ export default function Main() {
     }
     const onTabChange = (t: number) => {
         setTabnum(t)
-        midi.noteOn(60)
     }
     const onAddTrack = () => {
         if (tracks.length > 16) return

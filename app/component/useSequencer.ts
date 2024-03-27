@@ -2,24 +2,26 @@ import { useRef, useState } from 'react'
 import { Sequencer, MIDI, Track_Info } from '@/types'
 
 
-export const useSequencer = (m: MIDI, tracks: Track_Info[], bpm: number):Sequencer => {
+export const useSequencer = (m: MIDI, tracks: Track_Info[], b: number):Sequencer => {
     const [isPlaying, setIsPlaying] = useState(false)
     const [nowTick, setNowTick] = useState(0)
     const [midi, setMIDI] = useState<MIDI>(m)
 
     const timer = useRef<any>()
-    const delayTime = useRef(60 * 1000 / (bpm * 2))
-    
-    // setTimeOutから正しくnowTickを参照するため
+    const bpm = useRef(b)
     const nowTickRef = useRef(nowTick)
     nowTickRef.current = nowTick
+
+    const delayTime = useRef(60 * 1000 / (bpm.current * 2))
+    
+    // setTimeOutから正しくnowTickを参照するため
     // const tickLengthRef = useRef(state.noteDataArray.length)
     // tickLengthRef.current = state.noteDataArray.length
 
     // tickが進むごとに実行される関数
     const proceed = () => {
         setNowTick(n=>n+1)
-        delayTime.current = 60 * 1000 / (bpm * 2)
+        delayTime.current = 60 * 1000 / (bpm.current * 2)
         timer.current = setTimeout(proceed, delayTime.current)
         play()
     }
@@ -29,7 +31,7 @@ export const useSequencer = (m: MIDI, tracks: Track_Info[], bpm: number):Sequenc
             const notes = track.notes.filter(n=>n.tick === nowTickRef.current)
             // console.log(notes)
             notes.forEach(n=>{
-                midi.noteOn(n.pitch)
+                midi.noteOn(n.pitch, track.ch, n.duration * delayTime.current)
             })
         })
     }
@@ -41,6 +43,11 @@ export const useSequencer = (m: MIDI, tracks: Track_Info[], bpm: number):Sequenc
         setNowTick(0)
     }
     const setup = () => {
+        bpm.current = b
+        tracks.forEach(track=>{
+            midi.programChange(track.program, track.ch)
+            console.log(`program: ${track.program}, ch: ${track.ch}`)
+        })
     }
     const playToggle = () => {
         if (isPlaying) {

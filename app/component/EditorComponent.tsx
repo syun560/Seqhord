@@ -2,8 +2,6 @@
 
 import React, { useEffect, useRef } from "react"
 import { useMonaco } from '@monaco-editor/react'
-import { Editor } from "@monaco-editor/react"
-import { editor } from 'monaco-editor'
 import localFont from 'next/font/local'
 
 export type CustomLanguageRule = {
@@ -60,14 +58,14 @@ export const EditorComponent = ({ rules, value, height, width }: EditorComponent
         if (monaco) {
             // Register a new language
             monaco.languages.register({ id: "mySpecialLanguage" });
-
+            
             // Register a tokens provider for the language
             monaco.languages.setMonarchTokensProvider("mySpecialLanguage", {
                 tokenizer: {
                     root: tokens,
                 },
             });
-
+            
             // Define a new theme that contains only rules that match this language
             monaco.editor.defineTheme("myCoolTheme", {
                 base: "vs",
@@ -77,7 +75,7 @@ export const EditorComponent = ({ rules, value, height, width }: EditorComponent
                     "editor.foreground": "#000000",
                 },
             });
-
+            
             monaco.editor.create(monacoEl.current!, {
                 theme: "myCoolTheme",
                 language: "mySpecialLanguage",
