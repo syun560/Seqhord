@@ -44,6 +44,7 @@ export const useSequencer = (m: MIDI, tracks: Track_Info[], b: number):Sequencer
     }
     const setup = () => {
         bpm.current = b
+        
         tracks.forEach(track=>{
             midi.programChange(track.program, track.ch)
             console.log(`program: ${track.program}, ch: ${track.ch}`)
