@@ -226,24 +226,14 @@ export default function Main() {
     return (
         <div className="container-fluid">
             {/* <Ala /> */}
-            <Instrument midi={midi} />
-            <span>
-                <button className="btn btn-secondary mx-1" onClick={seq.first}>
-                    l＜
-                </button>
-                <button className="btn btn-primary me-1" onClick={seq.playToggle}>
-                    {seq.isPlaying ? 'II' : '▶'}
-                </button>
-                <span>{seq.nowTick}</span>
-            </span>
             <button type="button" className="btn btn-warning m-1" onClick={onJson}>
                 Save
             </button>
             <input type='file' accept='.json, .smml' onChange={(e) => loadJSON(e, setTracks)} />
-            <button type="button" className="btn btn-warning m-1" onClick={() => onSave(tracks[tabnum].texts)}>
-                {/* <Image src="/save.png" width={40} height={40} alt="save" /> */}
+            {/* <button type="button" className="btn btn-warning m-1" onClick={() => onSave(tracks[tabnum].texts)}>
+                <Image src="/save.png" width={40} height={40} alt="save" />
                 to Text
-            </button>
+            </button> */}
             <button type="button" className="btn btn-success m-1" onClick={onMIDIGenerate}>
                 {/* <Image src="/midi.png" width={40} height={40} alt="to MIDI" /> */}
                 to MIDI
@@ -256,19 +246,31 @@ export default function Main() {
                 {/* <Image src="/midi.png" width={40} height={40} alt="Compile" /> */}
                 Compile
             </button>
-            <button type="button" className="btn btn-info m-1" onClick={() => setPiano(!piano)}>
-                {/* <Image src="/piano.png" width={40} height={40} alt="PianoRoll" /> */}
+            {/* <button type="button" className="btn btn-info m-1" onClick={() => setPiano(!piano)}>
+                <Image src="/piano.png" width={40} height={40} alt="PianoRoll" />
                 PianoRoll
-            </button>
+            </button> */}
             {/* <EditorComponent rules={test} value={getCode()} height={"100vh"} width={"100vw"} /> */}
             <div className="form-check form-check-inline">
                 <input className="form-check-input" type="checkbox" checked={autoCompile} onChange={() => setAutoCompile(!autoCompile)} />
                 <label className="form-check-label">auto compile</label>
             </div>
-            <div className="form-check form-check-inline">
+            {/* <div className="form-check form-check-inline">
                 <input className="form-check-input" type="checkbox" checked={autoFormat} onChange={() => setAutoFormat(!autoFormat)} />
                 <label className="form-check-label">auto format</label>
-            </div>
+            </div> */}
+
+            <Instrument midi={midi} />
+            <span>
+                <button className="btn btn-secondary mx-1" onClick={seq.first}>
+                    l＜
+                </button>
+                <button className="btn btn-primary me-1" onClick={seq.playToggle}>
+                    {seq.isPlaying ? 'II' : '▶'}
+                </button>
+                <span>{seq.nowTick}</span>
+            </span>
+
             <div className="row">
                 <div className="col-md-6 pe-0">
                     <TrackSelector tracks={tracks} tabnum={tabnum} onAddTrack={onAddTrack} onTabChange={onTabChange} onDeleteTab={onDeleteTab} />
