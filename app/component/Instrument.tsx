@@ -9,10 +9,6 @@ export const Instrument = (props: Props) => {
 
     const midi = props.midi
 
-    const test = ()=>{
-        midi.noteOn(60)
-    }
-
     // セレクトタグの内容を作る
     let n = 0
     let out_items = []
@@ -29,6 +25,5 @@ export const Instrument = (props: Props) => {
         MidiOut: <select onChange={(e)=>midi.setSelectedOutPortID(e.target.value)} defaultValue="-1">
             { out_items }
         </select>
-        <button onClick={test}>テスト</button>
     </span>
 }
