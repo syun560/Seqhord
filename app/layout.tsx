@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'globals.css'
 
 export const metadata: Metadata = {
-    title: 'SMML Pad',
+    title: 'SMML Editor',
     description: 'SMML is a simple music markup language',
 }
 
@@ -17,7 +17,7 @@ export default function RootLayout({
             <body>
                 <nav className="navbar navbar-dark bg-secondary shadow">
                     <div className="container-fluid">
-                        <a className="navbar-brand" href="#">SMML Pad</a>
+                        <a className="navbar-brand" href="#">SMML Editor</a>
                         <span className="navbar-text">Ver 0.1</span>
                     </div>
                 </nav>
