@@ -226,14 +226,23 @@ export default function Main() {
     return (
         <div className="container-fluid">
             {/* <Ala /> */}
+            <input type='file' accept='.json, .smml' onChange={(e) => loadJSON(e, setTracks)} />
             <button type="button" className="btn btn-warning m-1" onClick={onJson}>
                 Save
             </button>
-            <input type='file' accept='.json, .smml' onChange={(e) => loadJSON(e, setTracks)} />
             {/* <button type="button" className="btn btn-warning m-1" onClick={() => onSave(tracks[tabnum].texts)}>
                 <Image src="/save.png" width={40} height={40} alt="save" />
                 to Text
             </button> */}
+            <button type="button" className="btn btn-primary m-1" onClick={onCompile}>
+                {/* <Image src="/midi.png" width={40} height={40} alt="Compile" /> */}
+                Compile
+            </button>
+            <div className="form-check form-check-inline">
+                <input className="form-check-input" type="checkbox" checked={autoCompile} onChange={() => setAutoCompile(!autoCompile)} />
+                <label className="form-check-label">auto compile</label>
+            </div>
+            
             <button type="button" className="btn btn-success m-1" onClick={onMIDIGenerate}>
                 {/* <Image src="/midi.png" width={40} height={40} alt="to MIDI" /> */}
                 to MIDI
@@ -242,19 +251,13 @@ export default function Main() {
                 {/* <Image src="/midi2.png" width={40} height={40} alt="to MusicXML" /> */}
                 to MusicXML
             </button>
-            <button type="button" className="btn btn-primary m-1" onClick={onCompile}>
-                {/* <Image src="/midi.png" width={40} height={40} alt="Compile" /> */}
-                Compile
-            </button>
+            
             {/* <button type="button" className="btn btn-info m-1" onClick={() => setPiano(!piano)}>
                 <Image src="/piano.png" width={40} height={40} alt="PianoRoll" />
                 PianoRoll
             </button> */}
             {/* <EditorComponent rules={test} value={getCode()} height={"100vh"} width={"100vw"} /> */}
-            <div className="form-check form-check-inline">
-                <input className="form-check-input" type="checkbox" checked={autoCompile} onChange={() => setAutoCompile(!autoCompile)} />
-                <label className="form-check-label">auto compile</label>
-            </div>
+            
             {/* <div className="form-check form-check-inline">
                 <input className="form-check-input" type="checkbox" checked={autoFormat} onChange={() => setAutoFormat(!autoFormat)} />
                 <label className="form-check-label">auto format</label>
@@ -282,7 +285,7 @@ export default function Main() {
                 <div style={estyle} className="col-md-6 ps-0">
                     <ul className="nav nav-tabs"><li className="nav-item">
                         <a className="pointer nav-link active">
-                            console
+                            preview
                         </a>
                     </li></ul>
                     {tracks[tabnum] === undefined || tracks[tabnum].notes === undefined ? '' :

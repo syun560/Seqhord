@@ -5,21 +5,21 @@ export const useInstrument = (): MIDI => {
     const [selectedOutPortID, setSelectedOutPortID] = useState('')
     const [outPorts, setOutPorts]: [any, any] = useState([])
     const [outputs, setOutputs] = useState<any>()
-    // const [output, setOutput] = useState<MIDIOutput>()
     const output = useRef<MIDIOutput>()
 
     const programChange = (program: number, ch: number) => {
-        // const output = outputs.get(selectedOutPortID)
         output.current?.send([0xC0 + ch, program])
     }
 
+    const volume = (val: number, ch: number) => {
+        output.current?.send([0xB0 + ch, 7, val])
+    }
+
     const noteOn = (pitch: number, ch:number, duration: number) => {
-        // const output = outputs.get(selectedOutPortID)
         output.current?.send([0x90 + ch, pitch, 64])
         output.current?.send([0x80 + ch, pitch, 64], window.performance.now() + duration - 1) // 1秒後にノートオフ
     }
     const allNoteOff = () => {
-        // const output = outputs.get(selectedOutPortID)
         output.current?.send([0xB0, 0x7B, 0])
     }
 
@@ -55,5 +55,5 @@ export const useInstrument = (): MIDI => {
         )
     }, [])
 
-    return {noteOn , programChange,setSelectedOutPortID, outPorts}
+    return {noteOn , volume, programChange,setSelectedOutPortID, outPorts}
 }

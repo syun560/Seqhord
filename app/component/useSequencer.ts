@@ -47,6 +47,7 @@ export const useSequencer = (m: MIDI, tracks: Track_Info[], b: number):Sequencer
         
         tracks.forEach(track=>{
             midi.programChange(track.program, track.ch)
+            midi.volume(track.volume, track.ch)
             console.log(`program: ${track.program}, ch: ${track.ch}`)
         })
     }
