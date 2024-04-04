@@ -10,13 +10,13 @@ export const PianoRoll: React.FC<{notes: Note[]; seq: Sequencer}> = ({ notes, se
         padding: '0px',
         borderRight: '1px black solid',
         position: 'sticky' as const,
-        background: '',
+        background: 'aliceblue',
         left: 0
     }
     const th_base = {
         ...th,
         borderBottom: '1px black solid',
-        background: ''
+        background: 'aliceblue'
     }
     const note_name_style = {
         fontSize: '0.8em',
@@ -29,7 +29,7 @@ export const PianoRoll: React.FC<{notes: Note[]; seq: Sequencer}> = ({ notes, se
     const reso = 1
 
     // tickの最大値
-    let tick_max = notes.length > 0 ? notes[notes.length - 1].tick : 0
+    let tick_max = notes.length > 0 ? notes[notes.length - 1].tick + notes[notes.length - 1].duration : 0
 
     // ダミーの数値（Reactのkeyのため必要？）
     const pitchs:number[] = []
@@ -47,7 +47,7 @@ export const PianoRoll: React.FC<{notes: Note[]; seq: Sequencer}> = ({ notes, se
         let res = th
         const c_major = [0,2,4,5,7,9,11]
         if (!c_major.includes(note % 12)) {
-            res = { ...res, background: '#e8faff' }
+            res = { ...res, background: 'lightgray' }
         }
         return res
     } 

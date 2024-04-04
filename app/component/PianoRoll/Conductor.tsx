@@ -28,7 +28,7 @@ export const Conductor = (props: Props) => {
     
     // いい感じのところでスクロールする。
     useEffect(()=> {
-         if (props.seq.nowTick % 20 === 0 && props.seq.isPlaying) scrollToCenter(props.seq.nowTick + 10)
+         if (props.seq.nowTick % 20 === 0 ) scrollToCenter(props.seq.nowTick + 10)
     }, [props.seq.nowTick, props.seq.isPlaying])
     
     //let a = state.timeSignatures[0].timeSignature[0] * 2

@@ -19,7 +19,7 @@ export default function PianoRollCell(props: Props) {
         width: `${width}px`,
         height: `${height}px`,
         padding: '0px',
-        background: 'lightgray',
+        background: 'aliceblue',
         borderBottom: '0px lightgray solid',
         borderLeft: '',
         overflow: 'visible',
@@ -41,7 +41,7 @@ export default function PianoRollCell(props: Props) {
 
     // アボイドノートは色を変える
     if (!c_major.includes(props.note % 12)) {
-        td = { ...td, background: 'aliceblue'}
+        td = { ...td, background: 'lightgray'}
     }
 
     // ノートに色を付ける

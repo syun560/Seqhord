@@ -53,6 +53,7 @@ export type MIDI = {
     noteOn: (pitch :number, ch:number, duration: number)=>void
     programChange: (program: number, ch:number)=>void
     volume: (val: number, ch:number)=>void
+    allNoteOff: ()=>void
     outPorts: any
     setSelectedOutPortID: Dispatch<SetStateAction<string>>
 }

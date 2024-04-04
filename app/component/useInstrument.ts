@@ -55,5 +55,5 @@ export const useInstrument = (): MIDI => {
         )
     }, [])
 
-    return {noteOn , volume, programChange,setSelectedOutPortID, outPorts}
+    return {noteOn , volume, programChange, allNoteOff, setSelectedOutPortID, outPorts}
 }

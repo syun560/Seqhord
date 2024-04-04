@@ -1,19 +1,19 @@
 export const default_append = 
-`@name    = rhythm_guitar
+`@name    = piano
 @type    = chord
-@trans   = 3
-@program = 30
-@volume  = 44
+@trans   = 4
+@program = 1
+@volume  = 70
 @panpot  = 10
 
 @n=arp
-n| .......8........|
-n| ....5_0_0_0_0_0_|
-n| ..0_0_0_0_0_0_0_|
-n|-0_______________|
+n| ......8_______8_|
+n| ....5_______5___|
+n| ..3_______3_____|
+n| 0_______0_______|
 @e
 
-@n=all_div
+@n=div
 n|+3_____+3_____+3___|
 n|+0_____+0_____+0___|
 n| 5_____ 5_____ 5___|

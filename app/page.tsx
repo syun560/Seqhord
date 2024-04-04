@@ -56,17 +56,19 @@ const default_tracks: Track_Info[] = [
         texts: default_append,
         volume: 100,
         panpot: 64
-    }, {
-        name: 'lead guitar',
-        program: 4,
-        ch: 2,
-        trans: 5,
-        type: 'chord',
-        notes: [],
-        texts: default_guitar,
-        volume: 100,
-        panpot: 64
-    }, {
+    },
+    // {
+    //     name: 'lead guitar',
+    //     program: 4,
+    //     ch: 2,
+    //     trans: 5,
+    //     type: 'chord',
+    //     notes: [],
+    //     texts: default_guitar,
+    //     volume: 100,
+    //     panpot: 64
+    // },
+    {
         name: 'bass',
         program: 34,
         ch: 3,
