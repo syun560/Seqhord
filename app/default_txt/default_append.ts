@@ -1,8 +1,8 @@
 export const default_append = 
-`@name    = piano
+`@name    = rhythm_guitar
 @type    = chord
 @trans   = 4
-@program = 1
+@program = 30
 @volume  = 70
 @panpot  = 10
 
