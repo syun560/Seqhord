@@ -11,6 +11,7 @@ import { Chord, Track_Info } from 'types'
 // custom hook
 import { useSequencer } from "./component/useSequencer"
 import { useInstrument } from "./component/useInstrument"
+import { useVoiceVox } from "./component/useVoicevox"
 
 // component
 import { Ala } from './component/alealert'
@@ -115,6 +116,7 @@ export default function Main() {
     // custom hook
     const midi = useInstrument()
     const seq = useSequencer(midi, tracks, bpm)
+    const vox = useVoiceVox()
 
     const timer = useRef<NodeJS.Timeout | null>(null);
 
@@ -140,6 +142,14 @@ export default function Main() {
         a.href = URL.createObjectURL(blob)
         a.click()
     }
+    const onVoiceSynth = () => {
+        // クエリ作成
+        vox.createQuery()
+
+        // 音声合成
+        vox.createVoice()
+    }
+
     const onSave = (text: string) => {
         const a = document.createElement('a')
         a.download = `${title}.txt`
@@ -168,6 +178,7 @@ export default function Main() {
             }, 3000)
         }
     }
+
     const onCompile = () => {
         const res = compile(tracks)
 
@@ -253,7 +264,23 @@ export default function Main() {
                 {/* <Image src="/midi2.png" width={40} height={40} alt="to MusicXML" /> */}
                 to MusicXML
             </button>
-            
+            <button type="button" className="btn btn-success m-1" onClick={vox.createQuery}>
+                {/* <Image src="/midi2.png" width={40} height={40} alt="to MusicXML" /> */}
+                クエリ作成
+            </button>
+            {vox.queryJson ?
+            <button type="button" className="btn btn-success m-1" onClick={vox.createVoice}>
+                {/* <Image src="/midi2.png" width={40} height={40} alt="to MusicXML" /> */}
+                音声合成
+            </button>
+            :<></>}
+            {vox.audioData ? 
+            <audio    
+                controls
+                src={vox.audioData ? window.URL.createObjectURL(vox.audioData) : undefined}>
+            </audio>
+            :<></>}
+
             {/* <button type="button" className="btn btn-info m-1" onClick={() => setPiano(!piano)}>
                 <Image src="/piano.png" width={40} height={40} alt="PianoRoll" />
                 PianoRoll
@@ -297,8 +324,6 @@ export default function Main() {
                     <textarea className="form-control m-0" value={errMsg} rows={32} cols={20} onChange={() => { }} />
                 </div>
             </div>
-
-
         </div>
     )
 }

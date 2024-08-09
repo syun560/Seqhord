@@ -5,7 +5,6 @@ import { compile_melody } from './compile_melody.ts'
 import { compile_chord } from './compile_chord.ts'
 import { compile_var } from './compile_var.ts'
 
-
 // 自作音楽記述言語のコンパイル
 export const compile = (tracks: Track_Info[]) => {
     const start_time = performance.now()
@@ -19,6 +18,7 @@ export const compile = (tracks: Track_Info[]) => {
         tracks: [],
         chords: [],
     }
+    
     // 2次元配列の初期化
     for (let i = 0; i < tracks.length; i++) {
         res.tracks.push({

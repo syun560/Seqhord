@@ -79,6 +79,7 @@ export const EditorComponent = ({ rules, value, height, width }: EditorComponent
             monaco.editor.create(monacoEl.current!, {
                 theme: "myCoolTheme",
                 language: "mySpecialLanguage",
+                fontSize: 16,
                 fontFamily: "var(--MyricaM-M)",
                 value: value
             });
