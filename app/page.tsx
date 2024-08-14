@@ -92,7 +92,7 @@ const default_tracks: Track_Info[] = [
     }
 ]
 
-function getCode() {
+const getCode = () => {
     return [
         "public static void main() {",
         "   System.out,println('test')",
@@ -285,7 +285,6 @@ export default function Main() {
                 <Image src="/piano.png" width={40} height={40} alt="PianoRoll" />
                 PianoRoll
             </button> */}
-            {/* <EditorComponent rules={test} value={getCode()} height={"100vh"} width={"100vw"} /> */}
             
             {/* <div className="form-check form-check-inline">
                 <input className="form-check-input" type="checkbox" checked={autoFormat} onChange={() => setAutoFormat(!autoFormat)} />
@@ -308,7 +307,8 @@ export default function Main() {
                     <TrackSelector tracks={tracks} tabnum={tabnum} onAddTrack={onAddTrack} onTabChange={onTabChange} onDeleteTab={onDeleteTab} />
 
                     {tracks[tabnum] === undefined ? '' :
-                        <textarea className="form-control editor m-0 bar" value={tracks[tabnum].texts} rows={32} cols={20} onChange={(e) => onTextChange(e.target.value)} wrap="off" />
+                        // <textarea className="form-control editor m-0 bar" value={tracks[tabnum].texts} rows={32} cols={20} onChange={(e) => onTextChange(e.target.value)} wrap="off" />
+                        <EditorComponent rules={test} value={tracks[tabnum].texts} height={"500px"} />
                     }
                 </div>
                 <div style={estyle} className="col-md-6 ps-0">

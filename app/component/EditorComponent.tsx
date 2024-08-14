@@ -7,17 +7,11 @@ import localFont from 'next/font/local'
 export type CustomLanguageRule = {
     // トークンの名前を表します。
     token: string,
-
     // トークンのパターンを表します。文字列または正規表現オブジェクトを指定できます。
     tokenPattern: string | RegExp,
 
-    //前景色を表します。
     foreground?: string,
-
-    // 背景色を表します。
     background?: string,
-    
-    // フォントスタイルを表します。
     fontStyle?: string
 }
 
@@ -73,6 +67,7 @@ export const EditorComponent = ({ rules, value, height, width }: EditorComponent
                 rules: styles,
                 colors: {
                     "editor.foreground": "#000000",
+                    
                 },
             });
             

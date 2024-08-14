@@ -31,14 +31,24 @@ type Query = {
 export const useVoiceVox = () => {
 
     const inputText = "こんにちは、ずんだもんなのだ。"
+    const inputmusic = {
+        notes: [
+            { key: null, frame_length: 15, lyric: "" },
+            { key: 60, frame_length: 45, lyric: "ド" },
+            { key: 62, frame_length: 45, lyric: "レ" },
+            { key: 64, frame_length: 45, lyric: "ミ" },
+            { key: null, frame_length: 15, lyric: "" }
+        ]
+    }
     const [queryJson, setQueryJson] = useState<Query>()
     const [audioData, setAudioData] = useState<Blob>()
 
     // 文字列からQueryを作り出す
     const createQuery = async () => {
         const res = await superagent
-            .post('http://localhost:50021/audio_query')
-            .query({ speaker: 1, text: inputText })
+            .post('http://localhost:50021/sing_frame_audio_query')
+            .query({ speaker: 6000 })
+            .send(inputmusic)
 
         if (!res) return
 
@@ -48,8 +58,8 @@ export const useVoiceVox = () => {
     // Queryから合成音声を作り出す
     const createVoice = async () => {
         const res = await superagent
-            .post('http://localhost:50021/synthesis')
-            .query({ speaker: 1 })
+            .post('http://localhost:50021/frame_synthesis')
+            .query({ speaker: 3001 })
             .send(queryJson)
             .responseType('blob')
 
