@@ -308,7 +308,7 @@ export default function Main() {
 
                     {tracks[tabnum] === undefined ? '' :
                         // <textarea className="form-control editor m-0 bar" value={tracks[tabnum].texts} rows={32} cols={20} onChange={(e) => onTextChange(e.target.value)} wrap="off" />
-                        <EditorComponent rules={test} value={tracks[tabnum].texts} height={"500px"} />
+                        <EditorComponent value={tracks[tabnum].texts} />
                     }
                 </div>
                 <div style={estyle} className="col-md-6 ps-0">
