@@ -5,6 +5,9 @@ body {
 .editor{
     font-family: monospace;
 }
+.pane{
+    height: calc(100vh - 137px);
+}
 
 .pointer {
     cursor: pointer

@@ -240,14 +240,14 @@ export default function Main() {
         <div className="container-fluid">
             {/* <Ala /> */}
             <input type='file' accept='.json, .smml' onChange={(e) => loadJSON(e, setTracks)} />
-            <button type="button" className="btn btn-warning m-1" onClick={onJson}>
+            <button type="button" className="btn btn-sm btn-warning m-1" onClick={onJson}>
                 Save
             </button>
             {/* <button type="button" className="btn btn-warning m-1" onClick={() => onSave(tracks[tabnum].texts)}>
                 <Image src="/save.png" width={40} height={40} alt="save" />
                 to Text
             </button> */}
-            <button type="button" className="btn btn-primary m-1" onClick={onCompile}>
+            <button type="button" className="btn btn-sm btn-primary m-1" onClick={onCompile}>
                 {/* <Image src="/midi.png" width={40} height={40} alt="Compile" /> */}
                 Compile
             </button>
@@ -256,20 +256,20 @@ export default function Main() {
                 <label className="form-check-label">auto compile</label>
             </div>
             
-            <button type="button" className="btn btn-success m-1" onClick={onMIDIGenerate}>
+            <button type="button" className="btn btn-sm btn-success m-1" onClick={onMIDIGenerate}>
                 {/* <Image src="/midi.png" width={40} height={40} alt="to MIDI" /> */}
                 to MIDI
             </button>
-            <button type="button" className="btn btn-success m-1" onClick={onXMLGenerate}>
+            <button type="button" className="btn btn-sm btn-success m-1" onClick={onXMLGenerate}>
                 {/* <Image src="/midi2.png" width={40} height={40} alt="to MusicXML" /> */}
                 to MusicXML
             </button>
-            <button type="button" className="btn btn-success m-1" onClick={vox.createQuery}>
+            <button type="button" className="btn btn-sm btn-success m-1" onClick={vox.createQuery}>
                 {/* <Image src="/midi2.png" width={40} height={40} alt="to MusicXML" /> */}
                 クエリ作成
             </button>
             {vox.queryJson ?
-            <button type="button" className="btn btn-success m-1" onClick={vox.createVoice}>
+            <button type="button" className="btn btn-sm btn-success m-1" onClick={vox.createVoice}>
                 {/* <Image src="/midi2.png" width={40} height={40} alt="to MusicXML" /> */}
                 音声合成
             </button>
@@ -293,17 +293,17 @@ export default function Main() {
 
             <Instrument midi={midi} />
             <span>
-                <button className="btn btn-secondary mx-1" onClick={seq.first}>
+                <button className="btn btn-sm btn-secondary mx-1" onClick={seq.first}>
                     l＜
                 </button>
-                <button className="btn btn-primary me-1" onClick={seq.playToggle}>
+                <button className="btn btn-sm btn-primary me-1" onClick={seq.playToggle}>
                     {seq.isPlaying ? 'II' : '▶'}
                 </button>
                 <span>{seq.nowTick}</span>
             </span>
 
             <div className="row">
-                <div className="col-md-6 pe-0">
+                <div className="col-md-6 pe-0 pane">
                     <TrackSelector tracks={tracks} tabnum={tabnum} onAddTrack={onAddTrack} onTabChange={onTabChange} onDeleteTab={onDeleteTab} />
 
                     {tracks[tabnum] === undefined ? '' :
@@ -311,7 +311,7 @@ export default function Main() {
                         <EditorComponent value={tracks[tabnum].texts} />
                     }
                 </div>
-                <div style={estyle} className="col-md-6 ps-0">
+                <div style={estyle} className="col-md-6 ps-0 pane">
                     <ul className="nav nav-tabs"><li className="nav-item">
                         <a className="pointer nav-link active">
                             preview
@@ -321,7 +321,7 @@ export default function Main() {
                         piano ? <PianoRoll notes={tracks[tabnum].notes} seq={seq} />
                             : <Disp title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords} />
                     }
-                    <textarea className="form-control m-0" value={errMsg} rows={32} cols={20} onChange={() => { }} />
+                    <textarea className="form-control m-0 overflow-auto" value={errMsg} onChange={() => { }} />
                 </div>
             </div>
         </div>
