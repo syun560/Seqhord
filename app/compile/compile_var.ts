@@ -10,7 +10,7 @@ const program: DrumProgram = { k: 35, s: 38, h: 42, c: 49 }
 
 // 変数を認識し、コンパイルする
 export const compile_var = (tracks: Track_Info[], vars: Var2[], res: Res) => {
-    console.log('compile_var')
+    // console.log('compile_var')
     
     // すべてのトラックのテキストをイテレート
     tracks.forEach((track, t) => {
@@ -73,7 +73,7 @@ export const compile_var = (tracks: Track_Info[], vars: Var2[], res: Res) => {
                 if (line[1] === 'e') {
                     vars[vars.length - 1].notes = [...tmp_notes]
                     vars[vars.length - 1].len = max_tick
-                    console.log(tick)
+                    // console.log(tick)
                     tmp_notes = []
                 }
             }
@@ -139,7 +139,7 @@ export const compile_var = (tracks: Track_Info[], vars: Var2[], res: Res) => {
                         }
                         else {
                             // エラー
-                            console.log(`${i + 1}行${j + 1}文字目(Track: ${t}): 予期せぬ文字列「${c}」です。\n`)
+                            // console.log(`${i + 1}行${j + 1}文字目(Track: ${t}): 予期せぬ文字列「${c}」です。\n`)
                         }
                     }
                 }

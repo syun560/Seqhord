@@ -144,7 +144,7 @@ export default function Main() {
     }
     const onVoiceSynth = () => {
         // クエリ作成
-        vox.createQuery()
+        // vox.createQuery()
 
         // 音声合成
         vox.createVoice()
@@ -264,7 +264,7 @@ export default function Main() {
                 {/* <Image src="/midi2.png" width={40} height={40} alt="to MusicXML" /> */}
                 to MusicXML
             </button>
-            <button type="button" className="btn btn-sm btn-success m-1" onClick={vox.createQuery}>
+            <button type="button" className="btn btn-sm btn-success m-1" onClick={()=>{vox.createQuery(tracks[0].notes)}}>
                 {/* <Image src="/midi2.png" width={40} height={40} alt="to MusicXML" /> */}
                 クエリ作成
             </button>
@@ -281,10 +281,10 @@ export default function Main() {
             </audio>
             :<></>}
 
-            {/* <button type="button" className="btn btn-info m-1" onClick={() => setPiano(!piano)}>
+            <button type="button" className="btn btn-info m-1" onClick={() => setPiano(!piano)}>
                 <Image src="/piano.png" width={40} height={40} alt="PianoRoll" />
                 PianoRoll
-            </button> */}
+            </button>
             
             {/* <div className="form-check form-check-inline">
                 <input className="form-check-input" type="checkbox" checked={autoFormat} onChange={() => setAutoFormat(!autoFormat)} />
@@ -308,7 +308,7 @@ export default function Main() {
 
                     {tracks[tabnum] === undefined ? '' :
                         // <textarea className="form-control editor m-0 bar" value={tracks[tabnum].texts} rows={32} cols={20} onChange={(e) => onTextChange(e.target.value)} wrap="off" />
-                        <EditorComponent value={tracks[tabnum].texts} />
+                        <EditorComponent value={tracks[tabnum].texts} doChange={onTextChange}/>
                     }
                 </div>
                 <div style={estyle} className="col-md-6 ps-0 pane">
