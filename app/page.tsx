@@ -18,7 +18,7 @@ import { Ala } from './component/alealert'
 import { Disp } from './component/display'
 import { PianoRoll } from './component/PianoRoll/PianoRoll'
 import { TrackSelector } from './component/TrackSelector'
-import { CustomLanguageRule, EditorComponent } from './component/EditorComponent'
+import { EditorComponent } from './component/EditorComponent'
 import { Instrument } from "./component/Instrument"
 
 // text
@@ -117,13 +117,7 @@ export default function Main() {
     const midi = useInstrument()
     const seq = useSequencer(midi, tracks, bpm)
     const vox = useVoiceVox()
-
     const timer = useRef<NodeJS.Timeout | null>(null);
-
-    const test: CustomLanguageRule[] = [
-        { token: "custom-error", tokenPattern: "public", foreground: "ff0000", fontStyle: "bold" },
-        { token: "custom-notice", tokenPattern: /'.*'/, foreground: "FFA500" },
-    ];
 
     const onMIDIGenerate = () => {
         const uri = generate_midi(tracks, bpm)
