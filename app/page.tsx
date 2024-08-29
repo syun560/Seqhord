@@ -16,7 +16,8 @@ import { useVoiceVox } from "./component/useVoicevox"
 // component
 import { Ala } from './component/alealert'
 import { Disp } from './component/display'
-import { PianoRoll } from './component/PianoRoll/PianoRoll'
+import { LegPianoRoll } from './component/PianoRoll/LegPianoRoll'
+// import { NewPianoRoll } from "./component/PianoRoll/NewPianoRoll"
 import { TrackSelector } from './component/TrackSelector'
 import { EditorComponent } from './component/EditorComponent'
 import { Instrument } from "./component/Instrument"
@@ -92,14 +93,6 @@ const default_tracks: Track_Info[] = [
     }
 ]
 
-const getCode = () => {
-    return [
-        "public static void main() {",
-        "   System.out,println('test')",
-        "}"
-    ].join("\n");
-}
-
 export default function Main() {
     // useState
     const [tracks, setTracks] = useState<Track_Info[]>(default_tracks)
@@ -136,12 +129,13 @@ export default function Main() {
         a.href = URL.createObjectURL(blob)
         a.click()
     }
-    const onVoiceSynth = () => {
-        // クエリ作成
-        // vox.createQuery()
-
-        // 音声合成
-        vox.createVoice()
+    const VoiceSynth = async () => {
+        try{
+            await vox.synthVoice(tracks[0].notes)
+        }
+        catch(err){
+            console.error("VoiceSynth Error:", err)
+        }
     }
 
     const onSave = (text: string) => {
@@ -213,13 +207,9 @@ export default function Main() {
         setTabnum(0)
     }
 
-    let estyle: React.CSSProperties = {
-        whiteSpace: 'pre-wrap'
-    }
-
     const handleBeforeUnload = (e: any) => {
         e.preventDefault()
-        e.returnValue = "本当にページを離れますか？"
+        e.returnValue = "ページを離れますか？（変更は保存されません）"
     }
 
     useEffect(() => {
@@ -232,91 +222,116 @@ export default function Main() {
 
     return (
         <div className="container-fluid">
-            {/* <Ala /> */}
-            <input type='file' accept='.json, .smml' onChange={(e) => loadJSON(e, setTracks)} />
-            <button type="button" className="btn btn-sm btn-warning m-1" onClick={onJson}>
-                Save
-            </button>
-            {/* <button type="button" className="btn btn-warning m-1" onClick={() => onSave(tracks[tabnum].texts)}>
-                <Image src="/save.png" width={40} height={40} alt="save" />
-                to Text
-            </button> */}
-            <button type="button" className="btn btn-sm btn-primary m-1" onClick={onCompile}>
-                {/* <Image src="/midi.png" width={40} height={40} alt="Compile" /> */}
-                Compile
-            </button>
-            <div className="form-check form-check-inline">
-                <input className="form-check-input" type="checkbox" checked={autoCompile} onChange={() => setAutoCompile(!autoCompile)} />
-                <label className="form-check-label">auto compile</label>
+            <div className="ctr-pane" >
+                
+                {/* <Ala /> */}
+                <input type='file' accept='.json, .smml' onChange={(e) => loadJSON(e, setTracks)} />
+                <button type="button" className="btn btn-dark" onClick={onJson}>
+                    Save
+                </button>
+                {/* <button type="button" className="btn btn-warning m-1" onClick={() => onSave(tracks[tabnum].texts)}>
+                    <Image src="/save.png" width={40} height={40} alt="save" />
+                    to Text
+                </button> */}
+                <button type="button" className="btn btn-dark" onClick={onCompile}>
+                    {/* <Image src="/midi.png" width={40} height={40} alt="Compile" /> */}
+                    Compile
+                </button>
+                <div className="form-check form-check-inline">
+                    <input className="form-check-input" type="checkbox" checked={autoCompile} onChange={() => setAutoCompile(!autoCompile)} />
+                    <label className="form-check-label">auto compile</label>
+                </div>
+                
+                <button type="button" className="btn btn-dark" onClick={onMIDIGenerate}>
+                    {/* <Image src="/midi.png" width={40} height={40} alt="to MIDI" /> */}
+                    MIDI
+                </button>
+                <button type="button" className="btn btn-dark" onClick={onXMLGenerate}>
+                    {/* <Image src="/midi2.png" width={40} height={40} alt="to MusicXML" /> */}
+                    MusicXML
+                </button>
+
+                <button type="button" className="btn btn-dark" onClick={VoiceSynth}>
+                    VoiceSynth
+                </button>
+
+                {vox.audioData ? 
+                <div className="col-auto">
+                    <audio    
+                    controls
+                    src={vox.audioData ? window.URL.createObjectURL(vox.audioData) : undefined}>
+                    </audio>
+                </div>
+                :<></>}
+
+                {/* <button type="button" className="btn btn-info m-1" onClick={() => setPiano(!piano)}>
+                    <Image src="/piano.png" width={40} height={40} alt="PianoRoll" />
+                    PianoRoll
+                </button> */}
+                
+                {/* <div className="form-check form-check-inline">
+                    <input className="form-check-input" type="checkbox" checked={autoFormat} onChange={() => setAutoFormat(!autoFormat)} />
+                    <label className="form-check-label">auto format</label>
+                </div> */}
+
+                <Instrument midi={midi} />
+                <span>
+                    <button className="btn btn-secondary mx-1" onClick={seq.first}>
+                        l＜
+                    </button>
+                    <button className="btn btn-primary me-1" onClick={seq.playToggle}>
+                        {seq.isPlaying ? 'II' : '▶'}
+                    </button>
+                    <span>{seq.nowTick}</span>
+                </span>
             </div>
-            
-            <button type="button" className="btn btn-sm btn-success m-1" onClick={onMIDIGenerate}>
-                {/* <Image src="/midi.png" width={40} height={40} alt="to MIDI" /> */}
-                to MIDI
-            </button>
-            <button type="button" className="btn btn-sm btn-success m-1" onClick={onXMLGenerate}>
-                {/* <Image src="/midi2.png" width={40} height={40} alt="to MusicXML" /> */}
-                to MusicXML
-            </button>
-            <button type="button" className="btn btn-sm btn-success m-1" onClick={()=>{vox.createQuery(tracks[0].notes)}}>
-                {/* <Image src="/midi2.png" width={40} height={40} alt="to MusicXML" /> */}
-                クエリ作成
-            </button>
-            {vox.queryJson ?
-            <button type="button" className="btn btn-sm btn-success m-1" onClick={vox.createVoice}>
-                {/* <Image src="/midi2.png" width={40} height={40} alt="to MusicXML" /> */}
-                音声合成
-            </button>
-            :<></>}
-            {vox.audioData ? 
-            <audio    
-                controls
-                src={vox.audioData ? window.URL.createObjectURL(vox.audioData) : undefined}>
-            </audio>
-            :<></>}
-
-            <button type="button" className="btn btn-info m-1" onClick={() => setPiano(!piano)}>
-                <Image src="/piano.png" width={40} height={40} alt="PianoRoll" />
-                PianoRoll
-            </button>
-            
-            {/* <div className="form-check form-check-inline">
-                <input className="form-check-input" type="checkbox" checked={autoFormat} onChange={() => setAutoFormat(!autoFormat)} />
-                <label className="form-check-label">auto format</label>
-            </div> */}
-
-            <Instrument midi={midi} />
-            <span>
-                <button className="btn btn-sm btn-secondary mx-1" onClick={seq.first}>
-                    l＜
-                </button>
-                <button className="btn btn-sm btn-primary me-1" onClick={seq.playToggle}>
-                    {seq.isPlaying ? 'II' : '▶'}
-                </button>
-                <span>{seq.nowTick}</span>
-            </span>
 
             <div className="row">
+                
+                {/* Left Pane */}
                 <div className="col-md-6 pe-0 pane">
+                    
                     <TrackSelector tracks={tracks} tabnum={tabnum} onAddTrack={onAddTrack} onTabChange={onTabChange} onDeleteTab={onDeleteTab} />
 
-                    {tracks[tabnum] === undefined ? '' :
-                        // <textarea className="form-control editor m-0 bar" value={tracks[tabnum].texts} rows={32} cols={20} onChange={(e) => onTextChange(e.target.value)} wrap="off" />
-                        <EditorComponent value={tracks[tabnum].texts} doChange={onTextChange}/>
-                    }
+                    <div style={{height: "calc(100% - 42px)"}}>
+                        {tracks[tabnum] === undefined ? '' :
+                            // <textarea className="form-control editor m-0 bar" value={tracks[tabnum].texts} rows={32} cols={20} onChange={(e) => onTextChange(e.target.value)} wrap="off" />
+                            <EditorComponent value={tracks[tabnum].texts} doChange={onTextChange}/>
+                        }
+
+                        <textarea 
+                            style={{height: "20%"}}
+                            className="form-control m-0 overflow-auto"
+                            value={errMsg}
+                            readOnly />
+                    </div>
+
                 </div>
-                <div style={estyle} className="col-md-6 ps-0 pane">
+                
+
+                {/* Right Pane */}
+                <div className="col-md-6 ps-0 pane">
+                    
                     <ul className="nav nav-tabs"><li className="nav-item">
                         <a className="pointer nav-link active">
                             preview
                         </a>
                     </li></ul>
-                    {tracks[tabnum] === undefined || tracks[tabnum].notes === undefined ? '' :
-                        piano ? <PianoRoll notes={tracks[tabnum].notes} seq={seq} />
-                            : <Disp title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords} />
-                    }
-                    <textarea className="form-control m-0 overflow-auto" value={errMsg} onChange={() => { }} />
+
+                    <div style={{height: "calc(100% - 42px)", overflow: "scroll"}}>
+                        {tracks[tabnum] === undefined || tracks[tabnum].notes === undefined ?
+                            '' :
+                            piano ?
+                            <LegPianoRoll notes={tracks[tabnum].notes} seq={seq} />
+                            // <NewPianoRoll notes={tracks[tabnum].notes} seq={seq} />
+                            :
+                            <Disp title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords} />
+                        }
+                    </div>
+
                 </div>
+
+                
             </div>
         </div>
     )

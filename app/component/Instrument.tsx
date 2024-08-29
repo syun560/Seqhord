@@ -22,7 +22,7 @@ export const Instrument = (props: Props) => {
 
     return <span className='me-2'>
         {/* <tr><td>Input: </td><td><select>{ in_items }</select></td></tr> */}
-        MidiOut: <select onChange={(e)=>midi.setSelectedOutPortID(e.target.value)} defaultValue="-1">
+        MidiOut: <select onChange={(e)=>midi.changePorts(e.target.value)} defaultValue="-1">
             { out_items }
         </select>
     </span>

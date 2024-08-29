@@ -1,3 +1,4 @@
+import { create } from 'domain'
 import React, { useState } from 'react'
 import superagent from 'superagent'
 import { Note } from 'types'
@@ -110,5 +111,27 @@ export const useVoiceVox = () => {
         setAudioData(res.body as Blob)
     }
 
-    return {audioData, queryJson, createQuery, createVoice}
+    const synthVoice = async (notes: Note[]) => {
+        const voiceNotes = convertNotes(notes)
+        inputmusic.notes = voiceNotes
+        console.log(inputmusic)
+
+        const res = await superagent
+            .post('http://localhost:50021/sing_frame_audio_query')
+            .query({ speaker: 6000 })
+            .send(inputmusic)
+
+        if (!res) return
+
+        const res2 = await superagent
+            .post('http://localhost:50021/frame_synthesis')
+            .query({ speaker: 3001 })
+            .send(res.body)
+            .responseType('blob')
+
+        if (!res2) return
+        setAudioData(res2.body as Blob)
+    }
+
+    return {audioData, queryJson, createQuery, createVoice, synthVoice}
 }

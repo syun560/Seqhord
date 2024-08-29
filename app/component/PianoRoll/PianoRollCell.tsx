@@ -19,21 +19,21 @@ export default function PianoRollCell(props: Props) {
         width: `${width}px`,
         height: `${height}px`,
         padding: '0px',
-        background: 'aliceblue',
-        borderBottom: '0px lightgray solid',
+        background: 'grey',
+        borderBottom: '0px black solid',
         borderLeft: '',
         overflow: 'visible',
         fontSize: '0.8em',
     }
     let pianodiv: {[key: string]: string}= {
-        background: 'lightgray',
+        background: 'black',
         position: 'relative',
         // right: '-50px',
         height: `${height}px`,
         width: `${width * props.duration + 2 }px`,
         margin: '-1px',
         padding: '0px',
-        border: '1px gray solid',
+        border: '1px #555 solid',
     }
 
     // Cメジャー・スケール
@@ -41,19 +41,19 @@ export default function PianoRollCell(props: Props) {
 
     // アボイドノートは色を変える
     if (!c_major.includes(props.note % 12)) {
-        td = { ...td, background: 'lightgray'}
+        td = { ...td, background: "#494949"}
     }
 
     // ノートに色を付ける
     if (props.selected) pianodiv = { ...pianodiv, background: 'skyblue' }                     // Noteの色
-    if (props.note % 12 === 0) td = {...td, borderBottom: '1px black solid'}     // オクターブごとの線
+    if (props.note % 12 === 0) td = {...td, borderBottom: '1px solid #DDD'}     // オクターブごとの線
 
     // tick4つごとに区切り線を追加
     // 拍子はa/bで表される
     let a = 4
 
-    if (props.tick % 2 === 0) td = { ...td, borderLeft: '1px solid #e7e7e7' }    // 1拍ごとの線
-    if (props.tick % (a * 2) === 0) td = { ...td, borderLeft: '1px solid #111' } // 1小節ごとの線
+    if (props.tick % 2 === 0) td = { ...td, borderLeft: '1px solid #999999' }    // 1拍ごとの線
+    if (props.tick % (a * 2) === 0) td = { ...td, borderLeft: '1px solid #DDD' } // 1小節ごとの線
 
     return <td style={td}>
         {!props.selected ? <></> :

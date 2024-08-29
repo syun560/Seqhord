@@ -55,7 +55,7 @@ export type MIDI = {
     volume: (val: number, ch:number)=>void
     allNoteOff: ()=>void
     outPorts: any
-    setSelectedOutPortID: Dispatch<SetStateAction<string>>
+    changePorts: (port: string)=>void
 }
 
 export type Sequencer = {

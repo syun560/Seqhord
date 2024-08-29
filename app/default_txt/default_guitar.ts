@@ -3,7 +3,7 @@ export const default_guitar =
 @type    = melody
 @trans   = 4
 @program = 30
-@volume  = 70
+@volume  = 50
 @panpot  = 120 
 
 @n=riff
