@@ -4,6 +4,7 @@
 import React from "react"
 import { useState, useEffect, useRef } from "react"
 import Image from "next/image"
+import zundamon from "../public/zzm_zunmon027.png"
 
 // types
 import { Chord, Track_Info } from 'types'
@@ -327,6 +328,9 @@ export default function Main() {
                             :
                             <Disp title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords} />
                         }
+                        <div className="fixed-div">
+                            <Image src={zundamon} alt="ずんだもん" layout="fill" objectFit="contain"/>
+                        </div>
                     </div>
 
                 </div>

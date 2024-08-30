@@ -20,7 +20,7 @@ export const compile_lyric = (line: string, i: number, res: Res) => {
     for (let j = 1; j < line.length; j++) {
         const c = line[j]
 
-        if (isComma === false && (c === 'ん' || c === 'ゃ' || c === 'ゅ' || c === 'ょ' || c === 'っ')){
+        if (isComma === false && (c === 'ん' || c === 'ゃ' || c === 'ゅ' || c === 'ょ' || c === 'っ'|| c === 'ン' || c === 'ャ' || c === 'ュ' || c === 'ョ' || c === 'ッ')){
             isSeq = true
         }
 

@@ -14,6 +14,18 @@ body {
     /* background-color: grey; */
 }
 
+.fixed-div{
+    position: fixed;
+    bottom: 2vh;
+    right: 2vw;
+    width: 20vw;
+    height: 50vh;
+    opacity: 0.3
+    /* overflow: auto; */
+    /* border:1px solid #444444; */
+    /* background-color:#EEEEEE; */
+}
+
 .pointer {
     cursor: pointer
 }

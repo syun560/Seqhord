@@ -3,7 +3,7 @@ export const default_append =
 @type    = chord
 @trans   = 4
 @program = 30
-@volume  = 70
+@volume  = 50
 @panpot  = 10
 
 @n=arp

@@ -38,7 +38,6 @@ type VoiceNote = {
 
 export const useVoiceVox = () => {
 
-    const inputText = "こんにちは、ずんだもんなのだ。"
     let inputmusic = {
         notes: [
             { key: null, frame_length: 15, lyric: "" },
@@ -51,7 +50,7 @@ export const useVoiceVox = () => {
     const [queryJson, setQueryJson] = useState<Query>()
     const [audioData, setAudioData] = useState<Blob>()
 
-    // notesを変換する
+    // covert notes for VoiceVox
     const convertNotes = (notes: Note[]):VoiceNote[] => {
         const reso = 1
         const default_frame_length = 15
@@ -65,19 +64,42 @@ export const useVoiceVox = () => {
         let pitch = null
         let frame_length = 0
         let lyric = ""
-        ticks.forEach(tick=>{
-            const found = notes.find((n)=>n.tick === tick * reso)
-            if (found) {
-                pitch = found.pitch
-                frame_length = default_frame_length * found.duration
-                lyric = found.lyric![0]
-                voiceNotes.push({
-                    key: pitch,
-                    frame_length: frame_length,
-                    lyric: lyric
-                })
+        let tick = 0
+
+        notes.forEach((note, i)=>{
+            pitch = note.pitch
+            frame_length = default_frame_length * note.duration
+            pitch = note.pitch
+
+            if (i > 0) {
+                const prevnote = notes[i - 1]
+                const difftick = note.tick - prevnote.tick
+                if (difftick > prevnote.duration) {
+                    voiceNotes.push({
+                        key: null,
+                        frame_length: default_frame_length * (difftick - prevnote.duration),
+                        lyric: ""
+                    })
+                }
             }
+
+            if (note.lyric){
+                lyric = note.lyric[0]
+                if (note.lyric.length > 1){
+                    if (note.lyric[1] === "ゃ" || note.lyric[1] === "ゅ" || note.lyric[1] === "ょ" || note.lyric[1] === "ャ" || note.lyric[1] === "ュ" || note.lyric[1] === "ョ") {
+                        lyric += note.lyric[1]
+                    }
+                }
+            }
+            else lyric = ""
+
+            voiceNotes.push({
+                key: pitch,
+                frame_length: frame_length,
+                lyric: lyric
+            })
         })
+
         voiceNotes.push({ key: null, frame_length: 15, lyric: "" })
 
         return voiceNotes
