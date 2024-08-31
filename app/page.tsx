@@ -131,10 +131,10 @@ export default function Main() {
         a.click()
     }
     const VoiceSynth = async () => {
-        try{
+        try {
             await vox.synthVoice(tracks[0].notes)
         }
-        catch(err){
+        catch (err) {
             console.error("VoiceSynth Error:", err)
         }
     }
@@ -224,7 +224,7 @@ export default function Main() {
     return (
         <div className="container-fluid">
             <div className="ctr-pane" >
-                
+
                 {/* <Ala /> */}
                 <input type='file' accept='.json, .smml' onChange={(e) => loadJSON(e, setTracks)} />
                 <button type="button" className="btn btn-dark" onClick={onJson}>
@@ -242,7 +242,7 @@ export default function Main() {
                     <input className="form-check-input" type="checkbox" checked={autoCompile} onChange={() => setAutoCompile(!autoCompile)} />
                     <label className="form-check-label">auto compile</label>
                 </div>
-                
+
                 <button type="button" className="btn btn-dark" onClick={onMIDIGenerate}>
                     {/* <Image src="/midi.png" width={40} height={40} alt="to MIDI" /> */}
                     MIDI
@@ -256,20 +256,11 @@ export default function Main() {
                     VoiceSynth
                 </button>
 
-                {vox.audioData ? 
-                <div className="col-auto">
-                    <audio    
-                    controls
-                    src={vox.audioData ? window.URL.createObjectURL(vox.audioData) : undefined}>
-                    </audio>
-                </div>
-                :<></>}
-
                 {/* <button type="button" className="btn btn-info m-1" onClick={() => setPiano(!piano)}>
                     <Image src="/piano.png" width={40} height={40} alt="PianoRoll" />
                     PianoRoll
                 </button> */}
-                
+
                 {/* <div className="form-check form-check-inline">
                     <input className="form-check-input" type="checkbox" checked={autoFormat} onChange={() => setAutoFormat(!autoFormat)} />
                     <label className="form-check-label">auto format</label>
@@ -288,54 +279,59 @@ export default function Main() {
             </div>
 
             <div className="row">
-                
+
                 {/* Left Pane */}
                 <div className="col-md-6 pe-0 pane">
-                    
+
                     <TrackSelector tracks={tracks} tabnum={tabnum} onAddTrack={onAddTrack} onTabChange={onTabChange} onDeleteTab={onDeleteTab} />
 
-                    <div style={{height: "calc(100% - 42px)"}}>
+                    <div style={{ height: "calc(100% - 42px)" }}>
                         {tracks[tabnum] === undefined ? '' :
                             // <textarea className="form-control editor m-0 bar" value={tracks[tabnum].texts} rows={32} cols={20} onChange={(e) => onTextChange(e.target.value)} wrap="off" />
-                            <EditorComponent value={tracks[tabnum].texts} doChange={onTextChange}/>
+                            <EditorComponent value={tracks[tabnum].texts} doChange={onTextChange} />
                         }
 
-                        <textarea 
-                            style={{height: "20%"}}
+                        <textarea
+                            style={{ height: "20%" }}
                             className="form-control m-0 overflow-auto"
                             value={errMsg}
                             readOnly />
                     </div>
 
                 </div>
-                
+
 
                 {/* Right Pane */}
                 <div className="col-md-6 ps-0 pane">
-                    
+
                     <ul className="nav nav-tabs"><li className="nav-item">
                         <a className="pointer nav-link active">
                             preview
                         </a>
                     </li></ul>
 
-                    <div style={{height: "calc(100% - 42px)", overflow: "scroll"}}>
+                    <div style={{ height: "calc(100% - 42px)", overflow: "scroll" }}>
                         {tracks[tabnum] === undefined || tracks[tabnum].notes === undefined ?
                             '' :
                             piano ?
-                            <LegPianoRoll notes={tracks[tabnum].notes} seq={seq} />
-                            // <NewPianoRoll notes={tracks[tabnum].notes} seq={seq} />
-                            :
-                            <Disp title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords} />
+                                <LegPianoRoll notes={tracks[tabnum].notes} seq={seq} />
+                                // <NewPianoRoll notes={tracks[tabnum].notes} seq={seq} />
+                                :
+                                <Disp title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords} />
                         }
-                        <div className="fixed-div">
-                            <Image src={zundamon} alt="ずんだもん" layout="fill" objectFit="contain"/>
+                        <div className="fixed-div" style={vox.audioData ? {opacity: 0.7} : {opacity: 0.3} }>
+                            <Image src={zundamon} alt="ずんだもん" layout="fill" objectFit="contain" />
+                            {vox.audioData ?
+                                <audio
+                                    controls
+                                    src={vox.audioData ? window.URL.createObjectURL(vox.audioData) : undefined}>
+                                </audio>
+                                : <></>}
                         </div>
                     </div>
-
                 </div>
 
-                
+
             </div>
         </div>
     )
