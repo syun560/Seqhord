@@ -3,7 +3,7 @@
 // react
 import React from "react"
 import { useState, useEffect, useRef } from "react"
-import Image from "next/image"
+import Image from "next/legacy/image"
 import zundamon from "../public/zzm_zunmon027.png"
 
 // types
@@ -320,7 +320,7 @@ export default function Main() {
                                 <Disp title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords} />
                         }
                         <div className="fixed-div" style={vox.audioData ? {opacity: 0.7} : {opacity: 0.3} }>
-                            <Image src={zundamon} alt="ずんだもん" layout="fill" objectFit="contain" />
+                            <Image src={zundamon} alt="ずんだもん" layout="fill" objectFit="contain" priority={true} />
                             {vox.audioData ?
                                 <audio
                                     controls
