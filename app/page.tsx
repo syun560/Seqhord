@@ -104,8 +104,11 @@ export default function Main() {
     const [chords, setChords] = useState<Chord[]>([])
     const [piano, setPiano] = useState(true)
     const [tabnum, setTabnum] = useState(0)
+    const [rightTab, setRightTab] = useState("preview")
     const [autoCompile, setAutoCompile] = useState(true)
     const [autoFormat, setAutoFormat] = useState(true)
+
+    const tabNames = ["preview", "info"]
 
     // custom hook
     const midi = useInstrument()
@@ -132,7 +135,7 @@ export default function Main() {
     }
     const VoiceSynth = async () => {
         try {
-            await vox.synthVoice(tracks[0].notes)
+            await vox.synthVoice(tracks[0].notes, bpm)
         }
         catch (err) {
             console.error("VoiceSynth Error:", err)
@@ -145,12 +148,19 @@ export default function Main() {
         a.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(text)
         a.click()
     }
+
     const onJson = () => {
         const a = document.createElement('a')
         a.download = `${title}.smml`
         a.href = URL.createObjectURL(new Blob([JSON.stringify(tracks)], { type: 'text/json' }))
         a.click()
     }
+
+    const onNew = () => {
+        tracks.forEach(track=>track.texts = "")
+        setTracks([...tracks])        
+    }
+
     const onFormat = () => {
         // 文字列をフォーマットする
     }
@@ -227,6 +237,9 @@ export default function Main() {
 
                 {/* <Ala /> */}
                 <input type='file' accept='.json, .smml' onChange={(e) => loadJSON(e, setTracks)} />
+                <button type="button" className="btn btn-dark" onClick={onNew}>
+                    New
+                </button>
                 <button type="button" className="btn btn-dark" onClick={onJson}>
                     Save
                 </button>
@@ -266,7 +279,16 @@ export default function Main() {
                     <label className="form-check-label">auto format</label>
                 </div> */}
 
+                <button type="button" className="btn btn-dark" onClick={midi.load}>
+                    useMIDI
+                </button>
+
+                <button type="button" className="btn btn-dark">
+                    auto compose
+                </button>
+
                 <Instrument midi={midi} />
+
                 <span>
                     <button className="btn btn-secondary mx-1" onClick={seq.first}>
                         l＜
@@ -303,24 +325,32 @@ export default function Main() {
 
                 {/* Right Pane */}
                 <div className="col-md-6 ps-0 pane">
-
-                    <ul className="nav nav-tabs"><li className="nav-item">
-                        <a className="pointer nav-link active">
-                            preview
+                    <ul className="nav nav-tabs">
+                    {tabNames.map(t=><li className="nav-item">
+                        <a className={"pointer nav-link" + (t === rightTab ? " active" : "")} onClick={()=>setRightTab(t)}>
+                            {t}
                         </a>
-                    </li></ul>
+                        </li>
+                    )}
+                    </ul>
 
                     <div style={{ height: "calc(100% - 42px)", overflow: "scroll" }}>
-                        {tracks[tabnum] === undefined || tracks[tabnum].notes === undefined ?
+                        {/* PianoRoll, info, etc... */}
+                        {rightTab === "preview" ?
+                        tracks[tabnum] === undefined || tracks[tabnum].notes === undefined ?
                             '' :
                             piano ?
                                 <LegPianoRoll notes={tracks[tabnum].notes} seq={seq} />
                                 // <NewPianoRoll notes={tracks[tabnum].notes} seq={seq} />
                                 :
                                 <Disp title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords} />
+                        :
+                        <div>info</div>
                         }
+
+                        {/* float element */}
                         <div className="fixed-div" style={vox.audioData ? {opacity: 0.7} : {opacity: 0.3} }>
-                            <Image src={zundamon} alt="ずんだもん" layout="fill" objectFit="contain" priority={true} />
+                            <Image src={zundamon} alt="singer" layout="fill" objectFit="contain" priority={true} />
                             {vox.audioData ?
                                 <audio
                                     controls
@@ -328,10 +358,12 @@ export default function Main() {
                                 </audio>
                                 : <></>}
                         </div>
+
+                        
+
                     </div>
+
                 </div>
-
-
             </div>
         </div>
     )

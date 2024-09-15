@@ -5,6 +5,8 @@ export const useInstrument = (): MIDI => {
     const [selectedOutPortID, setSelectedOutPortID] = useState('')
     const [outPorts, setOutPorts]: [any, any] = useState([])
     const [outputs, setOutputs] = useState<any>()
+
+
     const output = useRef<MIDIOutput>()
 
     const programChange = (program: number, ch: number) => {
@@ -27,49 +29,39 @@ export const useInstrument = (): MIDI => {
         output.current = outputs.get(portNumber)
     }
 
-    useEffect(() => {
-        let loaded = false
+    const load = async () => {
+        try {
+            console.log("navigator.requestMIDIAccess start...")
+            const midiAccess = await navigator.requestMIDIAccess()
+            console.log("midiAccess: ", midiAccess)
 
-        const load = async () => {
-            try {
-                if (!loaded) {
-                    console.log("navigator.requestMIDIAccess start...")
-                    const midiAccess = await navigator.requestMIDIAccess()
-                    console.log("midiAccess: ", midiAccess)
-
-                    // OutPortの取得、設定
-                    let outPorts: any = []
-                    const tmpOutputs: any = midiAccess.outputs
-                    setOutputs(midiAccess.outputs)
-                    for (let output of tmpOutputs.values()) {
-                        outPorts.push({
-                            device: output,
-                            name: output.name,
-                            ID: output.id
-                        })
-                    }
-                    if (outPorts.length) {
-                        setSelectedOutPortID(outPorts[0].ID)
-                    }
-                    setOutPorts(outPorts)
-
-                    const op: MIDIOutput = tmpOutputs.get(outPorts[0].ID)
-                    console.log(op)
-                    output.current = op
-                    
-                    console.log(outPorts[0].ID)
-                    console.log("MIDI READY!!!")
-                }
+            // OutPortの取得、設定
+            let outPorts: any = []
+            const tmpOutputs: any = midiAccess.outputs
+            setOutputs(midiAccess.outputs)
+            for (let output of tmpOutputs.values()) {
+                outPorts.push({
+                    device: output,
+                    name: output.name,
+                    ID: output.id
+                })
             }
-            catch (err) {
-                console.log("MIDI FAILED:", err)
+            if (outPorts.length) {
+                setSelectedOutPortID(outPorts[0].ID)
             }
-        }
-        load()
-        return () => {
-            loaded = true
-        }
-    }, [])
+            setOutPorts(outPorts)
 
-    return { noteOn, volume, programChange, allNoteOff, changePorts, outPorts }
+            const op: MIDIOutput = tmpOutputs.get(outPorts[0].ID)
+            console.log(op)
+            output.current = op
+
+            console.log(outPorts[0].ID)
+            console.log("MIDI READY!!!")
+        }
+        catch (err) {
+            console.log("MIDI FAILED:", err)
+        }
+    }
+
+    return { noteOn, load, volume, programChange, allNoteOff, changePorts, outPorts }
 }

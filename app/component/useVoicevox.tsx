@@ -51,14 +51,21 @@ export const useVoiceVox = () => {
     const [audioData, setAudioData] = useState<Blob>()
 
     // covert notes for VoiceVox
-    const convertNotes = (notes: Note[]): VoiceNote[] => {
+    const convertNotes = (notes: Note[], bpm: number): VoiceNote[] => {
         const reso = 1
-        const default_frame_length = 15
+        const frame_rate = 93.75
+        
+        const quarter = 60 / bpm / 2 // 実現したい8分音符の長さ（秒）
+        const frame = 1 / frame_rate // VOICEVOXの1フレーム当たりの長さ（秒）
+
+        let default_frame_length = Math.floor(quarter / frame)
+        if (default_frame_length % 2 !== 0) default_frame_length += 1 
+
         let tick_max = notes.length > 0 ? notes[notes.length - 1].tick + notes[notes.length - 1].duration : 0
         const ticks: number[] = []
         for (let i = 0; i <= tick_max; i++) ticks.push(i)
         const voiceNotes: VoiceNote[] = []
-        voiceNotes.push({ key: null, frame_length: 15, lyric: "" })
+        voiceNotes.push({ key: null, frame_length: 16, lyric: "" })
 
 
         let pitch = null
@@ -105,8 +112,8 @@ export const useVoiceVox = () => {
         return voiceNotes
     }
 
-    const synthVoice = async (notes: Note[]) => {
-        const voiceNotes = convertNotes(notes)
+    const synthVoice = async (notes: Note[], bpm:number) => {
+        const voiceNotes = convertNotes(notes, bpm)
         inputmusic.notes = voiceNotes
         console.log(inputmusic)
 

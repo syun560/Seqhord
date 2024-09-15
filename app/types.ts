@@ -50,6 +50,7 @@ export type Var2 = {
 }
 
 export type MIDI = {
+    load: ()=>void
     noteOn: (pitch :number, ch:number, duration: number)=>void
     programChange: (program: number, ch:number)=>void
     volume: (val: number, ch:number)=>void
