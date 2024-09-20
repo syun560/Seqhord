@@ -22,6 +22,7 @@ import { LegPianoRoll } from './component/PianoRoll/LegPianoRoll'
 import { TrackSelector } from './component/TrackSelector'
 import { EditorComponent } from './component/EditorComponent'
 import { Instrument } from "./component/Instrument"
+import { Singer } from "./component/Singer"
 
 // text
 import { default_text } from './default_txt/default_text'
@@ -288,6 +289,7 @@ export default function Main() {
                 </button>
 
                 <Instrument midi={midi} />
+                <Singer />
 
                 <span>
                     <button className="btn btn-secondary mx-1" onClick={seq.first}>
@@ -326,7 +328,7 @@ export default function Main() {
                 {/* Right Pane */}
                 <div className="col-md-6 ps-0 pane">
                     <ul className="nav nav-tabs">
-                    {tabNames.map(t=><li className="nav-item">
+                    {tabNames.map(t=><li className="nav-item" key={t}>
                         <a className={"pointer nav-link" + (t === rightTab ? " active" : "")} onClick={()=>setRightTab(t)}>
                             {t}
                         </a>
@@ -359,7 +361,7 @@ export default function Main() {
                                 : <></>}
                         </div>
 
-                        
+
 
                     </div>
 
