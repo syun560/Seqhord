@@ -1,6 +1,4 @@
-import { create } from 'domain'
 import React, { useState } from 'react'
-import superagent from 'superagent'
 import { Note } from 'types'
 
 // Query型定義
@@ -49,6 +47,8 @@ export const useVoiceVox = () => {
     }
     const [queryJson, setQueryJson] = useState<Query>()
     const [audioData, setAudioData] = useState<Blob>()
+    const [singer, setSinger] = useState(3001)
+    const [singers_portrait, setSingersPortrait] = useState<string>("")
 
     // covert notes for VoiceVox
     const convertNotes = (notes: Note[], bpm: number): VoiceNote[] => {
@@ -71,7 +71,6 @@ export const useVoiceVox = () => {
         let pitch = null
         let frame_length = 0
         let lyric = ""
-        let tick = 0
 
         notes.forEach((note, i) => {
             pitch = note.pitch
@@ -133,7 +132,8 @@ export const useVoiceVox = () => {
                 headers: {"Content-Type": 'application/json'},
                 body: JSON.stringify(query),
             }
-            const audio = await fetch('http://localhost:50021/frame_synthesis?speaker=3001', params2)
+            const url2 = `http://localhost:50021/frame_synthesis?speaker=${singer}`
+            const audio = await fetch(url2, params2)
             const blob = await audio.blob()
             setAudioData(blob)
         }
@@ -143,5 +143,5 @@ export const useVoiceVox = () => {
         }
     }
 
-    return { audioData, queryJson, synthVoice }
+    return { audioData, queryJson, synthVoice, singer, setSinger, singers_portrait, setSingersPortrait }
 }

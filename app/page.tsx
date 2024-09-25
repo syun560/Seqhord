@@ -289,7 +289,7 @@ export default function Main() {
                 </button>
 
                 <Instrument midi={midi} />
-                <Singer />
+                <Singer singer={vox.singer} setSinger={vox.setSinger} setSingersPortrait={vox.setSingersPortrait}/>
 
                 <span>
                     <button className="btn btn-secondary mx-1" onClick={seq.first}>
@@ -352,13 +352,13 @@ export default function Main() {
 
                         {/* float element */}
                         <div className="fixed-div" style={vox.audioData ? {opacity: 0.7} : {opacity: 0.3} }>
-                            <Image src={zundamon} alt="singer" layout="fill" objectFit="contain" priority={true} />
                             {vox.audioData ?
                                 <audio
-                                    controls
-                                    src={vox.audioData ? window.URL.createObjectURL(vox.audioData) : undefined}>
+                                controls
+                                src={vox.audioData ? window.URL.createObjectURL(vox.audioData) : undefined}>
                                 </audio>
-                                : <></>}
+                            : <></>}
+                            <img src={vox.singers_portrait} alt="singer"/>
                         </div>
 
 

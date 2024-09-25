@@ -16,7 +16,7 @@ body {
 
 .fixed-div{
     position: fixed;
-    bottom: 2vh;
+    bottom: 10vh;
     right: 2vw;
     width: 20vw;
     height: 50vh;
