@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'globals.css'
 
 export const metadata: Metadata = {
-    title: 'SMML Editor',
+    title: 'SMML Editor Demo',
     description: 'SMML is a simple music markup language',
 }
 
@@ -15,12 +15,12 @@ export default function RootLayout({
     return (
         <html lang="ja" data-bs-theme="dark">
             <body>
-                <nav className="navbar navbar-dark bg-secondary shadow">
+                {/* <nav className="navbar navbar-dark bg-secondary shadow"> */}
                     <div className="container-fluid">
-                        <a className="navbar-brand" href="#">SMML Editor</a>
-                        <span className="navbar-text">Ver 0.1</span>
+                        {/* <a className="navbar-brand" href="#">SMML Editor Demo</a>
+                        <span className="navbar-text">Ver 0.1</span> */}
                     </div>
-                </nav>
+                {/* </nav> */}
                 {children}
             </body>
         </html>

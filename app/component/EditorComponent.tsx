@@ -1,31 +1,12 @@
 "use client"
 
-import React, { useEffect, useRef } from "react"
-import { useMonaco } from '@monaco-editor/react'
+import React from "react"
+import { Editor, Monaco } from "@monaco-editor/react"
 import localFont from 'next/font/local'
 
-export type CustomLanguageRule = {
-    // トークンの名前を表します。
-    token: string,
-
-    // トークンのパターンを表します。文字列または正規表現オブジェクトを指定できます。
-    tokenPattern: string | RegExp,
-
-    //前景色を表します。
-    foreground?: string,
-
-    // 背景色を表します。
-    background?: string,
-    
-    // フォントスタイルを表します。
-    fontStyle?: string
-}
-
 type EditorComponentPropsType = {
-    rules: CustomLanguageRule[],
-    value?: string,
-    width?: string,
-    height?: string
+    value: string,
+    doChange: (text: string) => void,
 }
 
 const MyricaM = localFont({
@@ -33,59 +14,158 @@ const MyricaM = localFont({
     variable: "--MyricaM-M"
 })
 
+export const EditorComponent = ({ value, doChange }: EditorComponentPropsType) => {
 
-/**
- * エディターを表示するコンポーネント。このコンポーネントを使用するコンポーネントは"use client"モードにして使用してください。
- *
- * @param rules - ハイライトを行う文字列のルール
- * @param [value] - エディターに表示する値
- * @param [height] - エディターの高さ
- * @param [width] - エディターの幅
- */
-export const EditorComponent = ({ rules, value, height, width }: EditorComponentPropsType) => {
+    const handleEditorChange = (val: any, event: any) => {
+        doChange(val)
+    }
+    
+    const bef = (monaco: any) => {
+        console.log('bef')
+        console.log(monaco)
+        // Register a new language
+        monaco.languages.register({ id: "SMML" })
 
-    const tokens: [string | RegExp, string][] = rules.map(rule => [rule.tokenPattern, rule.token]);
-    const styles = rules.map(
-        rule => {
-            return { token: rule.token, foreground: rule.foreground, background: rule.background, fontStyle: rule.fontStyle };
-        }
-    )
+        // Register a tokens provider for the language
+        monaco.languages.setMonarchTokensProvider("SMML", {
+            tokenizer: {
+                root: [
+                    // [/\[error.*/, "custom-error"],
+                    // [/\[notice.*/, "custom-notice"],
+                    // [/\[info.*/, "custom-info"],
+                    // [/\[[a-zA-Z 0-9:]+\]/, "custom-date"],
+                    [/^[1-9].+/,"tracks"],
+                    [/[0-9]+/, "number"],
+                    [/@[a-z]+/, "program"],
+                    [/^n.+/,"notes"],
+                    [/^k.+/,"lyrics"],
+                    [/^c.+/,"chords"],
+                ]
+            },
+        });
 
-    const monacoEl = useRef<HTMLDivElement>(null!);
-    const monaco = useMonaco();
+        // Define a new theme that contains only rules that match this language
+        monaco.editor.defineTheme("darkTheme", {
+            base: "vs-dark",
+            inherit: false,
+            rules: [
+                { background: "212529" }, // probably decides minimap color...
+                // { token: "custom-info", foreground: "808080" },
+                // { token: "custom-error", foreground: "ff0000", fontStyle: "bold" },
+                // { token: "custom-notice", foreground: "FFA500" },
+                // { token: "custom-date", foreground: "008800" },
+                { token: "number", foreground: "#b5b56a" },
+                { token: "program", foreground: "#ce916a", fontStyle: "bold" },
+                { token: "notes", foreground: "#9cdcf1" },
+                { token: "lyrics", foreground: "#e38697" },
+                { token: "tracks", foreground: "#4ec9b0" },
+                { token: "chords", foreground: "#dcdcaa" },
+            ],
+            colors: {
+                "editor.foreground": "#EEEEEE",
+                "editor.background": "#212529",
+            },
+        })
 
-    useEffect(() => {
-        if (monaco) {
-            // Register a new language
-            monaco.languages.register({ id: "mySpecialLanguage" });
-            
-            // Register a tokens provider for the language
-            monaco.languages.setMonarchTokensProvider("mySpecialLanguage", {
-                tokenizer: {
-                    root: tokens,
-                },
-            });
-            
-            // Define a new theme that contains only rules that match this language
-            monaco.editor.defineTheme("myCoolTheme", {
-                base: "vs",
-                inherit: false,
-                rules: styles,
-                colors: {
-                    "editor.foreground": "#000000",
-                },
-            });
-            
-            monaco.editor.create(monacoEl.current!, {
-                theme: "myCoolTheme",
-                language: "mySpecialLanguage",
-                fontFamily: "var(--MyricaM-M)",
-                value: value
-            });
-        }
-    }, [monaco]);
+        // Register a completion item provider for the new language
+        monaco.languages.registerCompletionItemProvider("SMML", {
+            provideCompletionItems: (model: any, position: any) => {
+                const word = model.getWordUntilPosition(position);
+                const range = {
+                    startLineNumber: position.lineNumber,
+                    endLineNumber: position.lineNumber,
+                    startColumn: word.startColumn,
+                    endColumn: word.endColumn,
+                };
+                const suggestions = [
+                    {
+                        label: "bpm",
+                        kind: monaco.languages.CompletionItemKind.Text,
+                        insertText: "bpm",
+                        range: range,
+                    },
+                    {
+                        label: "scale",
+                        kind: monaco.languages.CompletionItemKind.Text,
+                        insertText: "scale",
+                        range: range,
+                    },
+                    {
+                        label: "trans",
+                        kind: monaco.languages.CompletionItemKind.Text,
+                        insertText: "trans",
+                        range: range,
+                    },
+                    {
+                        label: "title",
+                        kind: monaco.languages.CompletionItemKind.Text,
+                        insertText: "title",
+                        range: range,
+                    },
+                    {
+                        label: "program",
+                        kind: monaco.languages.CompletionItemKind.Text,
+                        insertText: "program",
+                        range: range,
+                    },
+                    // {
+                    //     label: "@simpleText",
+                    //     kind: monaco.languages.CompletionItemKind.Text,
+                    //     insertText: "simpleText",
+                    //     range: range,
+                    // },
+                    // {
+                    //     label: "testing",
+                    //     kind: monaco.languages.CompletionItemKind.Keyword,
+                    //     insertText: "testing(${1:condition})",
+                    //     insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                    //     range: range,
+                    // },
+                    // {
+                    //     label: "setProgram",
+                    //     kind: monaco.languages.CompletionItemKind.Keyword,
+                    //     insertText: "program = ",
+                    //     insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                    //     range: range,
+                    // },
+                    // {
+                    //     label: "ifelse",
+                    //     kind: monaco.languages.CompletionItemKind.Snippet,
+                    //     insertText: [
+                    //         "if (${1:condition}) {",
+                    //         "\t$0",
+                    //         "} else {",
+                    //         "\t",
+                    //         "}",
+                    //     ].join("\n"),
+                    //     insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                    //     documentation: "If-Else Statement",
+                    //     range: range,
+                    // },
+                ]
+                return { suggestions: suggestions }
+            },
+        })
+    }
 
-    return (
-        <div className={MyricaM.variable} style={{ width: width, height: height }} ref={monacoEl}></div>
-    );
+    const options = {
+        theme: "darkTheme",
+        language: "SMML",
+        fontSize: 18,
+        fontFamily: "monospace",
+        // fontFamily: "var(--MyricaM-M)",
+        value: value,
+        scrollBeyondLastLine: false
+    }
+
+    return <Editor
+        // className={MyricaM.variable}
+        height="80%"
+        theme="darkTheme"
+        language="SMML"
+        beforeMount={bef}
+        onChange={handleEditorChange}
+        value={value}
+        options={options}
+    />
 }

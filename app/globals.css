@@ -1,9 +1,28 @@
 body {
     background-color: #221
 }
-
+.ctr-pane{
+    height: 54px;
+}
 .editor{
     font-family: monospace;
+    margin: 0;
+    padding: 0;
+}
+.pane{
+    height: calc(100vh - 56px);
+    /* background-color: grey; */
+}
+
+.fixed-div{
+    position: fixed;
+    bottom: 10vh;
+    right: 2vw;
+    width: 20vw;
+    height: 50vh;
+    /* overflow: auto; */
+    /* border:1px solid #444444; */
+    /* background-color:#EEEEEE; */
 }
 
 .pointer {

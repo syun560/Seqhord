@@ -3,15 +3,11 @@ import { Res } from '../types.ts'
 // 歌詞を認識し、notes内に入れる
 export const compile_lyric = (line: string, i: number, res: Res) => {
 
-    let reso = 1
-    
     let mea = res.mea
     let tick = mea * 8
 
     let isSeq = false // 前の歌詞と連続しているかどうか
     let isComma = false // 区切り記号（,）があったかどうか
-
-    let kashi = '' // 一時的に歌詞を入れる変数（基本的に一文字）
 
     // 現在のtickより大きい最初のnoteのインデックスを見つける
     let fi = res.tracks[0].notes.findIndex(n => n.tick >= tick)
@@ -24,7 +20,7 @@ export const compile_lyric = (line: string, i: number, res: Res) => {
     for (let j = 1; j < line.length; j++) {
         const c = line[j]
 
-        if (isComma === false && (c === 'ん' || c === 'ゃ' || c === 'ゅ' || c === 'ょ' || c === 'っ')){
+        if (isComma === false && (c === 'ん' || c === 'ゃ' || c === 'ゅ' || c === 'ょ' || c === 'っ'|| c === 'ン' || c === 'ャ' || c === 'ュ' || c === 'ョ' || c === 'ッ')){
             isSeq = true
         }
 
