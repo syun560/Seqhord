@@ -3,8 +3,7 @@
 // react
 import React from "react"
 import { useState, useEffect, useRef } from "react"
-import Image from "next/legacy/image"
-import zundamon from "../public/zzm_zunmon027.png"
+// import { Menubar } from 'primereact/menubar'
 
 // types
 import { Chord, Track_Info } from 'types'
@@ -109,7 +108,8 @@ export default function Main() {
     const [autoCompile, setAutoCompile] = useState(true)
     const [autoFormat, setAutoFormat] = useState(true)
 
-    const tabNames = ["preview", "info"]
+    // const tabNames = ["preview", "info"]
+    const tabNames = ["preview"]
 
     // custom hook
     const midi = useInstrument()
@@ -134,14 +134,6 @@ export default function Main() {
         a.href = URL.createObjectURL(blob)
         a.click()
     }
-    const VoiceSynth = async () => {
-        try {
-            await vox.synthVoice(tracks[0].notes, bpm)
-        }
-        catch (err) {
-            console.error("VoiceSynth Error:", err)
-        }
-    }
 
     const onSave = (text: string) => {
         const a = document.createElement('a')
@@ -158,8 +150,12 @@ export default function Main() {
     }
 
     const onNew = () => {
-        tracks.forEach(track=>track.texts = "")
-        setTracks([...tracks])        
+        let result = confirm('新規作成しますか？（現在のデータは削除されます）')
+        if (result) {
+            tracks.forEach(track=>track.texts = "")
+            setTracks([...tracks])
+        }
+        onCompile()
     }
 
     const onFormat = () => {
@@ -234,8 +230,11 @@ export default function Main() {
 
     return (
         <div className="container-fluid">
-            <div className="ctr-pane" >
+            <div className="card">
+                {/* <Menubar model={items}/> */}
 
+            </div>
+            <div className="ctr-pane py-2" >
                 {/* <Ala /> */}
                 <input type='file' accept='.json, .smml' onChange={(e) => loadJSON(e, setTracks)} />
                 <button type="button" className="btn btn-dark" onClick={onNew}>
@@ -247,15 +246,15 @@ export default function Main() {
                 {/* <button type="button" className="btn btn-warning m-1" onClick={() => onSave(tracks[tabnum].texts)}>
                     <Image src="/save.png" width={40} height={40} alt="save" />
                     to Text
-                </button> */}
+                </button>
                 <button type="button" className="btn btn-dark" onClick={onCompile}>
-                    {/* <Image src="/midi.png" width={40} height={40} alt="Compile" /> */}
+                    <Image src="/midi.png" width={40} height={40} alt="Compile" />
                     Compile
                 </button>
                 <div className="form-check form-check-inline">
                     <input className="form-check-input" type="checkbox" checked={autoCompile} onChange={() => setAutoCompile(!autoCompile)} />
                     <label className="form-check-label">auto compile</label>
-                </div>
+                </div> */}
 
                 <button type="button" className="btn btn-dark" onClick={onMIDIGenerate}>
                     {/* <Image src="/midi.png" width={40} height={40} alt="to MIDI" /> */}
@@ -263,11 +262,7 @@ export default function Main() {
                 </button>
                 <button type="button" className="btn btn-dark" onClick={onXMLGenerate}>
                     {/* <Image src="/midi2.png" width={40} height={40} alt="to MusicXML" /> */}
-                    MusicXML
-                </button>
-
-                <button type="button" className="btn btn-dark" onClick={VoiceSynth}>
-                    VoiceSynth
+                    mXML
                 </button>
 
                 {/* <button type="button" className="btn btn-info m-1" onClick={() => setPiano(!piano)}>
@@ -280,16 +275,17 @@ export default function Main() {
                     <label className="form-check-label">auto format</label>
                 </div> */}
 
+                {midi.outPorts.length === 0 ? 
                 <button type="button" className="btn btn-dark" onClick={midi.load}>
                     useMIDI
                 </button>
-
-                <button type="button" className="btn btn-dark">
-                    auto compose
-                </button>
-
+                :
                 <Instrument midi={midi} />
-                <Singer singer={vox.singer} setSinger={vox.setSinger} setSingersPortrait={vox.setSingersPortrait}/>
+                }
+
+                {/* <button type="button" className="btn btn-dark">
+                    auto compose
+                </button> */}
 
                 <span>
                     <button className="btn btn-secondary mx-1" onClick={seq.first}>
@@ -298,8 +294,13 @@ export default function Main() {
                     <button className="btn btn-primary me-1" onClick={seq.playToggle}>
                         {seq.isPlaying ? 'II' : '▶'}
                     </button>
-                    <span>{seq.nowTick}</span>
+                    {/* <span>{seq.nowTick}</span> */}
                 </span>
+                
+                <Singer vox={vox} tracks={tracks} bpm={bpm} />
+
+
+
             </div>
 
             <div className="row">
@@ -353,14 +354,15 @@ export default function Main() {
                         {/* float element */}
                         <div className="fixed-div" style={vox.audioData ? {opacity: 0.7} : {opacity: 0.3} }>
                             {vox.audioData ?
+                                <>
                                 <audio
                                 controls
                                 src={vox.audioData ? window.URL.createObjectURL(vox.audioData) : undefined}>
                                 </audio>
+                                <img src={vox.singers_portrait} alt="singer"/>
+                                </>
                             : <></>}
-                            <img src={vox.singers_portrait} alt="singer"/>
                         </div>
-
 
 
                     </div>

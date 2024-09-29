@@ -10,7 +10,7 @@ body {
     padding: 0;
 }
 .pane{
-    height: calc(100vh - 110px);
+    height: calc(100vh - 56px);
     /* background-color: grey; */
 }
 

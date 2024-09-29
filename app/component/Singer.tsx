@@ -1,5 +1,6 @@
 import React  from 'react'
 import { useState } from 'react'
+import { Track_Info } from 'types'
 
 type SingerInfo = {
     name: string
@@ -18,16 +19,15 @@ type SingerInfo = {
 }
 
 interface Props {
-    singer: number
-    setSinger: (id: number)=>void
-    setSingersPortrait: (url: string)=>void
+    vox: any
+    tracks: Track_Info[]
+    bpm: number
 }
 
-export const Singer = ({singer, setSinger, setSingersPortrait} :Props) => {
+export const Singer = ({vox, tracks, bpm} :Props) => {
 
     const [singers_info, setSingersInfo] = useState<SingerInfo[]>([])
     
-
     // get singers from VoiceVox API
     const getSingers = async () => {
         try {
@@ -41,6 +41,14 @@ export const Singer = ({singer, setSinger, setSingersPortrait} :Props) => {
         }
     }
 
+    const VoiceSynth = async () => {
+        try {
+            await vox.synthVoice(tracks[0].notes, bpm)
+        }
+        catch (err) {
+            console.error("VoiceSynth Error:", err)
+        }
+    }
 
     // セレクトタグの内容を作る
     let items = null
@@ -59,7 +67,7 @@ export const Singer = ({singer, setSinger, setSingersPortrait} :Props) => {
 
     const onChangeSinger = async (id: number) => {
         console.log("set singer: ",id)
-        setSinger(id)
+        vox.setSinger(id)
 
         const found = singers_info.find(singer=>singer.styles[0].id === id)
         const speaker_uuid = found?.speaker_uuid
@@ -69,17 +77,32 @@ export const Singer = ({singer, setSinger, setSingersPortrait} :Props) => {
             const url = `http://localhost:50021/singer_info?speaker_uuid=${speaker_uuid}&resource_format=url`
             const res = await fetch(url)
             const json = await res.json()
-            setSingersPortrait(json.portrait)
+            vox.setSingersPortrait(json.portrait)
         }
         catch(err) {
             console.error(err)
         }
     }
 
-    return <span className='me-2'>
+    return <span className='mx-2'>
+    {items.length === 0 ? 
         <button type="button" className="btn btn-dark" onClick={getSingers}>useVoiceVox</button>
-        <select onChange={(e)=>onChangeSinger(Number(e.target.value))} value={singer}>
+        :
+        <>
+        <select onChange={(e)=>onChangeSinger(Number(e.target.value))} value={vox.singer}>
             { items }
         </select>
+        
+        {vox.creating ?
+            <button type="button" className="btn btn-secondary" onClick={vox.VoiceSynth}>
+            Creating...
+            </button>
+        :
+        <button type="button" className="btn btn-dark" onClick={VoiceSynth}>
+            Voice Synth
+        </button>
+        }
+        </>
+    }
     </span>
 }

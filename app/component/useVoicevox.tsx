@@ -49,6 +49,7 @@ export const useVoiceVox = () => {
     const [audioData, setAudioData] = useState<Blob>()
     const [singer, setSinger] = useState(3001)
     const [singers_portrait, setSingersPortrait] = useState<string>("")
+    const [creating, setCreating] = useState(false)
 
     // covert notes for VoiceVox
     const convertNotes = (notes: Note[], bpm: number): VoiceNote[] => {
@@ -118,6 +119,7 @@ export const useVoiceVox = () => {
 
         try {
             const url = "http://localhost:50021/sing_frame_audio_query?speaker=6000"
+            setCreating(true)
             const params = { 
                 method: "POST",
                 headers: {'Content-Type': 'application/json'},
@@ -136,12 +138,20 @@ export const useVoiceVox = () => {
             const audio = await fetch(url2, params2)
             const blob = await audio.blob()
             setAudioData(blob)
+            setCreating(false)
         }
         catch (err) {
             console.error("Synthesis Error:", err)
+            setCreating(false)
             return
         }
     }
 
-    return { audioData, queryJson, synthVoice, singer, setSinger, singers_portrait, setSingersPortrait }
+    return { 
+        audioData, 
+        queryJson, 
+        synthVoice, 
+        creating,
+        singer, setSinger, 
+        singers_portrait, setSingersPortrait }
 }
