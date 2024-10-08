@@ -7,11 +7,11 @@ const NoteName = ['C','C#', 'D', 'D#','E', 'F', 'F#','G', 'G#','A', 'A#','B']
 // 変数を認識し、コンパイルする
 export const compile_melody = (line: string, i: number, res: Res, c: number, trans:number) => {
     // メロディのスケールを取得する
-    const base_scale :number = NoteName.indexOf(res.scales[res.scales.length - 1].scale)
+    let base_scale :number = 0
+    if (res.scales.length > 0) base_scale = NoteName.indexOf(res.scales[res.scales.length - 1].scale)
 
     // 基準となるピッチ
     const base_pitch :number = 12 * trans + base_scale
-
 
     let reso = 1
     let octarve = 0
