@@ -1,5 +1,4 @@
 const { hostname } = require('os')
-const { protocols } = require('superagent')
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
