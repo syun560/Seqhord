@@ -1,8 +1,8 @@
 import { useRef, useState } from 'react'
-import { Sequencer, MIDI, Track_Info } from '@/types'
+import { Sequencer, MIDI, Track } from '@/types'
 
 
-export const useSequencer = (m: MIDI, tracks: Track_Info[], b: number):Sequencer => {
+export const useSequencer = (m: MIDI, tracks: Track[], b: number):Sequencer => {
     const [isPlaying, setIsPlaying] = useState(false)
     const [nowTick, setNowTick] = useState(0)
     const [midi, setMIDI] = useState<MIDI>(m)

@@ -1,4 +1,4 @@
-import { Res , Track_Info, Var2 } from '../types.ts'
+import { Res , Track, Var2 } from '../types.ts'
 import { expand_vars } from './expand_vars.ts'
 import { compile_lyric } from './compile_lyric.ts'
 import { compile_melody } from './compile_melody.ts'
@@ -6,7 +6,7 @@ import { compile_chord } from './compile_chord.ts'
 import { compile_var } from './compile_var.ts'
 
 // 自作音楽記述言語のコンパイル
-export const compile = (tracks: Track_Info[]) => {
+export const compile = (tracks: Track[]) => {
     const start_time = performance.now()
 
     let res :Res = {

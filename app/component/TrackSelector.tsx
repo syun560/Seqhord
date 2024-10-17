@@ -1,8 +1,8 @@
 import React from "react"
-import { Track_Info } from '../types.ts'
+import { Track } from '../types.ts'
 
 interface Props {
-    tracks: Track_Info[]
+    tracks: Track[]
     tabnum: number
     onTabChange: (param : number) => void
     onAddTrack: ()=>void

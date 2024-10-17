@@ -1,12 +1,10 @@
-import { ChangeEvent } from 'react'
-
-export const loadJSON = (e: ChangeEvent<HTMLInputElement>, setTracks: any) => {
-    if (!e.target.files || e.target.files.length === 0) {
+export const loadJSON = (files: any, setTracks: any) => {
+    if (!files || files.length === 0) {
         console.error('ファイルを選択して下さい')
         return
     }
 
-    const file = e.target.files[0]
+    const file = files[0]
 
     const reader = new FileReader()
     reader.onload = event => {
@@ -19,7 +17,6 @@ export const loadJSON = (e: ChangeEvent<HTMLInputElement>, setTracks: any) => {
             console.error('SMMLファイルを解析できませんでした。', error)
         }
     }
-
     
     reader.readAsText(file)
 }

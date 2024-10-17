@@ -13,7 +13,7 @@ export default function RootLayout({
     children: React.ReactNode
 }) {
     return (
-        <html lang="ja" data-bs-theme="dark">
+        <html lang="ja" data-bs-theme="dark" suppressHydrationWarning={true}>
             <body>
                 {/* <nav className="navbar navbar-dark bg-secondary shadow"> */}
                     <div className="container-fluid">

@@ -25,7 +25,7 @@ export type Chord = {
     on: number // 0~11
 }
 
-export type Track_Info = {
+export type Track = {
     name: string
     ch: number
     type: string
@@ -78,6 +78,6 @@ export type Res = {
     scales: Scale[]
     errMsg: string
     mea: number
-    tracks: Track_Info[]
+    tracks: Track[]
     chords: Chord[]
 }
