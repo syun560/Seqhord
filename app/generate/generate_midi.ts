@@ -1,11 +1,11 @@
 
 import MidiWriter from 'midi-writer-js';
-import { Track } from '../types.ts'
+import { Track as Track_Info } from '../types.ts'
 import Lib from '../Lib.ts'
 import { Track } from 'midi-writer-js/build/types/chunks/track';
 
 // MidiWriterJS
-export const generate_midi = (tracks: Track[], bpm: number) => {
+export const generate_midi = (tracks: Track_Info[], bpm: number) => {
     
     const reso = 64 // 8分音符のtick
 

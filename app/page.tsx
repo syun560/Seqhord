@@ -12,6 +12,7 @@ import {
     Toolbar,ToolbarButton,
     Button,
     Select,
+    Label,
 } from "@fluentui/react-components"
 
 import {
@@ -23,8 +24,10 @@ import {
     PlayRegular, PlayFilled, PauseRegular, PauseFilled, RewindRegular, RewindFilled,
     SaveRegular, SaveFilled,
     ZoomInRegular, ZoomInFilled, ZoomOutRegular, ZoomOutFilled,
-    MidiRegular, MidiFilled, PersonVoiceRegular, PersonVoiceFilled,
-    DocumentRegular
+    MidiRegular, MidiFilled,
+    DocumentRegular, ChatHelpRegular, ChatHelpFilled,
+    FolderOpenRegular, FolderOpenFilled,
+    StopRegular, StopFilled
 } from "@fluentui/react-icons"
 
 const CutIcon = bundleIcon(CutFilled, CutRegular);
@@ -34,8 +37,12 @@ const PlayIcon = bundleIcon(PlayRegular, PlayFilled)
 const PauseIcon = bundleIcon(PauseRegular, PauseFilled)
 const RewindIcon = bundleIcon(RewindRegular, RewindFilled)
 const SaveIcon = bundleIcon(SaveRegular, SaveFilled)
+const ZoomInIcon = bundleIcon(ZoomInRegular, ZoomInFilled)
+const ZoomOutIcon = bundleIcon(ZoomOutRegular, ZoomOutFilled)
 const MidiIcon = bundleIcon(MidiRegular, MidiFilled)
-const PersonVoiceIcon = bundleIcon(PersonVoiceRegular, PersonVoiceFilled)
+const ChatHelpIcon = bundleIcon(ChatHelpRegular, ChatHelpFilled)
+const FolderOpenIcon = bundleIcon(FolderOpenRegular, FolderOpenFilled)
+const StopIcon = bundleIcon(StopRegular, StopFilled)
 
 // types
 import { Chord, Track } from 'types'
@@ -46,7 +53,6 @@ import { useInstrument } from "./component/useInstrument"
 import { useVoiceVox } from "./component/useVoicevox"
 
 // component
-import { Ala } from './component/alealert'
 import { Disp } from './component/display'
 import { LegPianoRoll } from './component/PianoRoll/LegPianoRoll'
 // import { NewPianoRoll } from "./component/PianoRoll/NewPianoRoll"
@@ -127,7 +133,7 @@ const default_tracks: Track[] = [
     }
 ]
 
-const programName = Lib.programName.map((p, i)=><option key={i}>{i}: {p}</option>)
+const programs = Lib.programName.map((p, i)=><option key={i} value={i}>{i}: {p}</option>)
 
 export default function Main() {
     // useState
@@ -142,6 +148,7 @@ export default function Main() {
     const [rightTab, setRightTab] = useState("preview")
     const [autoCompile, setAutoCompile] = useState(true)
     const [autoFormat, setAutoFormat] = useState(true)
+    const [maxTick, setMaxTick] = useState(0)
 
     // const tabNames = ["preview", "info"]
     const tabNames = ["preview"]
@@ -171,7 +178,7 @@ export default function Main() {
     }
 
     const saveText = () => {
-        const text = ""
+        const text = tracks[tabnum].texts
         const a = document.createElement('a')
         a.download = `${title}.txt`
         a.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(text)
@@ -272,25 +279,35 @@ export default function Main() {
         }
     }, [])
 
+    useEffect(() => {
+        let m = 0
+        tracks.forEach(t=>{
+            if(t.notes.length > 0 && t.notes.at(-1)!.tick > m) {
+                m = t.notes.at(-1)!.tick
+            }
+        })
+        setMaxTick(m)
+    }, [tracks])
+
     return (
         <FluentProvider theme={webDarkTheme}>
 
         <div className="container-fluid">
-            <div className="ctr-pane" >
+            <div>
                 {/* <Ala /> */}
-                <Menu>
+                <Menu hasIcons>
                     <MenuTrigger disableButtonEnhancement>
                         <ToolbarButton>ファイル</ToolbarButton>
                     </MenuTrigger>
                     <MenuPopover>
                         <MenuList>
                             <MenuItem icon={<DocumentRegular />}secondaryContent="Ctrl+N" onClick={onNew}>新規作成</MenuItem>
-                            <MenuItem icon={<SaveIcon />} secondaryContent="Ctrl+S" onClick={onJson}>プロジェクトを保存する</MenuItem>
-                            <MenuItem secondaryContent="Ctrl+O" onClick={showOpenFileDialog}>プロジェクトを開く</MenuItem>
+                            <MenuItem icon={<FolderOpenIcon />} secondaryContent="Ctrl+O" onClick={showOpenFileDialog}>開く</MenuItem>
+                            <MenuItem icon={<SaveIcon />} secondaryContent="Ctrl+S" onClick={onJson}>保存する</MenuItem>
                             <MenuDivider />
-                            <MenuItem onClick={saveMIDI}>MIDIで書き出す</MenuItem>
+                            <MenuItem icon={<MidiIcon />} onClick={saveMIDI}>MIDIで書き出す</MenuItem>
                             <MenuItem onClick={saveMusicXML}>musicXMLで書き出す</MenuItem>
-                            <MenuItem onClick={saveText}>現在のトラックのテキストを書き出す</MenuItem>
+                            <MenuItem onClick={saveText}>テキストを書き出す</MenuItem>
                         </MenuList>
                     </MenuPopover>
                 </Menu>
@@ -312,12 +329,12 @@ export default function Main() {
                     </MenuTrigger>
                     <MenuPopover>
                         <MenuList>
-                            <MenuItem icon={<ZoomInRegular />}>拡大</MenuItem>
-                            <MenuItem icon={<ZoomOutRegular />}>縮小</MenuItem>
+                            <MenuItem icon={<ZoomInIcon />}>拡大</MenuItem>
+                            <MenuItem icon={<ZoomOutIcon />}>縮小</MenuItem>
                         </MenuList>
                     </MenuPopover>
                 </Menu>
-                <Menu>
+                {/* <Menu>
                     <MenuTrigger disableButtonEnhancement>
                         <ToolbarButton>再生</ToolbarButton>
                     </MenuTrigger>
@@ -326,14 +343,14 @@ export default function Main() {
                             <MenuItem icon={<PlayIcon />} secondaryContent="Space" onClick={seq.playToggle}>再生</MenuItem>
                         </MenuList>
                     </MenuPopover>
-                </Menu>
+                </Menu> */}
                 <Menu>
                     <MenuTrigger disableButtonEnhancement>
                         <ToolbarButton>ヘルプ</ToolbarButton>
                     </MenuTrigger>
                     <MenuPopover>
                         <MenuList>
-                            <MenuItemLink href="https://www.google.com" target="none">公式マニュアル</MenuItemLink>
+                            <MenuItemLink icon={<ChatHelpIcon />} href="https://www.google.com" target="none">マニュアル</MenuItemLink>
                         </MenuList>
                     </MenuPopover>
                 </Menu>
@@ -346,15 +363,22 @@ export default function Main() {
 
                 <span>
                     <Button className="me-2" onClick={seq.first} icon={<RewindIcon />} />
-                    <Button className="me-2" appearance="primary" onClick={seq.playToggle} size="large" icon={seq.isPlaying ? <PauseIcon />:<PlayIcon />} />
-                    <span className="me-2">{seq.nowTick}/300</span>
-                    <span className="me-2">Beat: 4/4</span>
-                    <span className="me-2">Tempo: {bpm}</span>
-                    <span className="me-2">Key: G</span>
+                    <Button className="me-2" shape="circular" appearance="primary" onClick={seq.playToggle} size="large" icon={seq.isPlaying ? <PauseIcon />:<PlayIcon />} />
+                    <Button className="me-2" onClick={()=>{seq.stop(); seq.first()}} icon={<StopIcon />} />
+                    <span className="me-2">
+                        Tick: <Label size="large" style={{fontFamily: "monospace"}}>{String(seq.nowTick).padStart(3, '0')}/{String(maxTick).padStart(3, '0')}</Label>
+                    </span>
+                    <span className="me-2">
+                        Beat: <Label size="large" style={{fontFamily: "monospace"}}>4/4</Label>
+                    </span>
+                    <span className="me-2">
+                        Tempo: <Label  size="large" style={{fontFamily: "monospace"}}>{bpm}</Label>
+                    </span>
+                    {/* <span className="me-2">Key: G</span> */}
                 </span>
 
-                <Select className="d-inline">
-                    {programName}
+                <Select appearance="filled-darker" className="d-inline" value={tracks[tabnum].program}>
+                    {programs}
                 </Select>
                 
                 <Singer vox={vox} tracks={tracks} bpm={bpm} />
