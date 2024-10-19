@@ -13,7 +13,6 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number):Sequencer => {
     nowTickRef.current = nowTick
 
     const delayTime = useRef(60 * 1000 / (bpm.current * 2))
-    
     const endTick = useRef(1)
 
     // tickが進むごとに実行される関数

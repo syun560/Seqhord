@@ -57,7 +57,7 @@ import { Disp } from './component/display'
 import { LegPianoRoll } from './component/PianoRoll/LegPianoRoll'
 // import { NewPianoRoll } from "./component/PianoRoll/NewPianoRoll"
 import { TrackSelector } from './component/TrackSelector'
-import { EditorComponent } from './component/EditorComponent'
+import { SMMLEditor } from './component/SMMLEditor'
 import { Instrument } from "./component/Instrument"
 import { Singer } from "./component/Singer"
 
@@ -133,7 +133,7 @@ const default_tracks: Track[] = [
     }
 ]
 
-const programs = Lib.programName.map((p, i)=><option key={i} value={i}>{i}: {p}</option>)
+const programs = Lib.programName.map((p, i)=><option key={i} value={i}>{String(i).padStart(3, '0')}: {p}</option>)
 
 export default function Main() {
     // useState
@@ -185,7 +185,7 @@ export default function Main() {
         a.click()
     }
 
-    const onJson = () => {
+    const saveAsJson = () => {
         const a = document.createElement('a')
         a.download = `${title}.smml`
         a.href = URL.createObjectURL(new Blob([JSON.stringify(tracks)], { type: 'text/json' }))
@@ -201,7 +201,7 @@ export default function Main() {
         onCompile()
     }
 
-    const onFormat = () => {
+    const format = () => {
         // 文字列をフォーマットする
     }
 
@@ -229,9 +229,6 @@ export default function Main() {
         setBpm(res.bpm)
         setMea(res.mea)
         setChords(res.chords)
-    }
-    const onTabChange = (t: number) => {
-        setTabnum(t)
     }
     const onAddTrack = () => {
         if (tracks.length > 16) return
@@ -267,7 +264,11 @@ export default function Main() {
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = '.json, .smml'
-        input.onchange = () => { resolve(loadJSON(input.files, setTracks)) }
+        input.onchange = async () => { 
+            resolve((()=>{
+                loadJSON(input.files, setTracks)
+            })()) 
+        }
         input.click()
     })
 
@@ -294,7 +295,6 @@ export default function Main() {
 
         <div className="container-fluid">
             <div>
-                {/* <Ala /> */}
                 <Menu hasIcons>
                     <MenuTrigger disableButtonEnhancement>
                         <ToolbarButton>ファイル</ToolbarButton>
@@ -303,7 +303,7 @@ export default function Main() {
                         <MenuList>
                             <MenuItem icon={<DocumentRegular />}secondaryContent="Ctrl+N" onClick={onNew}>新規作成</MenuItem>
                             <MenuItem icon={<FolderOpenIcon />} secondaryContent="Ctrl+O" onClick={showOpenFileDialog}>開く</MenuItem>
-                            <MenuItem icon={<SaveIcon />} secondaryContent="Ctrl+S" onClick={onJson}>保存する</MenuItem>
+                            <MenuItem icon={<SaveIcon />} secondaryContent="Ctrl+S" onClick={saveAsJson}>保存する</MenuItem>
                             <MenuDivider />
                             <MenuItem icon={<MidiIcon />} onClick={saveMIDI}>MIDIで書き出す</MenuItem>
                             <MenuItem onClick={saveMusicXML}>musicXMLで書き出す</MenuItem>
@@ -319,7 +319,8 @@ export default function Main() {
                         <MenuList>
                             <MenuItem secondaryContent="Ctrl+Z" icon={<CutIcon />}>元に戻す</MenuItem>
                             <MenuItem secondaryContent="Ctrl+Y"icon={<PasteIcon />}>やり直す</MenuItem>
-                            <MenuItem icon={<EditIcon />}onClick={onFormat}>文字列をフォーマットする</MenuItem>
+                            {/* <MenuItem icon={<EditIcon />}onClick={format}>文字列をフォーマットする</MenuItem> */}
+                            <MenuItem icon={<EditIcon />}onClick={onCompile}>コンパイル</MenuItem>
                         </MenuList>
                     </MenuPopover>
                 </Menu>
@@ -389,12 +390,12 @@ export default function Main() {
                 {/* Left Pane */}
                 <div className="col-md-6 pe-0 pane">
 
-                    <TrackSelector tracks={tracks} tabnum={tabnum} onAddTrack={onAddTrack} onTabChange={onTabChange} onDeleteTab={onDeleteTab} />
+                    <TrackSelector tracks={tracks} tabnum={tabnum} onAddTrack={onAddTrack} onTabChange={(t)=>setTabnum(t)} onDeleteTab={onDeleteTab} />
 
                     <div style={{ height: "calc(100% - 42px)" }}>
                         {tracks[tabnum] === undefined ? '' :
                             // <textarea className="form-control editor m-0 bar" value={tracks[tabnum].texts} rows={32} cols={20} onChange={(e) => onTextChange(e.target.value)} wrap="off" />
-                            <EditorComponent value={tracks[tabnum].texts} doChange={onTextChange} />
+                            <SMMLEditor value={tracks[tabnum].texts} doChange={onTextChange} />
                         }
 
                         <textarea
@@ -444,10 +445,7 @@ export default function Main() {
                                 </>
                             : <></>}
                         </div>
-
-
                     </div>
-
                 </div>
             </div>
         </div>

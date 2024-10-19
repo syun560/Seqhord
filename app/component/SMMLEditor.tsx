@@ -14,15 +14,13 @@ const MyricaM = localFont({
     variable: "--MyricaM-M"
 })
 
-export const EditorComponent = ({ value, doChange }: EditorComponentPropsType) => {
+export const SMMLEditor = ({ value, doChange }: EditorComponentPropsType) => {
 
     const handleEditorChange = (val: any, event: any) => {
         doChange(val)
     }
     
     const bef = (monaco: any) => {
-        console.log('bef')
-        console.log(monaco)
         // Register a new language
         monaco.languages.register({ id: "SMML" })
 

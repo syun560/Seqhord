@@ -13,8 +13,8 @@ export default function RootLayout({
     children: React.ReactNode
 }) {
     return (
-        <html lang="ja" data-bs-theme="dark" suppressHydrationWarning={true}>
-            <body>
+        <html lang="ja" data-bs-theme="dark">
+            <body suppressHydrationWarning={true}>
                 {/* <nav className="navbar navbar-dark bg-secondary shadow"> */}
                     <div className="container-fluid">
                         {/* <a className="navbar-brand" href="#">SMML Editor Demo</a>
