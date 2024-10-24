@@ -6,18 +6,18 @@ import Lib from 'Lib'
 import { Conductor } from './Conductor.tsx'
 import PianoRollCell from './PianoRollCell.tsx'
 
-export const LegPianoRoll: React.FC<{ notes: Note[]; seq: Sequencer }> = ({ notes, seq }) => {
+export const PianoRoll: React.FC<{ notes: Note[]; seq: Sequencer }> = ({ notes, seq }) => {
     const th = {
         padding: '0px',
         borderRight: '1px black solid',
         position: 'sticky' as const,
-        background: 'grey',
+        background: Lib.colorPianoKey,
         left: 0
     }
     const th_base = {
         ...th,
         borderBottom: '1px black solid',
-        background: 'grey'
+        background: Lib.colorPianoKey
     }
     const note_name_style = {
         fontSize: '0.8em',
@@ -49,7 +49,7 @@ export const LegPianoRoll: React.FC<{ notes: Note[]; seq: Sequencer }> = ({ note
         let res = th
         const c_major = [0, 2, 4, 5, 7, 9, 11]
         if (!c_major.includes(note % 12)) {
-            res = { ...res, background: 'lightgray' }
+            res = { ...res, background: Lib.colorAvoidPianoKey }
         }
         return res
     }

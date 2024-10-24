@@ -6,13 +6,19 @@ const NoteName = ['C','C#', 'D', 'D#','E', 'F', 'F#','G', 'G#','A', 'A#','B']
 
 // 現在のスケールを取得する
 const getNowScale = (tick: number, res: Res) => {
-    const sf = [...res.scales].filter(sc=>sc.tick<=tick)
+    let sf = [...res.scales].filter(sc=>sc.tick<=tick)
+    if (sf.length === 0) {
+        sf = [{tick:0, scale: "C"}]
+    }
     return sf[sf.length - 1].scale
 }
 
 // 現在のコードを取得する
 const getNowChord = (tick: number, res: Res) => {
-    const chof = [...res.chords].filter(cho=>cho.tick<=tick)
+    let chof = [...res.chords].filter(cho=>cho.tick<=tick)
+    if (chof.length === 0) {
+        chof = [{ mea:0, tick: 0, chord_name: "None", pitch: 0, third: "major", on: 0}]
+    }
     return chof[chof.length - 1]
 }
 

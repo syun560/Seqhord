@@ -63,13 +63,6 @@ export const Singer = ({vox, tracks, bpm} :Props) => {
             {singer.name}
         </option>
     )
-    // if (midi.outPorts !== undefined){
-    //     if(midi.outPorts.length > 0) {
-    //         out_items = midi.outPorts.map((value:any) =>
-    //         <option key={n++} value={value.ID}>{value.name} ({value.ID})</option> 
-    //         )
-    //     }
-    // }
 
     const onChangeSinger = async (id: number) => {
         console.log("set singer: ",id)
@@ -92,10 +85,11 @@ export const Singer = ({vox, tracks, bpm} :Props) => {
 
     return <span className='mx-2'>
     {items.length === 0 ? 
-        <Button icon={<PersonVoiceIcon />} onClick={getSingers} />
+        <Button appearance="primary" icon={<PersonVoiceIcon />} onClick={getSingers} />
         :
         <>
-        <Select className="d-inline" onChange={(e)=>onChangeSinger(Number(e.target.value))} value={vox.singer}>
+        <label>Singer: </label>
+        <Select className="d-inline ms-2" onChange={(e)=>onChangeSinger(Number(e.target.value))} value={vox.singer}>
             { items }
         </Select>
         

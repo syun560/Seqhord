@@ -10,7 +10,7 @@ import {
     webLightTheme, webDarkTheme,
     Menu, MenuTrigger, MenuList, MenuItem, MenuItemLink, MenuPopover, MenuDivider,
     Toolbar,ToolbarButton,
-    Button,
+    Button, 
     Select,
     Label,
 } from "@fluentui/react-components"
@@ -27,7 +27,8 @@ import {
     MidiRegular, MidiFilled,
     DocumentRegular, ChatHelpRegular, ChatHelpFilled,
     FolderOpenRegular, FolderOpenFilled,
-    StopRegular, StopFilled
+    StopRegular, StopFilled,
+    SettingsRegular,SettingsFilled
 } from "@fluentui/react-icons"
 
 const CutIcon = bundleIcon(CutFilled, CutRegular);
@@ -43,6 +44,7 @@ const MidiIcon = bundleIcon(MidiRegular, MidiFilled)
 const ChatHelpIcon = bundleIcon(ChatHelpRegular, ChatHelpFilled)
 const FolderOpenIcon = bundleIcon(FolderOpenRegular, FolderOpenFilled)
 const StopIcon = bundleIcon(StopRegular, StopFilled)
+const SettingIcon = bundleIcon(SettingsRegular, SettingsFilled)
 
 // types
 import { Chord, Track } from 'types'
@@ -54,7 +56,7 @@ import { useVoiceVox } from "./component/useVoicevox"
 
 // component
 import { Disp } from './component/display'
-import { LegPianoRoll } from './component/PianoRoll/LegPianoRoll'
+import { PianoRoll } from './component/PianoRoll/PianoRoll'
 // import { NewPianoRoll } from "./component/PianoRoll/NewPianoRoll"
 import { TrackSelector } from './component/TrackSelector'
 import { SMMLEditor } from './component/SMMLEditor'
@@ -266,7 +268,7 @@ export default function Main() {
         input.accept = '.json, .smml'
         input.onchange = async () => { 
             resolve((()=>{
-                loadJSON(input.files, setTracks)
+                loadJSON(input.files, setTracks, setBpm)
             })()) 
         }
         input.click()
@@ -313,18 +315,19 @@ export default function Main() {
                 </Menu>
                 <Menu>
                     <MenuTrigger disableButtonEnhancement>
-                        <ToolbarButton>編集</ToolbarButton>
+                        <ToolbarButton>機能</ToolbarButton>
                     </MenuTrigger>
                     <MenuPopover>
                         <MenuList>
-                            <MenuItem secondaryContent="Ctrl+Z" icon={<CutIcon />}>元に戻す</MenuItem>
+                            {/* <MenuItem secondaryContent="Ctrl+Z" icon={<CutIcon />}>元に戻す</MenuItem>
                             <MenuItem secondaryContent="Ctrl+Y"icon={<PasteIcon />}>やり直す</MenuItem>
-                            {/* <MenuItem icon={<EditIcon />}onClick={format}>文字列をフォーマットする</MenuItem> */}
+                            <MenuItem icon={<EditIcon />}onClick={format}>文字列をフォーマットする</MenuItem> */}
                             <MenuItem icon={<EditIcon />}onClick={onCompile}>コンパイル</MenuItem>
+                            <MenuItemLink icon={<SettingIcon />} href="http://localhost:50021/setting" target="none">VoiceVox設定</MenuItemLink>
                         </MenuList>
                     </MenuPopover>
                 </Menu>
-                <Menu>
+                {/* <Menu>
                     <MenuTrigger disableButtonEnhancement>
                         <ToolbarButton>表示</ToolbarButton>
                     </MenuTrigger>
@@ -334,7 +337,7 @@ export default function Main() {
                             <MenuItem icon={<ZoomOutIcon />}>縮小</MenuItem>
                         </MenuList>
                     </MenuPopover>
-                </Menu>
+                </Menu> */}
                 {/* <Menu>
                     <MenuTrigger disableButtonEnhancement>
                         <ToolbarButton>再生</ToolbarButton>
@@ -345,7 +348,7 @@ export default function Main() {
                         </MenuList>
                     </MenuPopover>
                 </Menu> */}
-                <Menu>
+                {/* <Menu>
                     <MenuTrigger disableButtonEnhancement>
                         <ToolbarButton>ヘルプ</ToolbarButton>
                     </MenuTrigger>
@@ -354,18 +357,9 @@ export default function Main() {
                             <MenuItemLink icon={<ChatHelpIcon />} href="https://www.google.com" target="none">マニュアル</MenuItemLink>
                         </MenuList>
                     </MenuPopover>
-                </Menu>
-
-                {midi.outPorts.length === 0 ? 
-                <Button icon={<MidiIcon />} onClick={midi.load} />
-                :
-                <Instrument midi={midi} />
-                }
+                </Menu> */}
 
                 <span>
-                    <Button className="me-2" onClick={seq.first} icon={<RewindIcon />} />
-                    <Button className="me-2" shape="circular" appearance="primary" onClick={seq.playToggle} size="large" icon={seq.isPlaying ? <PauseIcon />:<PlayIcon />} />
-                    <Button className="me-2" onClick={()=>{seq.stop(); seq.first()}} icon={<StopIcon />} />
                     <span className="me-2">
                         Tick: <Label size="large" style={{fontFamily: "monospace"}}>{String(seq.nowTick).padStart(3, '0')}/{String(maxTick).padStart(3, '0')}</Label>
                     </span>
@@ -376,8 +370,18 @@ export default function Main() {
                         Tempo: <Label  size="large" style={{fontFamily: "monospace"}}>{bpm}</Label>
                     </span>
                     {/* <span className="me-2">Key: G</span> */}
+                    <Button className="me-2" onClick={seq.first} icon={<RewindIcon />} />
+                    <Button className="me-2" shape="circular" appearance="primary" onClick={seq.playToggle} size="large" icon={seq.isPlaying ? <PauseIcon />:<PlayIcon />} />
+                    <Button className="me-2" onClick={()=>{seq.stop(); seq.first()}} icon={<StopIcon />} />
                 </span>
 
+                {midi.outPorts.length === 0 ? 
+                <Button icon={<MidiIcon />} appearance="primary" onClick={midi.load} />
+                :
+                <Instrument midi={midi} />
+                }
+
+                <label className="ms-2">Program: </label>
                 <Select appearance="filled-darker" className="d-inline" value={tracks[tabnum].program}>
                     {programs}
                 </Select>
@@ -425,7 +429,7 @@ export default function Main() {
                         tracks[tabnum] === undefined || tracks[tabnum].notes === undefined ?
                             '' :
                             piano ?
-                                <LegPianoRoll notes={tracks[tabnum].notes} seq={seq} />
+                                <PianoRoll notes={tracks[tabnum].notes} seq={seq} />
                                 // <NewPianoRoll notes={tracks[tabnum].notes} seq={seq} />
                                 :
                                 <Disp title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords} />

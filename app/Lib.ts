@@ -2,8 +2,8 @@ import { Note } from './types.ts'
 
 class Lib {
     // ノートナンバー（64）をノート（C5）に変換する
-    static noteNumberToNoteName(num :number) {
-        const notes_name = ['C','C#','D','D#','E','F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+    static noteNumberToNoteName(num: number) {
+        const notes_name = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
         const base = Math.floor(num / 12) - 1
         const offset = num % 12
         return notes_name[offset] + base.toString()
@@ -11,17 +11,23 @@ class Lib {
 
     // ノートの最小値と最大値を求める
     static getMinMaxNote(notes: Note[]): [number, number] {
-    // 一番下のノート（下端のノート）
-    const sorted = [...notes].sort((a,b) => a.pitch > b.pitch ? 1 : -1)
-    let minNote = 0
-    let maxNote = 127
-    if (notes.length > 0) {
-        minNote = sorted[0].pitch
-        maxNote = sorted[notes.length - 1].pitch
+        // 一番下のノート（下端のノート）
+        const sorted = [...notes].sort((a, b) => a.pitch > b.pitch ? 1 : -1)
+        let minNote = 0
+        let maxNote = 127
+        if (notes.length > 0) {
+            minNote = sorted[0].pitch
+            maxNote = sorted[notes.length - 1].pitch
+        }
+        return [minNote, maxNote]
     }
-    return [minNote, maxNote]
-}
 
+    // 色
+    static colorAvoidPianoKey = "lightgray"
+    static colorPianoKey = "grey"
+    
+    static colorNote = "skyblue"
+    static colorAvoidNote = "#494949"
 
     static programName = [
         "Piano 1",

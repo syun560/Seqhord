@@ -1,5 +1,5 @@
 import React from 'react'
-
+import Lib from 'Lib'
 
 interface Props {
     selected: boolean
@@ -41,11 +41,11 @@ export default function PianoRollCell(props: Props) {
 
     // アボイドノートは色を変える
     if (!c_major.includes(props.note % 12)) {
-        td = { ...td, background: "#494949"}
+        td = { ...td, background: Lib.colorAvoidNote}
     }
 
     // ノートに色を付ける
-    if (props.selected) pianodiv = { ...pianodiv, background: 'skyblue' }                     // Noteの色
+    if (props.selected) pianodiv = { ...pianodiv, background: Lib.colorNote }                     // Noteの色
     if (props.note % 12 === 0) td = {...td, borderBottom: '1px solid #DDD'}     // オクターブごとの線
 
     // tick4つごとに区切り線を追加
