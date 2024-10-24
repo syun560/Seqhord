@@ -1,16 +1,13 @@
 body {
     background-color: #221
 }
-.ctr-pane{
-    height: 54px;
-}
 .editor{
     font-family: monospace;
     margin: 0;
     padding: 0;
 }
 .pane{
-    height: calc(100vh - 56px);
+    height: calc(100vh - 40px);
     /* background-color: grey; */
 }
 

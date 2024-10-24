@@ -1,8 +1,8 @@
 import React from "react"
-import { Track_Info } from '../types.ts'
+import { Track } from '../types.ts'
 
 interface Props {
-    tracks: Track_Info[]
+    tracks: Track[]
     tabnum: number
     onTabChange: (param : number) => void
     onAddTrack: ()=>void
@@ -11,10 +11,16 @@ interface Props {
 
 export const TrackSelector : React.FC<Props> = ({tracks, tabnum, onTabChange, onAddTrack, onDeleteTab}) => {
 
+    const tabChange = (t: number) => {
+        if (t !== tabnum) {
+            onTabChange(t)
+        }
+    }
+
     return <ul className="nav nav-tabs">
     {tracks.map((cn, i)=>{
         return <li className="nav-item" key={i}>
-            <a className={"pointer nav-link" + (i === tabnum ? " active" : "")} onClick={()=>onTabChange(i)}>
+            <a className={"pointer nav-link" + (i === tabnum ? " active" : "")} onClick={()=>tabChange(i)}>
                 {`${i}: ${cn.name}`}
                 {tabnum===i && i !==0 ?<button type="button" onClick={()=>onDeleteTab(i)} className="btn btn-sm ms-2 me-0 p-0">✕</button>:<></>}
             </a>

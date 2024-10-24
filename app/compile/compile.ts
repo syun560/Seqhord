@@ -1,12 +1,12 @@
-import { Res , Track_Info, Var2 } from '../types.ts'
+import { Res , Track, Var2 } from '../types.ts'
 import { expand_vars } from './expand_vars.ts'
 import { compile_lyric } from './compile_lyric.ts'
 import { compile_melody } from './compile_melody.ts'
 import { compile_chord } from './compile_chord.ts'
 import { compile_var } from './compile_var.ts'
 
-// 自作音楽記述言語のコンパイル
-export const compile = (tracks: Track_Info[]) => {
+// compile SMML
+export const compile = (tracks: Track[]) => {
     const start_time = performance.now()
 
     let res :Res = {
@@ -19,7 +19,7 @@ export const compile = (tracks: Track_Info[]) => {
         chords: [],
     }
     
-    // 2次元配列の初期化
+    // init 2d array
     for (let i = 0; i < tracks.length; i++) {
         res.tracks.push({
             name: `Track${i}`,
@@ -48,12 +48,12 @@ export const compile = (tracks: Track_Info[]) => {
 
     // console.log(res)
 
-    // 文字列を検索する
+    // search strings
     lines.forEach((l, i) => {
         // 空白文字の削除
         const line = l.replace(/\s+/g, "");
 
-        // 行数制限
+        // restrict max rows
         if (i > 500) {
             res.errMsg += '入力可能な最大行数(500行)を超えています。コンパイルを中止します。\n'
             return
@@ -99,18 +99,18 @@ export const compile = (tracks: Track_Info[]) => {
             }
         }
         else{
-            // コメント
+            // comment
             if (line[0] === '#') {
             }
-            // コード
+            // chord
             else if (line[0] === 'c') {
                 compile_chord(line, i, res, 0)
             }
-            // メロディ
+            // melody
             else if (line[0] === 'n') {
                 compile_melody(line, i, res, 0, res.tracks[0].trans)                
             }
-            // 歌詞
+            // lyric
             else if (line[0] === 'k') {
                 compile_lyric(line, i, res)
             }

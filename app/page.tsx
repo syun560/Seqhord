@@ -3,10 +3,51 @@
 // react
 import React from "react"
 import { useState, useEffect, useRef } from "react"
-// import { Menubar } from 'primereact/menubar'
+
+// fluent ui
+import {
+    FluentProvider,
+    webLightTheme, webDarkTheme,
+    Menu, MenuTrigger, MenuList, MenuItem, MenuItemLink, MenuPopover, MenuDivider,
+    Toolbar,ToolbarButton,
+    Button, 
+    Select,
+    Label,
+} from "@fluentui/react-components"
+
+import {
+    bundleIcon,
+    ArrowUndoRegular,
+    CutRegular, CutFilled,
+    ClipboardPasteRegular, ClipboardPasteFilled,
+    EditRegular, EditFilled,
+    PlayRegular, PlayFilled, PauseRegular, PauseFilled, RewindRegular, RewindFilled,
+    SaveRegular, SaveFilled,
+    ZoomInRegular, ZoomInFilled, ZoomOutRegular, ZoomOutFilled,
+    MidiRegular, MidiFilled,
+    DocumentRegular, ChatHelpRegular, ChatHelpFilled,
+    FolderOpenRegular, FolderOpenFilled,
+    StopRegular, StopFilled,
+    SettingsRegular,SettingsFilled
+} from "@fluentui/react-icons"
+
+const CutIcon = bundleIcon(CutFilled, CutRegular);
+const PasteIcon = bundleIcon(ClipboardPasteFilled, ClipboardPasteRegular);
+const EditIcon = bundleIcon(EditFilled, EditRegular);
+const PlayIcon = bundleIcon(PlayRegular, PlayFilled)
+const PauseIcon = bundleIcon(PauseRegular, PauseFilled)
+const RewindIcon = bundleIcon(RewindRegular, RewindFilled)
+const SaveIcon = bundleIcon(SaveRegular, SaveFilled)
+const ZoomInIcon = bundleIcon(ZoomInRegular, ZoomInFilled)
+const ZoomOutIcon = bundleIcon(ZoomOutRegular, ZoomOutFilled)
+const MidiIcon = bundleIcon(MidiRegular, MidiFilled)
+const ChatHelpIcon = bundleIcon(ChatHelpRegular, ChatHelpFilled)
+const FolderOpenIcon = bundleIcon(FolderOpenRegular, FolderOpenFilled)
+const StopIcon = bundleIcon(StopRegular, StopFilled)
+const SettingIcon = bundleIcon(SettingsRegular, SettingsFilled)
 
 // types
-import { Chord, Track_Info } from 'types'
+import { Chord, Track } from 'types'
 
 // custom hook
 import { useSequencer } from "./component/useSequencer"
@@ -14,12 +55,11 @@ import { useInstrument } from "./component/useInstrument"
 import { useVoiceVox } from "./component/useVoicevox"
 
 // component
-import { Ala } from './component/alealert'
 import { Disp } from './component/display'
-import { LegPianoRoll } from './component/PianoRoll/LegPianoRoll'
+import { PianoRoll } from './component/PianoRoll/PianoRoll'
 // import { NewPianoRoll } from "./component/PianoRoll/NewPianoRoll"
 import { TrackSelector } from './component/TrackSelector'
-import { EditorComponent } from './component/EditorComponent'
+import { SMMLEditor } from './component/SMMLEditor'
 import { Instrument } from "./component/Instrument"
 import { Singer } from "./component/Singer"
 
@@ -34,11 +74,12 @@ import { default_guitar } from './default_txt/default_guitar'
 import { compile } from './compile/compile'
 import { generate_midi } from './generate/generate_midi'
 import { generate_musicxml } from './generate/generate_musicxml'
-import { loadJSON } from './importJSON'
+import { loadJSON } from './loadJSON'
+import Lib from './Lib'
 
 import './globals.css'
 
-const default_tracks: Track_Info[] = [
+const default_tracks: Track[] = [
     {
         name: 'melody',
         program: 73,
@@ -94,9 +135,11 @@ const default_tracks: Track_Info[] = [
     }
 ]
 
+const programs = Lib.programName.map((p, i)=><option key={i} value={i}>{String(i).padStart(3, '0')}: {p}</option>)
+
 export default function Main() {
     // useState
-    const [tracks, setTracks] = useState<Track_Info[]>(default_tracks)
+    const [tracks, setTracks] = useState<Track[]>(default_tracks)
     const [bpm, setBpm] = useState(120)
     const [mea, setMea] = useState(0)
     const [title, setTitle] = useState('none')
@@ -107,6 +150,7 @@ export default function Main() {
     const [rightTab, setRightTab] = useState("preview")
     const [autoCompile, setAutoCompile] = useState(true)
     const [autoFormat, setAutoFormat] = useState(true)
+    const [maxTick, setMaxTick] = useState(0)
 
     // const tabNames = ["preview", "info"]
     const tabNames = ["preview"]
@@ -117,14 +161,14 @@ export default function Main() {
     const vox = useVoiceVox()
     const timer = useRef<NodeJS.Timeout | null>(null);
 
-    const onMIDIGenerate = () => {
+    const saveMIDI = () => {
         const uri = generate_midi(tracks, bpm)
         const a = document.createElement('a')
         a.download = `${title}.mid`
         a.href = uri
         a.click()
     }
-    const onXMLGenerate = () => {
+    const saveMusicXML = () => {
         const xml = generate_musicxml(0, tracks[0].notes, bpm)
         const blob = new Blob([xml], {
             type: 'text/plain;charset=utf-8',
@@ -135,14 +179,15 @@ export default function Main() {
         a.click()
     }
 
-    const onSave = (text: string) => {
+    const saveText = () => {
+        const text = tracks[tabnum].texts
         const a = document.createElement('a')
         a.download = `${title}.txt`
         a.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(text)
         a.click()
     }
 
-    const onJson = () => {
+    const saveAsJson = () => {
         const a = document.createElement('a')
         a.download = `${title}.smml`
         a.href = URL.createObjectURL(new Blob([JSON.stringify(tracks)], { type: 'text/json' }))
@@ -158,7 +203,7 @@ export default function Main() {
         onCompile()
     }
 
-    const onFormat = () => {
+    const format = () => {
         // 文字列をフォーマットする
     }
 
@@ -186,9 +231,6 @@ export default function Main() {
         setBpm(res.bpm)
         setMea(res.mea)
         setChords(res.chords)
-    }
-    const onTabChange = (t: number) => {
-        setTabnum(t)
     }
     const onAddTrack = () => {
         if (tracks.length > 16) return
@@ -220,87 +262,131 @@ export default function Main() {
         e.returnValue = "ページを離れますか？（変更は保存されません）"
     }
 
+    const showOpenFileDialog = () => new Promise(resolve => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json, .smml'
+        input.onchange = async () => { 
+            resolve((()=>{
+                loadJSON(input.files, setTracks, setBpm)
+            })()) 
+        }
+        input.click()
+    })
+
     useEffect(() => {
-        window.addEventListener("beforeunload", handleBeforeUnload);
+        window.addEventListener("beforeunload", handleBeforeUnload)
         onCompile()
         return () => {
-            window.removeEventListener("beforeunload", handleBeforeUnload);
+            window.removeEventListener("beforeunload", handleBeforeUnload)
         }
     }, [])
 
+    useEffect(() => {
+        let m = 0
+        tracks.forEach(t=>{
+            if(t.notes.length > 0 && t.notes.at(-1)!.tick > m) {
+                m = t.notes.at(-1)!.tick
+            }
+        })
+        setMaxTick(m)
+    }, [tracks])
+
     return (
+        <FluentProvider theme={webDarkTheme}>
+
         <div className="container-fluid">
-            <div className="card">
-                {/* <Menubar model={items}/> */}
+            <div>
+                <Menu hasIcons>
+                    <MenuTrigger disableButtonEnhancement>
+                        <ToolbarButton>ファイル</ToolbarButton>
+                    </MenuTrigger>
+                    <MenuPopover>
+                        <MenuList>
+                            <MenuItem icon={<DocumentRegular />}secondaryContent="Ctrl+N" onClick={onNew}>新規作成</MenuItem>
+                            <MenuItem icon={<FolderOpenIcon />} secondaryContent="Ctrl+O" onClick={showOpenFileDialog}>開く</MenuItem>
+                            <MenuItem icon={<SaveIcon />} secondaryContent="Ctrl+S" onClick={saveAsJson}>保存する</MenuItem>
+                            <MenuDivider />
+                            <MenuItem icon={<MidiIcon />} onClick={saveMIDI}>MIDIで書き出す</MenuItem>
+                            <MenuItem onClick={saveMusicXML}>musicXMLで書き出す</MenuItem>
+                            <MenuItem onClick={saveText}>テキストを書き出す</MenuItem>
+                        </MenuList>
+                    </MenuPopover>
+                </Menu>
+                <Menu>
+                    <MenuTrigger disableButtonEnhancement>
+                        <ToolbarButton>機能</ToolbarButton>
+                    </MenuTrigger>
+                    <MenuPopover>
+                        <MenuList>
+                            {/* <MenuItem secondaryContent="Ctrl+Z" icon={<CutIcon />}>元に戻す</MenuItem>
+                            <MenuItem secondaryContent="Ctrl+Y"icon={<PasteIcon />}>やり直す</MenuItem>
+                            <MenuItem icon={<EditIcon />}onClick={format}>文字列をフォーマットする</MenuItem> */}
+                            <MenuItem icon={<EditIcon />}onClick={onCompile}>コンパイル</MenuItem>
+                            <MenuItemLink icon={<SettingIcon />} href="http://localhost:50021/setting" target="none">VoiceVox設定</MenuItemLink>
+                        </MenuList>
+                    </MenuPopover>
+                </Menu>
+                {/* <Menu>
+                    <MenuTrigger disableButtonEnhancement>
+                        <ToolbarButton>表示</ToolbarButton>
+                    </MenuTrigger>
+                    <MenuPopover>
+                        <MenuList>
+                            <MenuItem icon={<ZoomInIcon />}>拡大</MenuItem>
+                            <MenuItem icon={<ZoomOutIcon />}>縮小</MenuItem>
+                        </MenuList>
+                    </MenuPopover>
+                </Menu> */}
+                {/* <Menu>
+                    <MenuTrigger disableButtonEnhancement>
+                        <ToolbarButton>再生</ToolbarButton>
+                    </MenuTrigger>
+                    <MenuPopover>
+                        <MenuList>
+                            <MenuItem icon={<PlayIcon />} secondaryContent="Space" onClick={seq.playToggle}>再生</MenuItem>
+                        </MenuList>
+                    </MenuPopover>
+                </Menu> */}
+                {/* <Menu>
+                    <MenuTrigger disableButtonEnhancement>
+                        <ToolbarButton>ヘルプ</ToolbarButton>
+                    </MenuTrigger>
+                    <MenuPopover>
+                        <MenuList>
+                            <MenuItemLink icon={<ChatHelpIcon />} href="https://www.google.com" target="none">マニュアル</MenuItemLink>
+                        </MenuList>
+                    </MenuPopover>
+                </Menu> */}
 
-            </div>
-            <div className="ctr-pane py-2" >
-                {/* <Ala /> */}
-                <input type='file' accept='.json, .smml' onChange={(e) => loadJSON(e, setTracks)} />
-                <button type="button" className="btn btn-dark" onClick={onNew}>
-                    New
-                </button>
-                <button type="button" className="btn btn-dark" onClick={onJson}>
-                    Save
-                </button>
-                {/* <button type="button" className="btn btn-warning m-1" onClick={() => onSave(tracks[tabnum].texts)}>
-                    <Image src="/save.png" width={40} height={40} alt="save" />
-                    to Text
-                </button>
-                <button type="button" className="btn btn-dark" onClick={onCompile}>
-                    <Image src="/midi.png" width={40} height={40} alt="Compile" />
-                    Compile
-                </button>
-                <div className="form-check form-check-inline">
-                    <input className="form-check-input" type="checkbox" checked={autoCompile} onChange={() => setAutoCompile(!autoCompile)} />
-                    <label className="form-check-label">auto compile</label>
-                </div> */}
-
-                <button type="button" className="btn btn-dark" onClick={onMIDIGenerate}>
-                    {/* <Image src="/midi.png" width={40} height={40} alt="to MIDI" /> */}
-                    MIDI
-                </button>
-                <button type="button" className="btn btn-dark" onClick={onXMLGenerate}>
-                    {/* <Image src="/midi2.png" width={40} height={40} alt="to MusicXML" /> */}
-                    mXML
-                </button>
-
-                {/* <button type="button" className="btn btn-info m-1" onClick={() => setPiano(!piano)}>
-                    <Image src="/piano.png" width={40} height={40} alt="PianoRoll" />
-                    PianoRoll
-                </button> */}
-
-                {/* <div className="form-check form-check-inline">
-                    <input className="form-check-input" type="checkbox" checked={autoFormat} onChange={() => setAutoFormat(!autoFormat)} />
-                    <label className="form-check-label">auto format</label>
-                </div> */}
+                <span>
+                    <span className="me-2">
+                        Tick: <Label size="large" style={{fontFamily: "monospace"}}>{String(seq.nowTick).padStart(3, '0')}/{String(maxTick).padStart(3, '0')}</Label>
+                    </span>
+                    <span className="me-2">
+                        Beat: <Label size="large" style={{fontFamily: "monospace"}}>4/4</Label>
+                    </span>
+                    <span className="me-2">
+                        Tempo: <Label  size="large" style={{fontFamily: "monospace"}}>{bpm}</Label>
+                    </span>
+                    {/* <span className="me-2">Key: G</span> */}
+                    <Button className="me-2" onClick={seq.first} icon={<RewindIcon />} />
+                    <Button className="me-2" shape="circular" appearance="primary" onClick={seq.playToggle} size="large" icon={seq.isPlaying ? <PauseIcon />:<PlayIcon />} />
+                    <Button className="me-2" onClick={()=>{seq.stop(); seq.first()}} icon={<StopIcon />} />
+                </span>
 
                 {midi.outPorts.length === 0 ? 
-                <button type="button" className="btn btn-dark" onClick={midi.load}>
-                    useMIDI
-                </button>
+                <Button icon={<MidiIcon />} appearance="primary" onClick={midi.load} />
                 :
                 <Instrument midi={midi} />
                 }
 
-                {/* <button type="button" className="btn btn-dark">
-                    auto compose
-                </button> */}
-
-                <span>
-                    <button className="btn btn-secondary mx-1" onClick={seq.first}>
-                        l＜
-                    </button>
-                    <button className="btn btn-primary me-1" onClick={seq.playToggle}>
-                        {seq.isPlaying ? 'II' : '▶'}
-                    </button>
-                    {/* <span>{seq.nowTick}</span> */}
-                </span>
+                <label className="ms-2">Program: </label>
+                <Select appearance="filled-darker" className="d-inline" value={tracks[tabnum].program}>
+                    {programs}
+                </Select>
                 
                 <Singer vox={vox} tracks={tracks} bpm={bpm} />
-
-
-
             </div>
 
             <div className="row">
@@ -308,12 +394,12 @@ export default function Main() {
                 {/* Left Pane */}
                 <div className="col-md-6 pe-0 pane">
 
-                    <TrackSelector tracks={tracks} tabnum={tabnum} onAddTrack={onAddTrack} onTabChange={onTabChange} onDeleteTab={onDeleteTab} />
+                    <TrackSelector tracks={tracks} tabnum={tabnum} onAddTrack={onAddTrack} onTabChange={(t)=>setTabnum(t)} onDeleteTab={onDeleteTab} />
 
                     <div style={{ height: "calc(100% - 42px)" }}>
                         {tracks[tabnum] === undefined ? '' :
                             // <textarea className="form-control editor m-0 bar" value={tracks[tabnum].texts} rows={32} cols={20} onChange={(e) => onTextChange(e.target.value)} wrap="off" />
-                            <EditorComponent value={tracks[tabnum].texts} doChange={onTextChange} />
+                            <SMMLEditor value={tracks[tabnum].texts} doChange={onTextChange} />
                         }
 
                         <textarea
@@ -343,7 +429,7 @@ export default function Main() {
                         tracks[tabnum] === undefined || tracks[tabnum].notes === undefined ?
                             '' :
                             piano ?
-                                <LegPianoRoll notes={tracks[tabnum].notes} seq={seq} />
+                                <PianoRoll notes={tracks[tabnum].notes} seq={seq} />
                                 // <NewPianoRoll notes={tracks[tabnum].notes} seq={seq} />
                                 :
                                 <Disp title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords} />
@@ -363,12 +449,10 @@ export default function Main() {
                                 </>
                             : <></>}
                         </div>
-
-
                     </div>
-
                 </div>
             </div>
         </div>
+        </FluentProvider>
     )
 }

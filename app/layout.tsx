@@ -14,7 +14,7 @@ export default function RootLayout({
 }) {
     return (
         <html lang="ja" data-bs-theme="dark">
-            <body>
+            <body suppressHydrationWarning={true}>
                 {/* <nav className="navbar navbar-dark bg-secondary shadow"> */}
                     <div className="container-fluid">
                         {/* <a className="navbar-brand" href="#">SMML Editor Demo</a>

@@ -1,6 +1,6 @@
 
 import MidiWriter from 'midi-writer-js';
-import { Track_Info } from '../types.ts'
+import { Track as Track_Info } from '../types.ts'
 import Lib from '../Lib.ts'
 import { Track } from 'midi-writer-js/build/types/chunks/track';
 

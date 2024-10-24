@@ -1,6 +1,12 @@
 import React  from 'react'
 import { useState } from 'react'
-import { Track_Info } from 'types'
+import { Track } from 'types'
+import { Button, Select } from '@fluentui/react-components'
+import {
+    bundleIcon,PersonVoiceRegular, PersonVoiceFilled,
+} from "@fluentui/react-icons"
+
+const PersonVoiceIcon = bundleIcon(PersonVoiceRegular, PersonVoiceFilled)
 
 type SingerInfo = {
     name: string
@@ -20,7 +26,7 @@ type SingerInfo = {
 
 interface Props {
     vox: any
-    tracks: Track_Info[]
+    tracks: Track[]
     bpm: number
 }
 
@@ -57,13 +63,6 @@ export const Singer = ({vox, tracks, bpm} :Props) => {
             {singer.name}
         </option>
     )
-    // if (midi.outPorts !== undefined){
-    //     if(midi.outPorts.length > 0) {
-    //         out_items = midi.outPorts.map((value:any) =>
-    //         <option key={n++} value={value.ID}>{value.name} ({value.ID})</option> 
-    //         )
-    //     }
-    // }
 
     const onChangeSinger = async (id: number) => {
         console.log("set singer: ",id)
@@ -86,21 +85,22 @@ export const Singer = ({vox, tracks, bpm} :Props) => {
 
     return <span className='mx-2'>
     {items.length === 0 ? 
-        <button type="button" className="btn btn-dark" onClick={getSingers}>useVoiceVox</button>
+        <Button appearance="primary" icon={<PersonVoiceIcon />} onClick={getSingers} />
         :
         <>
-        <select onChange={(e)=>onChangeSinger(Number(e.target.value))} value={vox.singer}>
+        <label>Singer: </label>
+        <Select className="d-inline ms-2" onChange={(e)=>onChangeSinger(Number(e.target.value))} value={vox.singer}>
             { items }
-        </select>
+        </Select>
         
         {vox.creating ?
-            <button type="button" className="btn btn-secondary" onClick={vox.VoiceSynth}>
+            <Button onClick={vox.VoiceSynth}>
             Creating...
-            </button>
+            </Button>
         :
-        <button type="button" className="btn btn-dark" onClick={VoiceSynth}>
+        <Button onClick={VoiceSynth}>
             Voice Synth
-        </button>
+        </Button>
         }
         </>
     }
