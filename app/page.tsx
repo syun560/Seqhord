@@ -21,7 +21,7 @@ import {
     CutRegular, CutFilled,
     ClipboardPasteRegular, ClipboardPasteFilled,
     EditRegular, EditFilled,
-    PlayRegular, PlayFilled, PauseRegular, PauseFilled, RewindRegular, RewindFilled,
+    PlayRegular, PlayFilled, PauseRegular, PauseFilled, RewindRegular, RewindFilled, FastForwardRegular, FastForwardFilled,
     SaveRegular, SaveFilled,
     ZoomInRegular, ZoomInFilled, ZoomOutRegular, ZoomOutFilled,
     MidiRegular, MidiFilled,
@@ -37,6 +37,7 @@ const EditIcon = bundleIcon(EditFilled, EditRegular);
 const PlayIcon = bundleIcon(PlayRegular, PlayFilled)
 const PauseIcon = bundleIcon(PauseRegular, PauseFilled)
 const RewindIcon = bundleIcon(RewindRegular, RewindFilled)
+const FastForwardIcon = bundleIcon(FastForwardRegular, FastForwardFilled)
 const SaveIcon = bundleIcon(SaveRegular, SaveFilled)
 const ZoomInIcon = bundleIcon(ZoomInRegular, ZoomInFilled)
 const ZoomOutIcon = bundleIcon(ZoomOutRegular, ZoomOutFilled)
@@ -62,6 +63,7 @@ import { TrackSelector } from './component/TrackSelector'
 import { SMMLEditor } from './component/SMMLEditor'
 import { Instrument } from "./component/Instrument"
 import { Singer } from "./component/Singer"
+import { Variables } from "./component/Variables"
 
 // text
 import { default_text } from './default_txt/default_text'
@@ -152,8 +154,7 @@ export default function Main() {
     const [autoFormat, setAutoFormat] = useState(true)
     const [maxTick, setMaxTick] = useState(0)
 
-    // const tabNames = ["preview", "info"]
-    const tabNames = ["preview"]
+    const tabNames = ["preview", "info"]
 
     // custom hook
     const midi = useInstrument()
@@ -315,19 +316,18 @@ export default function Main() {
                 </Menu>
                 <Menu>
                     <MenuTrigger disableButtonEnhancement>
-                        <ToolbarButton>機能</ToolbarButton>
+                        <ToolbarButton>編集</ToolbarButton>
                     </MenuTrigger>
                     <MenuPopover>
                         <MenuList>
-                            {/* <MenuItem secondaryContent="Ctrl+Z" icon={<CutIcon />}>元に戻す</MenuItem>
+                            <MenuItem secondaryContent="Ctrl+Z" icon={<CutIcon />}>元に戻す</MenuItem>
                             <MenuItem secondaryContent="Ctrl+Y"icon={<PasteIcon />}>やり直す</MenuItem>
-                            <MenuItem icon={<EditIcon />}onClick={format}>文字列をフォーマットする</MenuItem> */}
+                            <MenuItem icon={<EditIcon />}onClick={format}>文字列をフォーマットする</MenuItem>
                             <MenuItem icon={<EditIcon />}onClick={onCompile}>コンパイル</MenuItem>
-                            <MenuItemLink icon={<SettingIcon />} href="http://localhost:50021/setting" target="none">VoiceVox設定</MenuItemLink>
                         </MenuList>
                     </MenuPopover>
                 </Menu>
-                {/* <Menu>
+                <Menu>
                     <MenuTrigger disableButtonEnhancement>
                         <ToolbarButton>表示</ToolbarButton>
                     </MenuTrigger>
@@ -337,8 +337,8 @@ export default function Main() {
                             <MenuItem icon={<ZoomOutIcon />}>縮小</MenuItem>
                         </MenuList>
                     </MenuPopover>
-                </Menu> */}
-                {/* <Menu>
+                </Menu>
+                <Menu>
                     <MenuTrigger disableButtonEnhancement>
                         <ToolbarButton>再生</ToolbarButton>
                     </MenuTrigger>
@@ -347,8 +347,18 @@ export default function Main() {
                             <MenuItem icon={<PlayIcon />} secondaryContent="Space" onClick={seq.playToggle}>再生</MenuItem>
                         </MenuList>
                     </MenuPopover>
-                </Menu> */}
-                {/* <Menu>
+                </Menu>
+                <Menu>
+                    <MenuTrigger disableButtonEnhancement>
+                        <ToolbarButton>設定</ToolbarButton>
+                    </MenuTrigger>
+                    <MenuPopover>
+                        <MenuList>
+                            <MenuItemLink icon={<SettingIcon />} href="http://localhost:50021/setting" target="none">VoiceVox設定</MenuItemLink>
+                        </MenuList>
+                    </MenuPopover>
+                </Menu>
+                <Menu>
                     <MenuTrigger disableButtonEnhancement>
                         <ToolbarButton>ヘルプ</ToolbarButton>
                     </MenuTrigger>
@@ -356,12 +366,25 @@ export default function Main() {
                         <MenuList>
                             <MenuItemLink icon={<ChatHelpIcon />} href="https://www.google.com" target="none">マニュアル</MenuItemLink>
                         </MenuList>
+                        <MenuList>
+                            <MenuItemLink icon={<ChatHelpIcon />} href="https://camp-fire.jp/projects/691016/view?utm_campaign=cp_po_share_c_msg_mypage_projects_show" target="none">ご支援</MenuItemLink>
+                        </MenuList>
+                        <MenuList>
+                            <MenuItemLink icon={<ChatHelpIcon />} href="https://camp-fire.jp/projects/691016/view?utm_campaign=cp_po_share_c_msg_mypage_projects_show" target="none">このアプリについて</MenuItemLink>
+                        </MenuList>
                     </MenuPopover>
-                </Menu> */}
-
+                </Menu>
+                <br />
                 <span>
+                    {/* <span className="me-2">
+                        Tick: <Label size="large" style={{fontFamily: "monospace"}}>
+                            {String(seq.nowTick).padStart(3, '0')}/{String(maxTick).padStart(3, '0')}
+                        </Label>
+                    </span> */}
                     <span className="me-2">
-                        Tick: <Label size="large" style={{fontFamily: "monospace"}}>{String(seq.nowTick).padStart(3, '0')}/{String(maxTick).padStart(3, '0')}</Label>
+                        Tick: <Label size="large" style={{fontFamily: "monospace"}}>
+                            {String(Math.floor(seq.nowTick/8)).padStart(3, '\xa0')}:{String(seq.nowTick%8).padStart(2, '0')} / {Math.floor(maxTick/8)}:{maxTick%8}
+                        </Label>
                     </span>
                     <span className="me-2">
                         Beat: <Label size="large" style={{fontFamily: "monospace"}}>4/4</Label>
@@ -370,9 +393,13 @@ export default function Main() {
                         Tempo: <Label  size="large" style={{fontFamily: "monospace"}}>{bpm}</Label>
                     </span>
                     {/* <span className="me-2">Key: G</span> */}
+                </span>
+
+                <span className="mx-3">
                     <Button className="me-2" onClick={seq.first} icon={<RewindIcon />} />
                     <Button className="me-2" shape="circular" appearance="primary" onClick={seq.playToggle} size="large" icon={seq.isPlaying ? <PauseIcon />:<PlayIcon />} />
-                    <Button className="me-2" onClick={()=>{seq.stop(); seq.first()}} icon={<StopIcon />} />
+                    {/* <Button className="me-2" onClick={()=>{seq.stop(); seq.first()}} icon={<StopIcon />} /> */}
+                    <Button className="me-2" onClick={seq.nextMea} icon={<FastForwardIcon />} />
                 </span>
 
                 {midi.outPorts.length === 0 ? 
@@ -434,7 +461,7 @@ export default function Main() {
                                 :
                                 <Disp title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords} />
                         :
-                        <div>info</div>
+                        <Variables title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords}/>
                         }
 
                         {/* float element */}

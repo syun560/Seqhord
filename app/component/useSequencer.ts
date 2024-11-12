@@ -41,6 +41,16 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number):Sequencer => {
         midi.allNoteOff()
         clearTimeout(timer.current)
     }
+    const nextMea = () => {
+        let s = nowTickRef.current + 8
+        s = s - s % 8
+
+        setNowTick(s)
+        if (s > endTick.current){
+            stop()
+            first()
+        }
+    }
     const first = () => {
         setNowTick(0)
     }
@@ -68,5 +78,5 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number):Sequencer => {
         }
     }
 
-    return {nowTick, isPlaying, setNowTick, setMIDI, play, stop, first, playToggle}
+    return {nowTick, isPlaying, setNowTick, setMIDI, play, stop, nextMea, first, playToggle}
 }
