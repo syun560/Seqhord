@@ -6,49 +6,27 @@ import { useState, useEffect, useRef } from "react"
 
 // fluent ui
 import {
-    FluentProvider,
-    webLightTheme, webDarkTheme,
-    Menu, MenuTrigger, MenuList, MenuItem, MenuItemLink, MenuPopover, MenuDivider,
-    Toolbar,ToolbarButton,
-    Button, 
-    Select,
-    Label,
+    FluentProvider, webDarkTheme,
+    Button, Select, Label,
 } from "@fluentui/react-components"
 
 import {
     bundleIcon,
-    ArrowUndoRegular,
-    CutRegular, CutFilled,
-    ClipboardPasteRegular, ClipboardPasteFilled,
-    EditRegular, EditFilled,
     PlayRegular, PlayFilled, PauseRegular, PauseFilled, RewindRegular, RewindFilled, FastForwardRegular, FastForwardFilled,
-    SaveRegular, SaveFilled,
-    ZoomInRegular, ZoomInFilled, ZoomOutRegular, ZoomOutFilled,
     MidiRegular, MidiFilled,
-    DocumentRegular, ChatHelpRegular, ChatHelpFilled,
-    FolderOpenRegular, FolderOpenFilled,
-    StopRegular, StopFilled,
-    SettingsRegular,SettingsFilled
 } from "@fluentui/react-icons"
 
-const CutIcon = bundleIcon(CutFilled, CutRegular);
-const PasteIcon = bundleIcon(ClipboardPasteFilled, ClipboardPasteRegular);
-const EditIcon = bundleIcon(EditFilled, EditRegular);
 const PlayIcon = bundleIcon(PlayRegular, PlayFilled)
 const PauseIcon = bundleIcon(PauseRegular, PauseFilled)
 const RewindIcon = bundleIcon(RewindRegular, RewindFilled)
 const FastForwardIcon = bundleIcon(FastForwardRegular, FastForwardFilled)
-const SaveIcon = bundleIcon(SaveRegular, SaveFilled)
-const ZoomInIcon = bundleIcon(ZoomInRegular, ZoomInFilled)
-const ZoomOutIcon = bundleIcon(ZoomOutRegular, ZoomOutFilled)
 const MidiIcon = bundleIcon(MidiRegular, MidiFilled)
-const ChatHelpIcon = bundleIcon(ChatHelpRegular, ChatHelpFilled)
-const FolderOpenIcon = bundleIcon(FolderOpenRegular, FolderOpenFilled)
-const StopIcon = bundleIcon(StopRegular, StopFilled)
-const SettingIcon = bundleIcon(SettingsRegular, SettingsFilled)
 
 // types
 import { Chord, Track } from 'types'
+
+// defalut val
+import { default_tracks } from "./default_vals/defalut_tracks"
 
 // custom hook
 import { useSequencer } from "./component/useSequencer"
@@ -64,13 +42,7 @@ import { SMMLEditor } from './component/SMMLEditor'
 import { Instrument } from "./component/Instrument"
 import { Singer } from "./component/Singer"
 import { Variables } from "./component/Variables"
-
-// text
-import { default_text } from './default_txt/default_text'
-import { default_append } from './default_txt/default_append'
-import { default_bass } from './default_txt/default_bass'
-import { default_drum } from './default_txt/default_drum'
-import { default_guitar } from './default_txt/default_guitar'
+import { MenuComponent } from "./component/MenuComponent"
 
 // script
 import { compile } from './compile/compile'
@@ -80,62 +52,6 @@ import { loadJSON } from './loadJSON'
 import Lib from './Lib'
 
 import './globals.css'
-
-const default_tracks: Track[] = [
-    {
-        name: 'melody',
-        program: 73,
-        ch: 0,
-        trans: 5,
-        type: 'conductor',
-        notes: [],
-        texts: default_text,
-        volume: 100,
-        panpot: 64,
-    }, {
-        name: 'rhythm guitar',
-        program: 4,
-        ch: 1,
-        trans: 5,
-        type: 'chord',
-        notes: [],
-        texts: default_append,
-        volume: 100,
-        panpot: 64
-    },
-    {
-        name: 'lead guitar',
-        program: 4,
-        ch: 2,
-        trans: 5,
-        type: 'chord',
-        notes: [],
-        texts: default_guitar,
-        volume: 100,
-        panpot: 64
-    },
-    {
-        name: 'bass',
-        program: 34,
-        ch: 3,
-        trans: 5,
-        type: 'bass',
-        notes: [],
-        texts: default_bass,
-        volume: 100,
-        panpot: 64
-    }, {
-        name: 'drum',
-        program: 0,
-        ch: 10,
-        trans: 5,
-        type: 'drum',
-        notes: [],
-        texts: default_drum,
-        volume: 100,
-        panpot: 64
-    }
-]
 
 const programs = Lib.programName.map((p, i)=><option key={i} value={i}>{String(i).padStart(3, '0')}: {p}</option>)
 
@@ -202,10 +118,6 @@ export default function Main() {
             setTracks([...tracks])
         }
         onCompile()
-    }
-
-    const format = () => {
-        // 文字列をフォーマットする
     }
 
     const onTextChange = (text: string) => {
@@ -293,87 +205,16 @@ export default function Main() {
         setMaxTick(m)
     }, [tracks])
 
+    const menuFunc = {
+        saveAsJson, showOpenFileDialog ,onCompile, onNew, saveMIDI, saveMusicXML, saveText
+    }
+
     return (
         <FluentProvider theme={webDarkTheme}>
 
         <div className="container-fluid">
             <div>
-                <Menu hasIcons>
-                    <MenuTrigger disableButtonEnhancement>
-                        <ToolbarButton>ファイル</ToolbarButton>
-                    </MenuTrigger>
-                    <MenuPopover>
-                        <MenuList>
-                            <MenuItem icon={<DocumentRegular />}secondaryContent="Ctrl+N" onClick={onNew}>新規作成</MenuItem>
-                            <MenuItem icon={<FolderOpenIcon />} secondaryContent="Ctrl+O" onClick={showOpenFileDialog}>開く</MenuItem>
-                            <MenuItem icon={<SaveIcon />} secondaryContent="Ctrl+S" onClick={saveAsJson}>保存する</MenuItem>
-                            <MenuDivider />
-                            <MenuItem icon={<MidiIcon />} onClick={saveMIDI}>MIDIで書き出す</MenuItem>
-                            <MenuItem onClick={saveMusicXML}>musicXMLで書き出す</MenuItem>
-                            <MenuItem onClick={saveText}>テキストを書き出す</MenuItem>
-                        </MenuList>
-                    </MenuPopover>
-                </Menu>
-                <Menu>
-                    <MenuTrigger disableButtonEnhancement>
-                        <ToolbarButton>編集</ToolbarButton>
-                    </MenuTrigger>
-                    <MenuPopover>
-                        <MenuList>
-                            <MenuItem secondaryContent="Ctrl+Z" icon={<CutIcon />}>元に戻す</MenuItem>
-                            <MenuItem secondaryContent="Ctrl+Y"icon={<PasteIcon />}>やり直す</MenuItem>
-                            <MenuItem icon={<EditIcon />}onClick={format}>文字列をフォーマットする</MenuItem>
-                            <MenuItem icon={<EditIcon />}onClick={onCompile}>コンパイル</MenuItem>
-                        </MenuList>
-                    </MenuPopover>
-                </Menu>
-                <Menu>
-                    <MenuTrigger disableButtonEnhancement>
-                        <ToolbarButton>表示</ToolbarButton>
-                    </MenuTrigger>
-                    <MenuPopover>
-                        <MenuList>
-                            <MenuItem icon={<ZoomInIcon />}>拡大</MenuItem>
-                            <MenuItem icon={<ZoomOutIcon />}>縮小</MenuItem>
-                        </MenuList>
-                    </MenuPopover>
-                </Menu>
-                <Menu>
-                    <MenuTrigger disableButtonEnhancement>
-                        <ToolbarButton>再生</ToolbarButton>
-                    </MenuTrigger>
-                    <MenuPopover>
-                        <MenuList>
-                            <MenuItem icon={<PlayIcon />} secondaryContent="Space" onClick={seq.playToggle}>再生</MenuItem>
-                        </MenuList>
-                    </MenuPopover>
-                </Menu>
-                <Menu>
-                    <MenuTrigger disableButtonEnhancement>
-                        <ToolbarButton>設定</ToolbarButton>
-                    </MenuTrigger>
-                    <MenuPopover>
-                        <MenuList>
-                            <MenuItemLink icon={<SettingIcon />} href="http://localhost:50021/setting" target="none">VoiceVox設定</MenuItemLink>
-                        </MenuList>
-                    </MenuPopover>
-                </Menu>
-                <Menu>
-                    <MenuTrigger disableButtonEnhancement>
-                        <ToolbarButton>ヘルプ</ToolbarButton>
-                    </MenuTrigger>
-                    <MenuPopover>
-                        <MenuList>
-                            <MenuItemLink icon={<ChatHelpIcon />} href="https://www.google.com" target="none">マニュアル</MenuItemLink>
-                        </MenuList>
-                        <MenuList>
-                            <MenuItemLink icon={<ChatHelpIcon />} href="https://camp-fire.jp/projects/691016/view?utm_campaign=cp_po_share_c_msg_mypage_projects_show" target="none">ご支援</MenuItemLink>
-                        </MenuList>
-                        <MenuList>
-                            <MenuItemLink icon={<ChatHelpIcon />} href="https://camp-fire.jp/projects/691016/view?utm_campaign=cp_po_share_c_msg_mypage_projects_show" target="none">このアプリについて</MenuItemLink>
-                        </MenuList>
-                    </MenuPopover>
-                </Menu>
+                <MenuComponent f={menuFunc} seq={seq}/>         
                 <br />
                 <span>
                     {/* <span className="me-2">
@@ -429,6 +270,7 @@ export default function Main() {
                             <SMMLEditor value={tracks[tabnum].texts} doChange={onTextChange} />
                         }
 
+                        {/* Left Down Pane */}
                         <textarea
                             style={{ height: "20%" }}
                             className="form-control m-0 overflow-auto"
@@ -461,7 +303,7 @@ export default function Main() {
                                 :
                                 <Disp title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords} />
                         :
-                        <Variables title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords}/>
+                        <Variables />
                         }
 
                         {/* float element */}
