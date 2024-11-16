@@ -40,6 +40,7 @@ type menuFunc = {
     saveAsJson: () => void
     showOpenFileDialog: () => void
     onCompile: () => void
+    autoCompose: () => void
 }
 
 type MenuComponentPropsType = {
@@ -74,6 +75,7 @@ export const MenuComponent = ({ f, seq }: MenuComponentPropsType) => {
                     <MenuItem secondaryContent="Ctrl+Z" icon={<CutIcon />}>元に戻す</MenuItem>
                     <MenuItem secondaryContent="Ctrl+Y" icon={<PasteIcon />}>やり直す</MenuItem>
                     <MenuItem icon={<EditIcon />} >文字列をフォーマットする</MenuItem>
+                    <MenuItem icon={<EditIcon />} onClick={f.autoCompose}>自動作曲する</MenuItem>
                     <MenuItem icon={<EditIcon />} onClick={f.onCompile}>コンパイル</MenuItem>
                 </MenuList>
             </MenuPopover>

@@ -153,5 +153,6 @@ export const useVoiceVox = () => {
         synthVoice, 
         creating,
         singer, setSinger, 
-        singers_portrait, setSingersPortrait }
+        singers_portrait, setSingersPortrait
+    }
 }

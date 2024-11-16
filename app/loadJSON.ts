@@ -1,5 +1,4 @@
-import { json } from 'stream/consumers'
-import { Chord, Track } from 'types'
+import { Track } from 'types'
 import { compile } from './compile/compile'
 
 export const loadJSON = (files: any, setTracks: (tracks: Track[])=>void ,setBPM: (bpm: number)=> void) => {

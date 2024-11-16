@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import 'globals.css'
+import 'styles.css'
 
 export const metadata: Metadata = {
     title: 'SMML Editor Demo',

@@ -5,17 +5,12 @@ import React from "react"
 import { useState, useEffect, useRef } from "react"
 
 // fluent ui
-import {
-    FluentProvider, webDarkTheme,
-    Button, Select, Label,
-} from "@fluentui/react-components"
-
+import { FluentProvider, webDarkTheme, Button, Select, Label } from "@fluentui/react-components"
 import {
     bundleIcon,
     PlayRegular, PlayFilled, PauseRegular, PauseFilled, RewindRegular, RewindFilled, FastForwardRegular, FastForwardFilled,
     MidiRegular, MidiFilled,
 } from "@fluentui/react-icons"
-
 const PlayIcon = bundleIcon(PlayRegular, PlayFilled)
 const PauseIcon = bundleIcon(PauseRegular, PauseFilled)
 const RewindIcon = bundleIcon(RewindRegular, RewindFilled)
@@ -29,9 +24,10 @@ import { Chord, Track } from 'types'
 import { default_tracks } from "./default_vals/defalut_tracks"
 
 // custom hook
-import { useSequencer } from "./component/useSequencer"
-import { useInstrument } from "./component/useInstrument"
-import { useVoiceVox } from "./component/useVoicevox"
+import { useSequencer } from "./custom_hooks/useSequencer"
+import { useInstrument } from "./custom_hooks/useInstrument"
+import { useVoiceVox } from "./custom_hooks/useVoicevox"
+import { useConsole } from "./custom_hooks/useConsole"
 
 // component
 import { Disp } from './component/display'
@@ -43,6 +39,7 @@ import { Instrument } from "./component/Instrument"
 import { Singer } from "./component/Singer"
 import { Variables } from "./component/Variables"
 import { MenuComponent } from "./component/MenuComponent"
+import { TabSelector } from "./component/TabSelector"
 
 // script
 import { compile } from './compile/compile'
@@ -51,21 +48,23 @@ import { generate_musicxml } from './generate/generate_musicxml'
 import { loadJSON } from './loadJSON'
 import Lib from './Lib'
 
-import './globals.css'
+import './styles.css'
 
 const programs = Lib.programName.map((p, i)=><option key={i} value={i}>{String(i).padStart(3, '0')}: {p}</option>)
 
 export default function Main() {
-    // useState
+    // State
     const [tracks, setTracks] = useState<Track[]>(default_tracks)
     const [bpm, setBpm] = useState(120)
     const [mea, setMea] = useState(0)
     const [title, setTitle] = useState('none')
-    const [errMsg, setErrMsg] = useState('SMML Pad Ver0.1 ready...\n')
     const [chords, setChords] = useState<Chord[]>([])
     const [piano, setPiano] = useState(true)
+    
     const [tabnum, setTabnum] = useState(0)
     const [rightTab, setRightTab] = useState("preview")
+    
+    
     const [autoCompile, setAutoCompile] = useState(true)
     const [autoFormat, setAutoFormat] = useState(true)
     const [maxTick, setMaxTick] = useState(0)
@@ -76,44 +75,35 @@ export default function Main() {
     const midi = useInstrument()
     const seq = useSequencer(midi, tracks, bpm)
     const vox = useVoiceVox()
+    const log = useConsole()
     const timer = useRef<NodeJS.Timeout | null>(null);
+
+    const simpleDownload = (title: string, url: string) => {
+        const a = document.createElement('a')
+        a.download = title
+        a.href = url
+        a.click()
+    }
 
     const saveMIDI = () => {
         const uri = generate_midi(tracks, bpm)
-        const a = document.createElement('a')
-        a.download = `${title}.mid`
-        a.href = uri
-        a.click()
+        simpleDownload(`${title}.mid`, uri)
     }
     const saveMusicXML = () => {
         const xml = generate_musicxml(0, tracks[0].notes, bpm)
-        const blob = new Blob([xml], {
-            type: 'text/plain;charset=utf-8',
-        });
-        const a = document.createElement('a')
-        a.download = `${title}.musicxml`
-        a.href = URL.createObjectURL(blob)
-        a.click()
+        const blob = new Blob([xml], { type: 'text/plain;charset=utf-8' })
+        simpleDownload(`${title}.musicxml`, URL.createObjectURL(blob))
     }
-
     const saveText = () => {
         const text = tracks[tabnum].texts
-        const a = document.createElement('a')
-        a.download = `${title}.txt`
-        a.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(text)
-        a.click()
+        simpleDownload(`${title}.txt`, 'data:text/plain;charset=utf-8,' + encodeURIComponent(text))
     }
-
     const saveAsJson = () => {
-        const a = document.createElement('a')
-        a.download = `${title}.smml`
-        a.href = URL.createObjectURL(new Blob([JSON.stringify(tracks)], { type: 'text/json' }))
-        a.click()
+        simpleDownload(`${title}.smml`, URL.createObjectURL(new Blob([JSON.stringify(tracks)], { type: 'text/json' })))
     }
 
     const onNew = () => {
-        let result = confirm('新規作成しますか？（現在のデータは削除されます）')
-        if (result) {
+        if (confirm('新規作成しますか？（現在のデータは削除されます）')) {
             tracks.forEach(track=>track.texts = "")
             setTracks([...tracks])
         }
@@ -140,7 +130,7 @@ export default function Main() {
         // setNotes([...res.notes])
         setTracks([...res.tracks])
         setTitle(res.title)
-        setErrMsg(errMsg + res.errMsg)
+        log.addLog(res.errMsg)
         setBpm(res.bpm)
         setMea(res.mea)
         setChords(res.chords)
@@ -187,6 +177,15 @@ export default function Main() {
         input.click()
     })
 
+    const autoCompose = () => {
+        log.addLog("auto compose")
+    }
+
+    const menuFunc = {
+        saveAsJson, showOpenFileDialog ,onCompile, onNew, saveMIDI, saveMusicXML, saveText,
+        autoCompose
+    }
+
     useEffect(() => {
         window.addEventListener("beforeunload", handleBeforeUnload)
         onCompile()
@@ -195,6 +194,7 @@ export default function Main() {
         }
     }, [])
 
+    // MaxTickを求める
     useEffect(() => {
         let m = 0
         tracks.forEach(t=>{
@@ -204,10 +204,6 @@ export default function Main() {
         })
         setMaxTick(m)
     }, [tracks])
-
-    const menuFunc = {
-        saveAsJson, showOpenFileDialog ,onCompile, onNew, saveMIDI, saveMusicXML, saveText
-    }
 
     return (
         <FluentProvider theme={webDarkTheme}>
@@ -274,7 +270,7 @@ export default function Main() {
                         <textarea
                             style={{ height: "20%" }}
                             className="form-control m-0 overflow-auto"
-                            value={errMsg}
+                            value={log.log}
                             readOnly />
                     </div>
 

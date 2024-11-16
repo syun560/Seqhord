@@ -73,13 +73,13 @@ export const compile_melody = (line: string, i: number, res: Res, c: number, tra
             const duration = reso
 
             notes.push({
-                pitch: pitch,
-                pitch_name: pitch_name,
-                duration: duration,
+                pitch,
+                pitch_name,
+                duration,
                 channel: 1,
                 velocity: 100,
-                mea: mea,
-                tick: tick
+                mea,
+                tick
             })
             tick += duration
             octarve = 0
