@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react"
+import  { Dispatch, SetStateAction } from "react"
 
 export type Note = {
     pitch: number   // 0~128
@@ -71,7 +71,6 @@ export type Sequencer = {
     isPlaying: boolean
 }
 
-
 // コンパイル結果
 export type Res = {
     title: string
@@ -79,6 +78,7 @@ export type Res = {
     scales: Scale[]
     errMsg: string
     mea: number
+    vars: Var2[]
     tracks: Track[]
     chords: Chord[]
 }

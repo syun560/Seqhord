@@ -18,7 +18,7 @@ const FastForwardIcon = bundleIcon(FastForwardRegular, FastForwardFilled)
 const MidiIcon = bundleIcon(MidiRegular, MidiFilled)
 
 // types
-import { Chord, Track } from 'types'
+import { Chord, Track, Var2 } from 'types'
 
 // defalut val
 import { default_tracks } from "./default_vals/defalut_tracks"
@@ -39,7 +39,6 @@ import { Instrument } from "./component/Instrument"
 import { Singer } from "./component/Singer"
 import { Variables } from "./component/Variables"
 import { MenuComponent } from "./component/MenuComponent"
-import { TabSelector } from "./component/TabSelector"
 
 // script
 import { compile } from './compile/compile'
@@ -59,6 +58,7 @@ export default function Main() {
     const [mea, setMea] = useState(0)
     const [title, setTitle] = useState('none')
     const [chords, setChords] = useState<Chord[]>([])
+    const [vars, setVars] = useState<Var2[]>([])
     const [piano, setPiano] = useState(true)
     
     const [tabnum, setTabnum] = useState(0)
@@ -69,7 +69,7 @@ export default function Main() {
     const [autoFormat, setAutoFormat] = useState(true)
     const [maxTick, setMaxTick] = useState(0)
 
-    const tabNames = ["preview", "info"]
+    const tabNames = ["preview", "vars"]
 
     // custom hook
     const midi = useInstrument()
@@ -133,6 +133,7 @@ export default function Main() {
         log.addLog(res.errMsg)
         setBpm(res.bpm)
         setMea(res.mea)
+        setVars(res.vars)
         setChords(res.chords)
     }
     const onAddTrack = () => {
@@ -299,7 +300,7 @@ export default function Main() {
                                 :
                                 <Disp title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords} />
                         :
-                        <Variables />
+                        <Variables vars={vars} />
                         }
 
                         {/* float element */}

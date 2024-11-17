@@ -117,12 +117,8 @@ const setVar2Note = (vars2: Var2[], name: string, repeat: number, nowTick: numbe
 }
 
 // 変数を認識し、コンパイルする
-export const expand_vars = (line: string, res: Res, ch: number, vars2: Var2[]) => {
+export const expand_vars = (line: string, res: Res, ch: number) => {
     // noteを用意する
-    let reso = 0.5
-    let dur_cnt = 0 // 1小節をカウントする
-    let is_note = false // 休符かnoteか
-    let mea = res.mea
     let tick = res.mea * 8
     let d_state = 0 // 0: 変数認識, 1:アスタリスク, 2:繰り返し回数認識受付状態
     let tmp_var = ''
@@ -157,7 +153,7 @@ export const expand_vars = (line: string, res: Res, ch: number, vars2: Var2[]) =
         }
         else if (c === '|' || c === ','){
             if (tmp_var !== '') {
-                const bn = setVar2Note(vars2,tmp_var,tmp_repeat,tick,res,ch)
+                const bn = setVar2Note(res.vars,tmp_var,tmp_repeat,tick,res,ch)
                 tmp_var = ''
                 if (bn !== undefined){
                     tick += tmp_repeat * bn.len
@@ -172,7 +168,7 @@ export const expand_vars = (line: string, res: Res, ch: number, vars2: Var2[]) =
     }
     // 行末までイテレートした場合。
     if (tmp_var !== '') {
-        const bn = setVar2Note(vars2,tmp_var,tmp_repeat,tick,res,ch)
+        const bn = setVar2Note(res.vars,tmp_var,tmp_repeat,tick,res,ch)
         tmp_var = ''
         if (bn !== undefined){
             tick += tmp_repeat * bn.len

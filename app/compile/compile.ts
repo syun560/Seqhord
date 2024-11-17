@@ -15,6 +15,7 @@ export const compile = (tracks: Track[]) => {
         scales: [],
         errMsg: "",
         mea: 0,
+        vars: [],
         tracks: [],
         chords: [],
     }
@@ -35,11 +36,10 @@ export const compile = (tracks: Track[]) => {
     }
     
     // 変数のコンパイルを行う
-    let vars2:Var2[] = []
-    compile_var(tracks, vars2, res)
+    compile_var(tracks, res)
     res.tracks[0].name = 'main'
     res.tracks[0].type = 'conductor'
-    // console.log(vars2)
+
 
     // 文字列を改行ごとに分割して配列に入れる
     const lines = tracks[0].texts.split('\n')
@@ -118,14 +118,13 @@ export const compile = (tracks: Track[]) => {
             else if (!isNaN(Number(line[0]))) {
                 const t = Number(line[0])
                 if (t < tracks.length) {
-                    expand_vars(line, res, t, vars2)
+                    expand_vars(line, res, t)
                 }
             }
         }
     })
 
     res.mea = mea
-    // console.log(res)
  
     // 実行時間を計測
     const end_time = performance.now()
