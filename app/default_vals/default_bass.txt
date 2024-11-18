@@ -1,5 +1,4 @@
-export const default_bass = 
-`@name    = bass
+@name    = bass
 @type    = bass
 @trans   = 2
 @program = 34
@@ -16,4 +15,3 @@ n|+8_+8_+8_+8_+8_+8_+8_+8_|
 @n=oct
 n|0_8_0_8_0_8_0_8_|
 @e
-`

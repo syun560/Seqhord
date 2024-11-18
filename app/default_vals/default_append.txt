@@ -1,5 +1,4 @@
-export const default_append = 
-`@name    = rhythm_guitar
+@name    = rhythm_guitar
 @type    = chord
 @trans   = 4
 @program = 30
@@ -46,5 +45,3 @@ n| 5_ 5_ 5_ 5_ 5_ 5_ 5_ 5_|
 n| 0_ 0_ 0_ 0_ 0_ 0_ 0_ 0_|
 n|-0_-0_-0_-0_-0_-0_-0_-0_|
 @e
-
-`

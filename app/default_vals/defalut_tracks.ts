@@ -1,11 +1,11 @@
 import { Track } from 'types'
 
 // text
-import { default_text } from './default_text'
-import { default_append } from './default_append'
-import { default_bass } from './default_bass'
-import { default_drum } from './default_drum'
-import { default_guitar } from './default_guitar'
+import default_text from './default_text.txt'
+import default_append from './default_append.txt'
+import default_bass from './default_bass.txt'
+import default_drum from './default_drum.txt'
+import default_guitar from './default_guitar.txt'
 
 export const default_tracks: Track[] = [
     {

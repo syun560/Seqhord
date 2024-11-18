@@ -1,5 +1,4 @@
-export const default_drum 
-=`@name    = drum
+@name    = drum
 @type    = drum
 @program = 0
 @volume  = 90
@@ -56,5 +55,3 @@ k|x...x...x...x...|
 @e
 
 @override=off
-`
-// 繰り返しの命令を書く。

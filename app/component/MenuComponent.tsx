@@ -117,7 +117,7 @@ export const MenuComponent = ({ f, seq }: MenuComponentPropsType) => {
             </MenuTrigger>
             <MenuPopover>
                 <MenuList>
-                    <MenuItemLink icon={<ChatHelpIcon />} href="https://www.google.com" target="none">マニュアル</MenuItemLink>
+                    <MenuItemLink icon={<ChatHelpIcon />} href="/manual" target="none">マニュアル</MenuItemLink>
                 </MenuList>
                 <MenuList>
                     <MenuItemLink icon={<ChatHelpIcon />} href="https://camp-fire.jp/projects/691016/view?utm_campaign=cp_po_share_c_msg_mypage_projects_show" target="none">ご支援</MenuItemLink>
