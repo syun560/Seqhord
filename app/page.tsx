@@ -24,10 +24,10 @@ import { Chord, Track, Var2 } from 'types'
 import { default_tracks } from "./default_vals/defalut_tracks"
 
 // custom hook
-import { useSequencer } from "./custom_hooks/useSequencer"
-import { useInstrument } from "./custom_hooks/useInstrument"
-import { useVoiceVox } from "./custom_hooks/useVoicevox"
-import { useConsole } from "./custom_hooks/useConsole"
+import { useSequencer } from "./hooks/useSequencer"
+import { useInstrument } from "./hooks/useInstrument"
+import { useVoiceVox } from "./hooks/useVoicevox"
+import { useConsole } from "./hooks/useConsole"
 
 // component
 import { Disp } from './component/display'
