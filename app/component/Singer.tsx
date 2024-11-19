@@ -1,51 +1,14 @@
 import React  from 'react'
-import { useState } from 'react'
-import { Track } from 'types'
+import { Track, VoiceVox } from 'types'
 import { Button, Select } from '@fluentui/react-components'
-import {
-    bundleIcon,PersonVoiceRegular, PersonVoiceFilled,
-} from "@fluentui/react-icons"
-
-const PersonVoiceIcon = bundleIcon(PersonVoiceRegular, PersonVoiceFilled)
-
-type SingerInfo = {
-    name: string
-    speaker_uuid: string
-    styles: [
-        {
-            name: string
-            id: number
-            type: string
-        }
-    ]
-    version: string
-    supported_features: {
-        permitted_synthesis_morphing: string
-    }
-}
 
 interface Props {
-    vox: any
+    vox: VoiceVox
     tracks: Track[]
     bpm: number
 }
 
 export const Singer = ({vox, tracks, bpm} :Props) => {
-
-    const [singers_info, setSingersInfo] = useState<SingerInfo[]>([])
-    
-    // get singers from VoiceVox API
-    const getSingers = async () => {
-        try {
-            const res = await fetch("http://localhost:50021/singers")
-            const json = await res.json() as SingerInfo[]
-            // console.log(json)
-            setSingersInfo(json)
-        }
-        catch(err) {
-            console.error(err)
-        }
-    }
 
     const VoiceSynth = async () => {
         try {
@@ -58,7 +21,7 @@ export const Singer = ({vox, tracks, bpm} :Props) => {
 
     // セレクトタグの内容を作る
     let items = null
-    items = singers_info.map(singer =>
+    items = vox.singers_info.map(singer =>
         <option key={singer.speaker_uuid} value={singer.styles[0].id}>
             {singer.name}
         </option>
@@ -68,7 +31,7 @@ export const Singer = ({vox, tracks, bpm} :Props) => {
         console.log("set singer: ",id)
         vox.setSinger(id)
 
-        const found = singers_info.find(singer=>singer.styles[0].id === id)
+        const found = vox.singers_info.find(singer=>singer.styles[0].id === id)
         const speaker_uuid = found?.speaker_uuid
         console.log("speaker_uuid:", speaker_uuid)
 
@@ -84,19 +47,26 @@ export const Singer = ({vox, tracks, bpm} :Props) => {
     }
 
     return <span className='mx-2'>
+    {vox.audioData &&
+        <audio
+        controls
+        src={vox.audioData ? window.URL.createObjectURL(vox.audioData) : undefined}>
+        </audio>
+    }
+
+    <img src={vox.singers_portrait} alt="singer"/>
     {items.length === 0 ? 
-        <Button appearance="primary" icon={<PersonVoiceIcon />} onClick={getSingers} />
+        <></>
         :
         <>
-        <label>Singer: </label>
         <Select className="d-inline ms-2" onChange={(e)=>onChangeSinger(Number(e.target.value))} value={vox.singer}>
             { items }
         </Select>
         
         {vox.creating ?
-            <Button onClick={vox.VoiceSynth}>
+        <Button disabledFocusable={true}>
             Creating...
-            </Button>
+        </Button>
         :
         <Button onClick={VoiceSynth}>
             Voice Synth

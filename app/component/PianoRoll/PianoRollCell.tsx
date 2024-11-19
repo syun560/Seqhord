@@ -19,7 +19,7 @@ export default function PianoRollCell(props: Props) {
         width: `${width}px`,
         height: `${height}px`,
         padding: '0px',
-        background: 'grey',
+        background: Lib.colorNormalNote,
         borderBottom: '0px black solid',
         borderLeft: '',
         overflow: 'visible',
@@ -57,7 +57,7 @@ export default function PianoRollCell(props: Props) {
 
     return <td style={td}>
         {!props.selected ? <></> :
-        <div style={pianodiv} className='shadow'>
+        <div style={pianodiv} className='shadow-lg'>
             <span className='text-primary'>{props.lyric}</span>
         </div>
         }

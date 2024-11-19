@@ -10,6 +10,8 @@ import {
     bundleIcon,
     PlayRegular, PlayFilled, PauseRegular, PauseFilled, RewindRegular, RewindFilled, FastForwardRegular, FastForwardFilled,
     MidiRegular, MidiFilled,
+    LayoutColumnTwoFocusLeftFilled, LayoutColumnTwoFocusRightFilled, LayoutColumnTwoRegular,
+    PersonVoiceRegular
 } from "@fluentui/react-icons"
 const PlayIcon = bundleIcon(PlayRegular, PlayFilled)
 const PauseIcon = bundleIcon(PauseRegular, PauseFilled)
@@ -64,7 +66,8 @@ export default function Main() {
     const [tabnum, setTabnum] = useState(0)
     const [rightTab, setRightTab] = useState("preview")
     
-    
+    const [layout, setLayout] = useState<"left"|"normal"|"right">('normal')
+
     const [autoCompile, setAutoCompile] = useState(true)
     const [autoFormat, setAutoFormat] = useState(true)
     const [maxTick, setMaxTick] = useState(0)
@@ -206,118 +209,127 @@ export default function Main() {
         setMaxTick(m)
     }, [tracks])
 
+    // OperationBar
+    const OperationBar = <><span>
+        {/* <span className="me-2">
+            Tick: <Label size="large" style={{fontFamily: "monospace"}}>
+                {String(seq.nowTick).padStart(3, '0')}/{String(maxTick).padStart(3, '0')}
+            </Label>
+        </span> */}
+        <span className="me-2">
+            Tick: <Label size="large" style={{fontFamily: "monospace"}}>
+                {String(Math.floor(seq.nowTick/8)).padStart(3, '\xa0')}:{String(seq.nowTick%8).padStart(2, '0')} / {Math.floor(maxTick/8)}:{maxTick%8}
+            </Label>
+        </span>
+        <span className="me-2">
+            Beat: <Label size="large" style={{fontFamily: "monospace"}}>4/4</Label>
+        </span>
+        <span className="me-2">
+            Tempo: <Label  size="large" style={{fontFamily: "monospace"}}>{bpm}</Label>
+        </span>
+        {/* <span className="me-2">Key: G</span> */}
+    </span>
+
+    <span className="mx-3">
+        <Button className="me-2" onClick={seq.first} icon={<RewindIcon />} />
+        <Button className="me-2" shape="circular" appearance="primary" onClick={seq.playToggle} size="large" icon={seq.isPlaying ? <PauseIcon />:<PlayIcon />} />
+        {/* <Button className="me-2" onClick={()=>{seq.stop(); seq.first()}} icon={<StopIcon />} /> */}
+        <Button className="me-2" onClick={seq.nextMea} icon={<FastForwardIcon />} />
+    </span>
+
+    <span className="mx-3">
+        <Button icon={<MidiIcon />} onClick={midi.load} />
+        <Button icon={<PersonVoiceRegular />} onClick={vox.getSingers} />
+    </span>
+
+    <span className="mx-3">
+        <Button onClick={()=>setLayout(layout === "right" ? "normal" : "right")} appearance="subtle" size="large" icon={layout === "right" ? <LayoutColumnTwoRegular /> : <LayoutColumnTwoFocusLeftFilled />} />
+        <Button onClick={()=>setLayout(layout === "left" ? "normal" : "left")} appearance="subtle" size="large" icon={layout === "left" ? <LayoutColumnTwoRegular /> : <LayoutColumnTwoFocusRightFilled />} />
+    </span>
+    </>
+
+    // LeftPane
+    const LeftPane = <div className={"col-md-" + (layout === "left" ? 12 : 6) + " pe-0 pane"}>
+
+        <TrackSelector tracks={tracks} tabnum={tabnum} onAddTrack={onAddTrack} onTabChange={(t)=>setTabnum(t)} onDeleteTab={onDeleteTab} />
+
+        <div style={{ height: "calc(100% - 42px)" }}>
+            {tracks[tabnum] === undefined ? '' :
+                // <textarea className="form-control editor m-0 bar" value={tracks[tabnum].texts} rows={32} cols={20} onChange={(e) => onTextChange(e.target.value)} wrap="off" />
+                <SMMLEditor value={tracks[tabnum].texts} doChange={onTextChange} />
+            }
+
+            {/* Left Down Pane */}
+            <textarea
+                style={{ height: "20%" }}
+                className="form-control m-0 overflow-auto"
+                value={log.log}
+                readOnly />
+        </div>
+    </div>
+
+    const RightPane = <div className={"col-md-" + (layout === "right" ? 12 : 6) + " ps-0 pane"}>
+        <ul className="nav nav-tabs">
+        {tabNames.map(t=><li className="nav-item" key={t}>
+            <a className={"pointer nav-link" + (t === rightTab ? " active" : "")} onClick={()=>setRightTab(t)}>
+                {t}
+            </a>
+            </li>
+        )}
+        </ul>
+
+        <div style={{ height: "calc(100% - 42px)", overflow: "scroll" }}>
+            {/* PianoRoll, info, etc... */}
+            {rightTab === "preview" ?
+            tracks[tabnum] === undefined || tracks[tabnum].notes === undefined ?
+                '' :
+                piano ?
+                    <PianoRoll notes={tracks[tabnum].notes} seq={seq} />
+                    // <NewPianoRoll notes={tracks[tabnum].notes} seq={seq} />
+                    :
+                    <Disp title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords} />
+            :
+            <Variables vars={vars} />
+            }
+
+            {/* float element */}
+            <div className="fixed-div" style={vox.audioData ? {opacity: 0.7} : {opacity: 0.3} }>               
+                <Singer vox={vox} tracks={tracks} bpm={bpm} />
+            </div>
+
+            <div className="fixed-div2" style={vox.audioData ? {opacity: 0.7} : {opacity: 0.3} }>
+            <label className="ms-2">Program: </label>
+            {midi.outPorts.length === 0 ? 
+            <></>
+            :
+            <Instrument midi={midi} />
+            }
+            <Select appearance="filled-darker" className="d-inline" value={tracks[tabnum].program}>
+                {programs}
+            </Select>
+            </div>
+
+        </div>
+    </div>
+
+    let MainPane = [LeftPane, RightPane]
+    if (layout === 'left') MainPane = [LeftPane]
+    if (layout === 'right') MainPane = [RightPane]
+
     return (
         <FluentProvider theme={webDarkTheme}>
 
         <div className="container-fluid">
             <div>
-                <MenuComponent f={menuFunc} seq={seq}/>         
-                <br />
-                <span>
-                    {/* <span className="me-2">
-                        Tick: <Label size="large" style={{fontFamily: "monospace"}}>
-                            {String(seq.nowTick).padStart(3, '0')}/{String(maxTick).padStart(3, '0')}
-                        </Label>
-                    </span> */}
-                    <span className="me-2">
-                        Tick: <Label size="large" style={{fontFamily: "monospace"}}>
-                            {String(Math.floor(seq.nowTick/8)).padStart(3, '\xa0')}:{String(seq.nowTick%8).padStart(2, '0')} / {Math.floor(maxTick/8)}:{maxTick%8}
-                        </Label>
-                    </span>
-                    <span className="me-2">
-                        Beat: <Label size="large" style={{fontFamily: "monospace"}}>4/4</Label>
-                    </span>
-                    <span className="me-2">
-                        Tempo: <Label  size="large" style={{fontFamily: "monospace"}}>{bpm}</Label>
-                    </span>
-                    {/* <span className="me-2">Key: G</span> */}
-                </span>
-
-                <span className="mx-3">
-                    <Button className="me-2" onClick={seq.first} icon={<RewindIcon />} />
-                    <Button className="me-2" shape="circular" appearance="primary" onClick={seq.playToggle} size="large" icon={seq.isPlaying ? <PauseIcon />:<PlayIcon />} />
-                    {/* <Button className="me-2" onClick={()=>{seq.stop(); seq.first()}} icon={<StopIcon />} /> */}
-                    <Button className="me-2" onClick={seq.nextMea} icon={<FastForwardIcon />} />
-                </span>
-
-                {midi.outPorts.length === 0 ? 
-                <Button icon={<MidiIcon />} appearance="primary" onClick={midi.load} />
-                :
-                <Instrument midi={midi} />
-                }
-
-                <label className="ms-2">Program: </label>
-                <Select appearance="filled-darker" className="d-inline" value={tracks[tabnum].program}>
-                    {programs}
-                </Select>
-                
-                <Singer vox={vox} tracks={tracks} bpm={bpm} />
+                <MenuComponent f={menuFunc} seq={seq}/>
+            </div>     
+            <div>
+                {OperationBar}       
             </div>
-
             <div className="row">
-
-                {/* Left Pane */}
-                <div className="col-md-6 pe-0 pane">
-
-                    <TrackSelector tracks={tracks} tabnum={tabnum} onAddTrack={onAddTrack} onTabChange={(t)=>setTabnum(t)} onDeleteTab={onDeleteTab} />
-
-                    <div style={{ height: "calc(100% - 42px)" }}>
-                        {tracks[tabnum] === undefined ? '' :
-                            // <textarea className="form-control editor m-0 bar" value={tracks[tabnum].texts} rows={32} cols={20} onChange={(e) => onTextChange(e.target.value)} wrap="off" />
-                            <SMMLEditor value={tracks[tabnum].texts} doChange={onTextChange} />
-                        }
-
-                        {/* Left Down Pane */}
-                        <textarea
-                            style={{ height: "20%" }}
-                            className="form-control m-0 overflow-auto"
-                            value={log.log}
-                            readOnly />
-                    </div>
-
-                </div>
-
-
-                {/* Right Pane */}
-                <div className="col-md-6 ps-0 pane">
-                    <ul className="nav nav-tabs">
-                    {tabNames.map(t=><li className="nav-item" key={t}>
-                        <a className={"pointer nav-link" + (t === rightTab ? " active" : "")} onClick={()=>setRightTab(t)}>
-                            {t}
-                        </a>
-                        </li>
-                    )}
-                    </ul>
-
-                    <div style={{ height: "calc(100% - 42px)", overflow: "scroll" }}>
-                        {/* PianoRoll, info, etc... */}
-                        {rightTab === "preview" ?
-                        tracks[tabnum] === undefined || tracks[tabnum].notes === undefined ?
-                            '' :
-                            piano ?
-                                <PianoRoll notes={tracks[tabnum].notes} seq={seq} />
-                                // <NewPianoRoll notes={tracks[tabnum].notes} seq={seq} />
-                                :
-                                <Disp title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords} />
-                        :
-                        <Variables vars={vars} />
-                        }
-
-                        {/* float element */}
-                        <div className="fixed-div" style={vox.audioData ? {opacity: 0.7} : {opacity: 0.3} }>
-                            {vox.audioData ?
-                                <>
-                                <audio
-                                controls
-                                src={vox.audioData ? window.URL.createObjectURL(vox.audioData) : undefined}>
-                                </audio>
-                                <img src={vox.singers_portrait} alt="singer"/>
-                                </>
-                            : <></>}
-                        </div>
-                    </div>
-                </div>
+                {MainPane}
             </div>
+
         </div>
         </FluentProvider>
     )

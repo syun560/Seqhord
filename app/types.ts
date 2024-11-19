@@ -1,5 +1,61 @@
 import  { Dispatch, SetStateAction } from "react"
 
+export type SingerInfo = {
+    name: string
+    speaker_uuid: string
+    styles: [
+        {
+            name: string
+            id: number
+            type: string
+        }
+    ]
+    version: string
+    supported_features: {
+        permitted_synthesis_morphing: string
+    }
+}
+
+// Query型定義
+type Mora = {
+    text: string
+    consonant: string
+    consonant_length: number
+    vowel: string
+    vowel_length: number
+    pitch: number
+}
+
+export type Query = {
+    accent_phrases: {
+        moras: Mora[]
+        accent: number
+        pause_mora: Mora
+    }
+    speedScale: number
+    pitchScale: number
+    intonationScale: number
+    volumeScale: number
+    prePhonemeLength: number
+    postPhonemeLength: number
+    outputSamplingRate: number
+    outputStereo: boolean
+    kana: string
+}
+
+export type VoiceVox = {
+    audioData: Blob | undefined
+    queryJson: Query | undefined
+    synthVoice: (notes: Note[], bpm:number)=>void
+    creating: boolean
+    singer: number
+    setSinger: Dispatch<SetStateAction<number>>
+    singers_info: SingerInfo[]
+    getSingers: ()=>void,
+    singers_portrait: string
+    setSingersPortrait: Dispatch<SetStateAction<string>>
+}
+
 export type Note = {
     pitch: number   // 0~128
     pitch_name: string // C4, D3 ...

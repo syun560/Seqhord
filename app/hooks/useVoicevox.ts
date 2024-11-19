@@ -1,32 +1,5 @@
-import React, { useState } from 'react'
-import { Note } from 'types'
-
-// Query型定義
-type Mora = {
-    text: string
-    consonant: string
-    consonant_length: number
-    vowel: string
-    vowel_length: number
-    pitch: number
-}
-
-type Query = {
-    accent_phrases: {
-        moras: Mora[]
-        accent: number
-        pause_mora: Mora
-    }
-    speedScale: number
-    pitchScale: number
-    intonationScale: number
-    volumeScale: number
-    prePhonemeLength: number
-    postPhonemeLength: number
-    outputSamplingRate: number
-    outputStereo: boolean
-    kana: string
-}
+import { useState, useEffect } from 'react'
+import { Note, SingerInfo, Query, VoiceVox } from 'types'
 
 type VoiceNote = {
     key: null | number
@@ -34,7 +7,7 @@ type VoiceNote = {
     lyric: string
 }
 
-export const useVoiceVox = () => {
+export const useVoiceVox = ():VoiceVox => {
 
     let inputmusic = {
         notes: [
@@ -50,6 +23,21 @@ export const useVoiceVox = () => {
     const [singer, setSinger] = useState(3001)
     const [singers_portrait, setSingersPortrait] = useState<string>("")
     const [creating, setCreating] = useState(false)
+
+    const [singers_info, setSingersInfo] = useState<SingerInfo[]>([])
+
+    // get singers from VoiceVox API
+    const getSingers = async () => {
+        try {
+            const res = await fetch("http://localhost:50021/singers")
+            const json = await res.json() as SingerInfo[]
+            // console.log(json)
+            setSingersInfo(json)
+        }
+        catch(err) {
+            console.error(err)
+        }
+    }
 
     // covert notes for VoiceVox
     const convertNotes = (notes: Note[], bpm: number): VoiceNote[] => {
@@ -148,11 +136,11 @@ export const useVoiceVox = () => {
     }
 
     return { 
-        audioData, 
-        queryJson, 
+        audioData, queryJson, 
         synthVoice, 
         creating,
-        singer, setSinger, 
+        singer, setSinger,
+        singers_info, getSingers,
         singers_portrait, setSingersPortrait
     }
 }

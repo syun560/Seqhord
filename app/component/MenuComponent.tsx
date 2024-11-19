@@ -15,9 +15,12 @@ import {
     SaveRegular, SaveFilled,
     ZoomInRegular, ZoomInFilled, ZoomOutRegular, ZoomOutFilled,
     MidiRegular, MidiFilled,
+    ArrowTrendingTextRegular,
     DocumentRegular, ChatHelpRegular, ChatHelpFilled,
     FolderOpenRegular, FolderOpenFilled,
-    SettingsRegular, SettingsFilled
+    SettingsRegular, SettingsFilled,
+    InfoRegular, InfoFilled,
+    DocumentOnePageSparkleRegular, PersonVoiceRegular
 } from "@fluentui/react-icons"
 
 const CutIcon = bundleIcon(CutFilled, CutRegular);
@@ -31,6 +34,7 @@ const MidiIcon = bundleIcon(MidiRegular, MidiFilled)
 const ChatHelpIcon = bundleIcon(ChatHelpRegular, ChatHelpFilled)
 const FolderOpenIcon = bundleIcon(FolderOpenRegular, FolderOpenFilled)
 const SettingIcon = bundleIcon(SettingsRegular, SettingsFilled)
+const InfoIcon = bundleIcon(InfoRegular, InfoFilled)
 
 type menuFunc = {
     onNew: () => void
@@ -72,11 +76,9 @@ export const MenuComponent = ({ f, seq }: MenuComponentPropsType) => {
             </MenuTrigger>
             <MenuPopover>
                 <MenuList>
-                    <MenuItem secondaryContent="Ctrl+Z" icon={<CutIcon />}>元に戻す</MenuItem>
-                    <MenuItem secondaryContent="Ctrl+Y" icon={<PasteIcon />}>やり直す</MenuItem>
-                    <MenuItem icon={<EditIcon />} >文字列をフォーマットする</MenuItem>
+                    <MenuItem icon={<DocumentOnePageSparkleRegular />} >文字列をフォーマットする</MenuItem>
                     <MenuItem icon={<EditIcon />} onClick={f.autoCompose}>自動作曲する</MenuItem>
-                    <MenuItem icon={<EditIcon />} onClick={f.onCompile}>コンパイル</MenuItem>
+                    <MenuItem icon={<ArrowTrendingTextRegular />} onClick={f.onCompile}>コンパイル</MenuItem>
                 </MenuList>
             </MenuPopover>
         </Menu>
@@ -107,7 +109,8 @@ export const MenuComponent = ({ f, seq }: MenuComponentPropsType) => {
             </MenuTrigger>
             <MenuPopover>
                 <MenuList>
-                    <MenuItemLink icon={<SettingIcon />} href="http://localhost:50021/setting" target="none">VoiceVox設定</MenuItemLink>
+                    <MenuItem icon={<PersonVoiceRegular />}>VoiceVoxに接続する</MenuItem>
+                    <MenuItemLink icon={<SettingIcon />} href="http://localhost:50021/setting" target="_blank">VoiceVox設定</MenuItemLink>
                 </MenuList>
             </MenuPopover>
         </Menu>
@@ -123,7 +126,7 @@ export const MenuComponent = ({ f, seq }: MenuComponentPropsType) => {
                     <MenuItemLink icon={<ChatHelpIcon />} href="https://camp-fire.jp/projects/691016/view?utm_campaign=cp_po_share_c_msg_mypage_projects_show" target="none">ご支援</MenuItemLink>
                 </MenuList>
                 <MenuList>
-                    <MenuItemLink icon={<ChatHelpIcon />} href="https://camp-fire.jp/projects/691016/view?utm_campaign=cp_po_share_c_msg_mypage_projects_show" target="none">このアプリについて</MenuItemLink>
+                    <MenuItemLink icon={<InfoIcon />} href="https://camp-fire.jp/projects/691016/view?utm_campaign=cp_po_share_c_msg_mypage_projects_show" target="none">このアプリについて</MenuItemLink>
                 </MenuList>
             </MenuPopover>
         </Menu>

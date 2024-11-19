@@ -13,13 +13,36 @@ body {
 
 .fixed-div{
     position: fixed;
-    bottom: 10vh;
+    bottom: 0vh;
     right: 2vw;
     width: 20vw;
-    height: 50vh;
+    height: 70vh;
+    background-color: orange;
+    transition: filter 0.1s ease;
+    filter: opacity(0.5);
     /* overflow: auto; */
     /* border:1px solid #444444; */
     /* background-color:#EEEEEE; */
+}
+.fixed-div:hover {
+    filter: opacity(1.0); /* 明るくする */
+}
+
+.fixed-div2{
+    position: fixed;
+    bottom: 0vh;
+    right: 22vw;
+    width: 30vw;
+    height: 40vh;
+    background-color: aqua;
+    transition: filter 0.1s ease;
+    filter: opacity(0.5);
+    /* overflow: auto; */
+    /* border:1px solid #444444; */
+    /* background-color:#EEEEEE; */
+}
+.fixed-div2:hover {
+    filter: opacity(1.0); /* 明るくする */
 }
 
 .pointer {
