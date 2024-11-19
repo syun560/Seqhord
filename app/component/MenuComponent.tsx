@@ -20,7 +20,8 @@ import {
     FolderOpenRegular, FolderOpenFilled,
     SettingsRegular, SettingsFilled,
     InfoRegular, InfoFilled,
-    DocumentOnePageSparkleRegular, PersonVoiceRegular
+    DocumentOnePageSparkleRegular, PersonVoiceRegular, HandshakeRegular,
+    LayoutColumnTwoFocusLeftFilled, LayoutColumnTwoFocusRightFilled
 } from "@fluentui/react-icons"
 
 const CutIcon = bundleIcon(CutFilled, CutRegular);
@@ -35,6 +36,7 @@ const ChatHelpIcon = bundleIcon(ChatHelpRegular, ChatHelpFilled)
 const FolderOpenIcon = bundleIcon(FolderOpenRegular, FolderOpenFilled)
 const SettingIcon = bundleIcon(SettingsRegular, SettingsFilled)
 const InfoIcon = bundleIcon(InfoRegular, InfoFilled)
+
 
 type menuFunc = {
     onNew: () => void
@@ -88,8 +90,8 @@ export const MenuComponent = ({ f, seq }: MenuComponentPropsType) => {
             </MenuTrigger>
             <MenuPopover>
                 <MenuList>
-                    <MenuItem icon={<ZoomInIcon />}>拡大</MenuItem>
-                    <MenuItem icon={<ZoomOutIcon />}>縮小</MenuItem>
+                    <MenuItem icon={<LayoutColumnTwoFocusLeftFilled />}>左画面を最大化</MenuItem>
+                    <MenuItem icon={<LayoutColumnTwoFocusRightFilled />}>右画面を最大化</MenuItem>
                 </MenuList>
             </MenuPopover>
         </Menu>
@@ -109,6 +111,7 @@ export const MenuComponent = ({ f, seq }: MenuComponentPropsType) => {
             </MenuTrigger>
             <MenuPopover>
                 <MenuList>
+                    <MenuItem icon={<MidiIcon />}>MIDI機器に接続する</MenuItem>
                     <MenuItem icon={<PersonVoiceRegular />}>VoiceVoxに接続する</MenuItem>
                     <MenuItemLink icon={<SettingIcon />} href="http://localhost:50021/setting" target="_blank">VoiceVox設定</MenuItemLink>
                 </MenuList>
@@ -123,11 +126,11 @@ export const MenuComponent = ({ f, seq }: MenuComponentPropsType) => {
                     <MenuItemLink icon={<ChatHelpIcon />} href="/manual" target="_blank">マニュアル</MenuItemLink>
                 </MenuList>
                 <MenuList>
-                    <MenuItemLink icon={<ChatHelpIcon />} href="https://camp-fire.jp/projects/691016/view?utm_campaign=cp_po_share_c_msg_mypage_projects_show" target="none">ご支援</MenuItemLink>
+                    <MenuItemLink icon={<HandshakeRegular />} href="https://camp-fire.jp/projects/691016/view?utm_campaign=cp_po_share_c_msg_mypage_projects_show" target="none">ご支援</MenuItemLink>
                 </MenuList>
-                <MenuList>
+                {/* <MenuList>
                     <MenuItemLink icon={<InfoIcon />} href="https://camp-fire.jp/projects/691016/view?utm_campaign=cp_po_share_c_msg_mypage_projects_show" target="none">このアプリについて</MenuItemLink>
-                </MenuList>
+                </MenuList> */}
             </MenuPopover>
         </Menu>
     </span>

@@ -1,4 +1,4 @@
-import React  from 'react'
+import React from 'react'
 import { Track, VoiceVox } from 'types'
 import { Button, Select } from '@fluentui/react-components'
 
@@ -54,7 +54,7 @@ export const Singer = ({vox, tracks, bpm} :Props) => {
         </audio>
     }
 
-    <img src={vox.singers_portrait} alt="singer"/>
+    <img height="88%" src={vox.singers_portrait} alt="singer"/>
     {items.length === 0 ? 
         <></>
         :
@@ -69,7 +69,7 @@ export const Singer = ({vox, tracks, bpm} :Props) => {
         </Button>
         :
         <Button onClick={VoiceSynth}>
-            Voice Synth
+            Synth
         </Button>
         }
         </>

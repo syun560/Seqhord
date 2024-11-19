@@ -39,6 +39,7 @@ import { TrackSelector } from './component/TrackSelector'
 import { SMMLEditor } from './component/SMMLEditor'
 import { Instrument } from "./component/Instrument"
 import { Singer } from "./component/Singer"
+import { PianoBoard } from "./component/PianoBoard"
 import { Variables } from "./component/Variables"
 import { MenuComponent } from "./component/MenuComponent"
 
@@ -249,7 +250,7 @@ export default function Main() {
     </>
 
     // LeftPane
-    const LeftPane = <div className={"col-md-" + (layout === "left" ? 12 : 6) + " pe-0 pane"}>
+    const LeftPane = <div className={"col-md-" + (layout === "left" ? 12 : 6) + " pe-0 pane"} key={"left"}>
 
         <TrackSelector tracks={tracks} tabnum={tabnum} onAddTrack={onAddTrack} onTabChange={(t)=>setTabnum(t)} onDeleteTab={onDeleteTab} />
 
@@ -268,7 +269,7 @@ export default function Main() {
         </div>
     </div>
 
-    const RightPane = <div className={"col-md-" + (layout === "right" ? 12 : 6) + " ps-0 pane"}>
+    const RightPane = <div className={"col-md-" + (layout === "right" ? 12 : 6) + " ps-0 pane"} key="right">
         <ul className="nav nav-tabs">
         {tabNames.map(t=><li className="nav-item" key={t}>
             <a className={"pointer nav-link" + (t === rightTab ? " active" : "")} onClick={()=>setRightTab(t)}>
@@ -293,17 +294,13 @@ export default function Main() {
             }
 
             {/* float element */}
-            <div className="fixed-div" style={vox.audioData ? {opacity: 0.7} : {opacity: 0.3} }>               
+            <div className="fixed-div">               
                 <Singer vox={vox} tracks={tracks} bpm={bpm} />
             </div>
 
-            <div className="fixed-div2" style={vox.audioData ? {opacity: 0.7} : {opacity: 0.3} }>
-            <label className="ms-2">Program: </label>
-            {midi.outPorts.length === 0 ? 
-            <></>
-            :
-            <Instrument midi={midi} />
-            }
+            <div className="fixed-div2">
+                <PianoBoard />
+            {midi.outPorts.length !== 0 && <Instrument midi={midi} />}
             <Select appearance="filled-darker" className="d-inline" value={tracks[tabnum].program}>
                 {programs}
             </Select>
