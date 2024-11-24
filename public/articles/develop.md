@@ -1,5 +1,6 @@
 # 開発メモ
-React, Next.jsで開発中  
+TypeScript + React(Next.js)で開発  
+
 [GitHub](https://github.com/syun560/mugic)
 
 ## 開発動機・思想
@@ -21,8 +22,8 @@ React, Next.jsで開発中
 
 ### 優先度中
 - [PianoBoard](https://codesandbox.io/p/sandbox/7wq15pm1n1?file=%2Fsrc%2Findex.js%3A55%2C31)の実装
-- コンソールメッセージの充実
-- オープンソース化、Zennへの技術記事投稿
+- Consoleメッセージの充実
+- OSS化、Zennへの技術記事投稿
 - Menuの調整
 - 目を治す
 
@@ -34,17 +35,6 @@ React, Next.jsで開発中
 - マニュアルのサーバコンポーネント化
 
 ## 名前案
-
-## Piano Editorのあれ
-
-## Monaco Editor
-マイクロソフトのあれ。
-
-## Web Audio API
-
-## Web MIDI APIについて
-
-## Compileについて
 
 ## 参考リンク
 

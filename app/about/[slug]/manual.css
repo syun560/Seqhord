@@ -17,6 +17,9 @@ h3 {
   margin-bottom: 20px;
 }
 
+img {
+  width: 100%;
+}
 /* .root {
   overflow: "hidden";
   display: "flex";

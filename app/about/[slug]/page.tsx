@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import rehypeRaw from 'rehype-raw'
 import slugify from 'slugify'
 
 import './manual.css'
@@ -41,26 +42,29 @@ const useStyles = makeStyles({
 const pageList = [
     { title: "ユーザマニュアル", url: "./manual",
         sub: [
+            { title: "音を入力する", url: "./input_notes" },
             { title: "VOICEVOXとの連携を行う", url: "./voicevox" },
             { title: "予約済キーワード一覧", url: "./reserved" },
         ]
     },
     { title: "開発メモ", url: "./develop",
         sub: [
-            { title: "コンパイルについて", url: "./compile" },
+            { title: "コンパイル", url: "./compile" },
+            { title: "UIについて", url: "./ui" },
             { title: "テンポとSetTimer", url: "./tempo" },
+            { title: "エディタ", url: "./editor" },
         ]
     },
     { title: "ご支援について", url: "./donation" },
-    { title: "クレジット", url: "./credit" },
+    { title: "利用規約・クレジット", url: "./credit" },
     { title: "更新履歴", url: "./update" },
 ]
 const pages = pageList.map(page=>(
-    <li key={page.title}>
+    <li key={page.title} style={{listStyle: "none"}}>
         <Link href={page.url}>{page.title}</Link>
         <ul>
         {page.sub && page.sub.map(ps=>(
-            <li key={page.title + ps.title}>
+            <li key={page.title + ps.title} style={{listStyle: "none"}}>
                 <Link href={ps.url}>{ps.title}</Link>
             </li>
         ))}
@@ -84,9 +88,12 @@ export default function Main({params}:{params: { slug: string }}) {
 
     return <div>
         <div className={styles.root} suppressHydrationWarning={true}>
-            <ul>
-                {pages}
-            </ul>
+            <div>
+                <span className="fs-2 p-3">SMML Docs</span>
+                <ul>
+                    {pages}
+                </ul>
+            </div>
 
             <div className={styles.content}>
                 <ReactMarkdown
@@ -96,7 +103,9 @@ export default function Main({params}:{params: { slug: string }}) {
                         table: CustomTable,
                         a: A
                     }}
-                    rehypePlugins={[remarkGfm]}
+                    rehypePlugins={[remarkGfm, rehypeRaw]}
+                    skipHtml={true}
+                    disallowedElements={['script']}
                     >
                     {markdown}
                 </ReactMarkdown>
