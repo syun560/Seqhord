@@ -1,0 +1,64 @@
+h1 {
+  font-size: 2rem;
+  padding: 40px;
+}
+
+h2 {
+  font-size: 1.5rem;
+  border-bottom: 1px solid #CCC;
+  padding-bottom: 0.4rem;
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+h3 {
+  font-size: 1.2rem;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+/* .root {
+  overflow: "hidden";
+  display: "flex";
+}
+
+.content {
+  flex: "1";
+  padding: "0 10vw";
+  height: "100vh";
+  display: "grid";
+  overflow-y: "scroll";
+  justify-content: "flex-start";
+  align-items: "flex-start";
+} */
+
+.side {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 150px;
+  height: 100vh;
+  background: lightgray;
+
+  /* 縦方向のスクロールバーを表示 */
+  overflow-y: scroll;
+
+  /* IE などのスクロールバーの色設定 */
+  scrollbar-face-color: #999;
+  scrollbar-track-color: #eee;
+
+  /* スマホ用の慣性スクロール */
+  -webkit-overflow-scrolling: touch;
+}
+
+.side::-webkit-scrollbar {
+  width: 5px;
+}
+
+.side::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.side::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}

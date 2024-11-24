@@ -1,6 +1,7 @@
 import React from 'react'
 import { Track, VoiceVox } from 'types'
 import { Button, Select } from '@fluentui/react-components'
+import zundamon from "/public/images/zzm_zunmon027.png"
 
 interface Props {
     vox: VoiceVox
@@ -54,7 +55,8 @@ export const Singer = ({vox, tracks, bpm} :Props) => {
         </audio>
     }
 
-    <img height="88%" src={vox.singers_portrait} alt="singer"/>
+    <img height="88%" src={vox.singers_portrait === "" ? zundamon.src : vox.singers_portrait} alt="singer"/>
+
     {items.length === 0 ? 
         <></>
         :

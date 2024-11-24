@@ -39,7 +39,7 @@ import { TrackSelector } from './component/TrackSelector'
 import { SMMLEditor } from './component/SMMLEditor'
 import { Instrument } from "./component/Instrument"
 import { Singer } from "./component/Singer"
-import { PianoBoard } from "./component/PianoBoard"
+import { PianoBoard } from "./component/PianoBoard/PianoBoard"
 import { Variables } from "./component/Variables"
 import { MenuComponent } from "./component/MenuComponent"
 

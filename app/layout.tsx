@@ -7,20 +7,10 @@ export const metadata: Metadata = {
     description: 'SMML is a simple music markup language',
 }
 
-export default function RootLayout({
-    children,
-}: {
-    children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="ja" data-bs-theme="dark">
             <body suppressHydrationWarning={true}>
-                {/* <nav className="navbar navbar-dark bg-secondary shadow"> */}
-                    <div className="container-fluid">
-                        {/* <a className="navbar-brand" href="#">SMML Editor Demo</a>
-                        <span className="navbar-text">Ver 0.1</span> */}
-                    </div>
-                {/* </nav> */}
                 {children}
             </body>
         </html>
