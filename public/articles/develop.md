@@ -35,6 +35,43 @@ TypeScript + React(Next.js)で開発
 - マニュアルのサーバコンポーネント化
 
 ## 名前案
+- cord seek
+- 憂鬱
+- augument
+- depression
+- ChodeSeeqer
+- コードシーク
+- SMML
+- compile
+- sequencer
+- editor
+- console
+- VOICEVOX
+- Track Control
+- Imagine All Things
+- Super Code
+- Cord C
+- CordSeek
+- Instrument
+- Conductor
+- Create
+- Producer
+- Cubase
+- Logic
+- MIDI (Musical Instrument Digital Interface)
+- Composition
+- Music Theory
+- Circle of Fifth
+- Programming
+- Coding
+- Compose
+- NEUTRINO
+- Domino
+- Magenta
+- Music Macro Language
+- Scracth
+- Sonic PI
+
 
 ## 参考リンク
 

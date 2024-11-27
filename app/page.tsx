@@ -318,6 +318,7 @@ export default function Main() {
 
         <div className="container-fluid">
             <div>
+                <Button appearance="transparent">CodeSeq</Button>
                 <MenuComponent f={menuFunc} seq={seq}/>
             </div>     
             <div>

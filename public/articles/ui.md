@@ -6,7 +6,7 @@
 ∵開発途中からfluentUIを導入したため
 
 ## Flexについて
-をしたい。
+BootStrapGridではなくCSSのFlexを利用したい。
 
 ## アイコンについて
 fluent UIのアイコンを使用している。

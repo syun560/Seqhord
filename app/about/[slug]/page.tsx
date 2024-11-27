@@ -43,6 +43,8 @@ const pageList = [
     { title: "ユーザマニュアル", url: "./manual",
         sub: [
             { title: "音を入力する", url: "./input_notes" },
+            { title: "歌詞を入力する", url: "./input_lyrics" },
+            { title: "演奏パターンを入力する", url: "./input_patterns" },
             { title: "VOICEVOXとの連携を行う", url: "./voicevox" },
             { title: "予約済キーワード一覧", url: "./reserved" },
         ]
@@ -89,7 +91,7 @@ export default function Main({params}:{params: { slug: string }}) {
     return <div>
         <div className={styles.root} suppressHydrationWarning={true}>
             <div>
-                <span className="fs-2 p-3">SMML Docs</span>
+                <span className="fs-2 p-3">CodeSeeker Docs</span>
                 <ul>
                     {pages}
                 </ul>
