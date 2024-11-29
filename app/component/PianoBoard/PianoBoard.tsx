@@ -1,9 +1,9 @@
-import React from 'react'
+import React,{ memo } from 'react'
 //@ts-ignore
 import { Piano, KeyboardShortcuts, MidiNumbers } from 'react-piano'
 import 'react-piano/dist/styles.css'
 
-export const PianoBoard = () => {
+export const PianoBoard = memo(() => {
     const firstNote = MidiNumbers.fromNote('c3');
     const lastNote = MidiNumbers.fromNote('f5');
     const keyboardShortcuts = KeyboardShortcuts.create({
@@ -25,4 +25,4 @@ export const PianoBoard = () => {
             keyboardShortcuts={keyboardShortcuts}
         />
     </div>
-}
+})

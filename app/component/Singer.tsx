@@ -1,15 +1,17 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { Track, VoiceVox } from 'types'
 import { Button, Select } from '@fluentui/react-components'
 import zundamon from "/public/images/zzm_zunmon027.png"
 
-interface Props {
+interface SingerProps {
     vox: VoiceVox
     tracks: Track[]
     bpm: number
 }
 
-export const Singer = ({vox, tracks, bpm} :Props) => {
+export const Singer = memo(({vox, tracks, bpm} :SingerProps) => {
+
+    console.log("singer rendered!!")
 
     const VoiceSynth = async () => {
         try {
@@ -77,4 +79,4 @@ export const Singer = ({vox, tracks, bpm} :Props) => {
         </>
     }
     </span>
-}
+})

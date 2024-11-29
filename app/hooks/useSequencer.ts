@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useCallback } from 'react'
 import { Sequencer, MIDI, Track } from '@/types'
 
 
@@ -66,9 +66,10 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number):Sequencer => {
             first()
         }
     }
-    const first = () => {
+    const first = useCallback(() => {
         setNowTick(0)
-    }
+    },[])
+    
     const setup = () => {
         bpm.current = b
         endTick.current = 1
@@ -84,7 +85,7 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number):Sequencer => {
             }
         })
     }
-    const playToggle = () => {
+    const playToggle = useCallback(() => {
         if (isPlaying) {
             stop()
         }
@@ -93,7 +94,7 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number):Sequencer => {
             setIsPlaying(true)
             timer.current = setTimeout(proceed, delayTime.current)
         }
-    }
+    },[timer.current, isPlaying])
 
     return {nowTick, isPlaying, setNowTick, setMIDI, play, stop, nextMea, first, playToggle}
 }

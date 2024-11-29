@@ -1,16 +1,16 @@
-# シーケンス SetTimer 時間
+# シーケンス関連
+
+## 関連コンポーネント
+- app/hooks/useSequencer.tsx
 
 ## issue
 - 16分音符で時間が動いている。
 - さまざまな音列に対応したい。
-- 処理の重さ（コンポーネントの更新、音列の検索）
+- パフォーマンス・チューニング（コンポーネントの再描画コスト+音列のfilter時間）
 - 
 
 ## 処理の流れ
 - isPlayingがtrueのとき　→ proceed関数
-
-## 関連コンポーネント
-- app/hooks/useSequencer.tsx
 
 ## SetTimerを使用している
 - SetTimerは正確ではない。

@@ -40,7 +40,8 @@ const useStyles = makeStyles({
 })
 
 const pageList = [
-    { title: "ユーザマニュアル", url: "./manual",
+    { title: "Cord Seekについて", url: "./index" },
+    { title: "ユーザマニュアル",
         sub: [
             { title: "音を入力する", url: "./input_notes" },
             { title: "歌詞を入力する", url: "./input_lyrics" },
@@ -53,8 +54,9 @@ const pageList = [
         sub: [
             { title: "コンパイル", url: "./compile" },
             { title: "UIについて", url: "./ui" },
-            { title: "テンポとSetTimer", url: "./tempo" },
+            { title: "シーケンス関連", url: "./tempo" },
             { title: "エディタ", url: "./editor" },
+            { title: "サウンド関連", url: "./sound" },
         ]
     },
     { title: "ご支援について", url: "./donation" },
@@ -63,7 +65,10 @@ const pageList = [
 ]
 const pages = pageList.map(page=>(
     <li key={page.title} style={{listStyle: "none"}}>
-        <Link href={page.url}>{page.title}</Link>
+        {page.url ?
+            <Link href={page.url}>{page.title}</Link>    
+            :<>{page.title}</>
+        }
         <ul>
         {page.sub && page.sub.map(ps=>(
             <li key={page.title + ps.title} style={{listStyle: "none"}}>
@@ -89,10 +94,10 @@ export default function Main({params}:{params: { slug: string }}) {
     useEffect(()=>{loadArticle()}, [])
 
     return <div>
-        <div className={styles.root} suppressHydrationWarning={true}>
+        <div className={styles.root}>
             <div>
                 <span className="fs-2 p-3">CodeSeeker Docs</span>
-                <ul>
+                <ul className='mt-2'>
                     {pages}
                 </ul>
             </div>

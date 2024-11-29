@@ -1,7 +1,7 @@
-import React from "react"
+import React, { memo } from "react"
 import { Track } from '../types.ts'
 
-interface Props {
+type TrackSelectorProps = {
     tracks: Track[]
     tabnum: number
     onTabChange: (param : number) => void
@@ -9,7 +9,9 @@ interface Props {
     onDeleteTab: (param: number) => void
 }
 
-export const TrackSelector : React.FC<Props> = ({tracks, tabnum, onTabChange, onAddTrack, onDeleteTab}) => {
+export const TrackSelector = memo(({tracks, tabnum, onTabChange, onAddTrack, onDeleteTab}:TrackSelectorProps) => {
+
+    console.log("Trackselector")
 
     const tabChange = (t: number) => {
         if (t !== tabnum) {
@@ -30,4 +32,4 @@ export const TrackSelector : React.FC<Props> = ({tracks, tabnum, onTabChange, on
             <a className="pointer nav-link" onClick={onAddTrack}>+</a>
         </li>
     </ul>
-}
+})

@@ -1,4 +1,4 @@
-import React from "react"
+import React, { memo } from "react"
 
 // fluent ui
 import {
@@ -51,10 +51,11 @@ type menuFunc = {
 
 type MenuComponentPropsType = {
     f: menuFunc
-    seq: any 
 }
 
-export const MenuComponent = ({ f, seq }: MenuComponentPropsType) => {
+export const MenuComponent = memo (({ f }: MenuComponentPropsType) => {
+
+    console.log("menu rendered!!!")
 
     return <span><Menu hasIcons>
         <MenuTrigger disableButtonEnhancement>
@@ -97,16 +98,6 @@ export const MenuComponent = ({ f, seq }: MenuComponentPropsType) => {
         </Menu>
         <Menu>
             <MenuTrigger disableButtonEnhancement>
-                <ToolbarButton>再生</ToolbarButton>
-            </MenuTrigger>
-            <MenuPopover>
-                <MenuList>
-                    <MenuItem icon={<PlayIcon />} secondaryContent="Space" onClick={seq.playToggle}>再生</MenuItem>
-                </MenuList>
-            </MenuPopover>
-        </Menu>
-        <Menu>
-            <MenuTrigger disableButtonEnhancement>
                 <ToolbarButton>設定</ToolbarButton>
             </MenuTrigger>
             <MenuPopover>
@@ -134,4 +125,4 @@ export const MenuComponent = ({ f, seq }: MenuComponentPropsType) => {
             </MenuPopover>
         </Menu>
     </span>
-}
+})

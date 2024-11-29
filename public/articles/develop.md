@@ -1,11 +1,11 @@
 # 開発メモ
 TypeScript + React(Next.js)で開発  
 
-[GitHub](https://github.com/syun560/mugic)
+[GitHub](https://github.com/syun560/mugic)（現在private）
 
 ## 開発動機・思想
-- サウンドプログラミング
-- 音楽理論（コード進行・スケール）
+- サウンドプログラミング（MML、Sonic PI）
+- 音楽理論（コード進行・スケール）の活用
 - 個人的動機（こんなアプリがあればなあ、耳コピ）
 
 ## 使用ライブラリ

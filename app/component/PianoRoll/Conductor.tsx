@@ -1,79 +1,72 @@
-import React, { useRef, createRef, useEffect, useMemo } from 'react'
-import { Sequencer } from '@/types'
+import React, { useRef, createRef, useEffect, useMemo, useCallback } from 'react'
+import { Sequencer, Chord } from '@/types'
 
-interface Props {
+type Props = {
     tickLength: number
     seq: Sequencer
+    chords: Chord[]
 }
 
-export const Conductor = (props: Props) => {
+let a = 8 // 拍子
+
+const tdStyle = (tick: number) => {
+    let res = {
+        borderBottom: '1px solid black',
+        borderLeft: '',
+        width: '20px',
+        position: 'sticky' as const,
+        top: 0
+    }
+    if (tick % a === 0) res = { ...res, borderLeft: '1px solid black' }
+    return res
+}
+
+export const Conductor = ({tickLength, seq, chords}: Props) => {
 
     // 自動スクロールするためにtickLengthぶんのrefを作成
     const refs = useRef<React.RefObject<HTMLTableCellElement>[]>([])
     
-    for (let i = 0; i < props.tickLength; i++) {
-        refs.current[i] = (createRef<HTMLTableCellElement>())
-    }
+    useEffect(()=>{
+        console.log("うんち")
+        for (let i = 0; i < tickLength; i++) {
+            refs.current[i] = (createRef<HTMLTableCellElement>())
+        }
+    }, [tickLength])
 
-    const scrollToCenter = (i: number) => {
-        if (i < props.tickLength)
+    const scrollToCenter = useCallback ((i: number) => {
+        if (i < tickLength)
             refs.current[i].current?.scrollIntoView({
                 behavior: 'smooth',
                 // behavior: 'auto',
                 block: 'center',
                 inline: 'center',
-            })
-    }
-
-    const doClick = (tick: number) => {
-        props.seq.setNowTick(tick)
-    }
+        })
+    },[tickLength])
 
     // scroll to current tick
     useEffect(()=> {
-         if (props.seq.nowTick % 20 === 0 ) scrollToCenter(props.seq.nowTick + 10)
-    }, [props.seq.nowTick, props.seq.isPlaying])
-    
+         if (seq.nowTick % 20 === 0 ) scrollToCenter(seq.nowTick + 10)
+    }, [seq.nowTick, seq.isPlaying])
 
+    // 対応するコードを探す
+    const searchChord = useCallback((tick: number) => {
+        
+    },[chords])
 
-    //let a = state.timeSignatures[0].timeSignature[0] * 2
-    let a = 8 // 拍子
-    if (a === 6) a *= 2
+    const cells = [...Array(tickLength)].map((_, tick)=><td 
+        key={tick}
+        style={tdStyle(tick)}
+        ref={refs.current[tick]}
+        className={Math.floor(seq.nowTick) === tick ? 'bg-info' : ''}
+        onClick={()=>seq.setNowTick(tick)}>
 
-    const tdStyle = (tick: number) => {
-        let res = {
-            borderBottom: '1px solid black',
-            borderLeft: '',
-            width: '20px',
-            position: 'sticky' as const,
-            top: 0
-        }
-        if (tick % a === 0) res = { ...res, borderLeft: '1px solid black' }
-        return res
-    }
+        {tick % a === 0 && tick / a}
+        
+    </td>)
 
-    const cells = (()=> {
-        const res: JSX.Element[] = []
-        for (let tick = 0; tick <= props.tickLength; tick++) {
-            res.push(
-                <td 
-                    key={tick}
-                    style={tdStyle(tick)}
-                    ref={refs.current[tick]}
-                    className={props.seq.nowTick - 1 === tick ? 'bg-info' : ''}
-                    onClick={()=>doClick(tick)}
-                >
-                    {tick % a === 0 ? 
-                        tick / a
-                    : ''}
-                </td>
-            )
-        }
-        return res
-    })()
 
     return <tr>
-        <th style={tdStyle(1)} className={props.seq.nowTick === 0 ? 'bg-info' : ''}></th>
+        <th style={tdStyle(1)}></th>
         {cells}
     </tr>
 }

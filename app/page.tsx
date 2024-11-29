@@ -2,7 +2,7 @@
 
 // react
 import React from "react"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useCallback, useRef, useMemo } from "react"
 
 // fluent ui
 import { FluentProvider, webDarkTheme, Button, Select, Label } from "@fluentui/react-components"
@@ -53,6 +53,16 @@ import Lib from './Lib'
 import './styles.css'
 
 const programs = Lib.programName.map((p, i)=><option key={i} value={i}>{String(i).padStart(3, '0')}: {p}</option>)
+const simpleDownload = (title: string, url: string) => {
+    const a = document.createElement('a')
+    a.download = title
+    a.href = url
+    a.click()
+}
+const handleBeforeUnload = (e: any) => {
+    e.preventDefault()
+    e.returnValue = "ページを離れますか？（変更は保存されません）"
+}
 
 export default function Main() {
     // State
@@ -82,39 +92,35 @@ export default function Main() {
     const log = useConsole()
     const timer = useRef<NodeJS.Timeout | null>(null);
 
-    const simpleDownload = (title: string, url: string) => {
-        const a = document.createElement('a')
-        a.download = title
-        a.href = url
-        a.click()
-    }
-
-    const saveMIDI = () => {
+    const saveMIDI = useCallback(() => {
         const uri = generate_midi(tracks, bpm)
         simpleDownload(`${title}.mid`, uri)
-    }
-    const saveMusicXML = () => {
+    },[tracks,title,bpm])
+
+    const saveMusicXML = useCallback(() => {
         const xml = generate_musicxml(0, tracks[0].notes, bpm)
         const blob = new Blob([xml], { type: 'text/plain;charset=utf-8' })
         simpleDownload(`${title}.musicxml`, URL.createObjectURL(blob))
-    }
-    const saveText = () => {
+    },[tracks, title, bpm])
+
+    const saveText = useCallback(() => {
         const text = tracks[tabnum].texts
         simpleDownload(`${title}.txt`, 'data:text/plain;charset=utf-8,' + encodeURIComponent(text))
-    }
-    const saveAsJson = () => {
-        simpleDownload(`${title}.smml`, URL.createObjectURL(new Blob([JSON.stringify(tracks)], { type: 'text/json' })))
-    }
+    },[tracks, title, tabnum])
 
-    const onNew = () => {
+    const saveAsJson = useCallback(() => {
+        simpleDownload(`${title}.smml`, URL.createObjectURL(new Blob([JSON.stringify(tracks)], { type: 'text/json' })))
+    },[title, tracks])
+
+    const onNew = useCallback(() => {
         if (confirm('新規作成しますか？（現在のデータは削除されます）')) {
             tracks.forEach(track=>track.texts = "")
             setTracks([...tracks])
         }
         onCompile()
-    }
+    },[tracks])
 
-    const onTextChange = (text: string) => {
+    const onTextChange = useCallback((text: string) => {
         // setTexts(texts.map((t, i) => (i === tabnum ? text : t)))
         const tk = [...tracks]
         tk[tabnum].texts = text
@@ -125,9 +131,9 @@ export default function Main() {
                 onCompile()
             }, 3000)
         }
-    }
+    },[tabnum, tracks, autoCompile, timer.current])
 
-    const onCompile = () => {
+    const onCompile = useCallback(() => {
         const res = compile(tracks)
 
         // 値のセット
@@ -139,8 +145,9 @@ export default function Main() {
         setMea(res.mea)
         setVars(res.vars)
         setChords(res.chords)
-    }
-    const onAddTrack = () => {
+    },[tracks])
+
+    const onAddTrack = useCallback(() => {
         if (tracks.length > 16) return
         setTracks([...tracks,
         {
@@ -155,22 +162,22 @@ export default function Main() {
             panpot: 64
         }
         ])
-    }
-    const onDeleteTab = (t: number) => {
+    },[tracks])
+
+    const onDeleteTab = useCallback((t: number) => {
         const conf = confirm('トラックを削除しますか？（この操作は取り消しできません）')
         if (!conf) return
         const tmp_tracks = [...tracks]
         tmp_tracks.splice(t, 1)
         setTracks(tmp_tracks)
         setTabnum(0)
-    }
+    },[tracks])
 
-    const handleBeforeUnload = (e: any) => {
-        e.preventDefault()
-        e.returnValue = "ページを離れますか？（変更は保存されません）"
-    }
+    const onTabChange = useCallback((t: number)=>{
+        setTabnum(t)
+    },[])
 
-    const showOpenFileDialog = () => new Promise(resolve => {
+    const showOpenFileDialog = useCallback(() => new Promise(resolve => {
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = '.json, .smml'
@@ -180,16 +187,15 @@ export default function Main() {
             })()) 
         }
         input.click()
-    })
+    }),[])
 
-    const autoCompose = () => {
+    const autoCompose = useCallback(() => {
         log.addLog("auto compose")
-    }
+    },[])
 
-    const menuFunc = {
-        saveAsJson, showOpenFileDialog ,onCompile, onNew, saveMIDI, saveMusicXML, saveText,
-        autoCompose
-    }
+    const menuFunc = useMemo(()=>({
+        saveAsJson, showOpenFileDialog ,onCompile, onNew, saveMIDI, saveMusicXML, saveText, autoCompose
+    }),[saveAsJson, showOpenFileDialog ,onCompile, onNew, saveMIDI, saveMusicXML, saveText, autoCompose])
 
     useEffect(() => {
         window.addEventListener("beforeunload", handleBeforeUnload)
@@ -219,7 +225,7 @@ export default function Main() {
         </span> */}
         <span className="me-2">
             Tick: <Label size="large" style={{fontFamily: "monospace"}}>
-                {String(Math.floor(seq.nowTick/8)).padStart(3, '\xa0')}:{String(seq.nowTick%8).padStart(2, '0')} / {Math.floor(maxTick/8)}:{maxTick%8}
+                {String(Math.floor(seq.nowTick/8)).padStart(3, '\xa0')}:{String((seq.nowTick%8).toFixed(1)).padStart(2, '0')} / {Math.floor(maxTick/8)}:{maxTick%8}
             </Label>
         </span>
         <span className="me-2">
@@ -252,7 +258,7 @@ export default function Main() {
     // LeftPane
     const LeftPane = <div className={"col-md-" + (layout === "left" ? 12 : 6) + " pe-0 pane"} key={"left"}>
 
-        <TrackSelector tracks={tracks} tabnum={tabnum} onAddTrack={onAddTrack} onTabChange={(t)=>setTabnum(t)} onDeleteTab={onDeleteTab} />
+        <TrackSelector tracks={tracks} tabnum={tabnum} onAddTrack={onAddTrack} onTabChange={onTabChange} onDeleteTab={onDeleteTab} />
 
         <div style={{ height: "calc(100% - 42px)" }}>
             {tracks[tabnum] === undefined ? '' :
@@ -285,7 +291,7 @@ export default function Main() {
             tracks[tabnum] === undefined || tracks[tabnum].notes === undefined ?
                 '' :
                 piano ?
-                    <PianoRoll notes={tracks[tabnum].notes} seq={seq} />
+                    <PianoRoll notes={tracks[tabnum].notes} seq={seq} chords={chords}/>
                     // <NewPianoRoll notes={tracks[tabnum].notes} seq={seq} />
                     :
                     <Disp title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords} />
@@ -313,13 +319,15 @@ export default function Main() {
     if (layout === 'left') MainPane = [LeftPane]
     if (layout === 'right') MainPane = [RightPane]
 
+    console.log("page rendered!!!")
+
     return (
         <FluentProvider theme={webDarkTheme}>
 
         <div className="container-fluid">
             <div>
                 <Button appearance="transparent">CodeSeq</Button>
-                <MenuComponent f={menuFunc} seq={seq}/>
+                <MenuComponent f={menuFunc} />
             </div>     
             <div>
                 {OperationBar}       

@@ -1,14 +1,14 @@
-import React from "react"
+import React, { memo } from "react"
 import { Var2 } from 'types'
 
 type VariablesPropsType = {
     vars: Var2[]
 }
 
-export const Variables:React.FC<VariablesPropsType> = ({vars}) => {
+export const Variables = memo(({vars}:VariablesPropsType) => {
 
-    return (
-        <table className="table table-sm">
+    return <table className="table table-sm">
+        
             <thead>
                 <tr>
                     <th>name</th>
@@ -23,6 +23,5 @@ export const Variables:React.FC<VariablesPropsType> = ({vars}) => {
                 </tr>)}
             </tbody>
 
-        </table>
-    )
-}
+    </table>
+})
