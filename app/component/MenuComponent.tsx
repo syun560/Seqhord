@@ -114,7 +114,7 @@ export const MenuComponent = memo (({ f }: MenuComponentPropsType) => {
             </MenuTrigger>
             <MenuPopover>
                 <MenuList>
-                    <MenuItemLink icon={<ChatHelpIcon />} href="/about/manual" target="_blank">マニュアル</MenuItemLink>
+                    <MenuItemLink icon={<ChatHelpIcon />} href="/about/index" target="_blank">マニュアル</MenuItemLink>
                 </MenuList>
                 <MenuList>
                     <MenuItemLink icon={<HandshakeRegular />} href="https://camp-fire.jp/projects/691016/view?utm_campaign=cp_po_share_c_msg_mypage_projects_show" target="none">ご支援</MenuItemLink>

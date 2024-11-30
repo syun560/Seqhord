@@ -54,7 +54,7 @@ const pageList = [
         sub: [
             { title: "コンパイル", url: "./compile" },
             { title: "UIについて", url: "./ui" },
-            { title: "シーケンス関連", url: "./tempo" },
+            { title: "シーケンス関連", url: "./sequence" },
             { title: "エディタ", url: "./editor" },
             { title: "サウンド関連", url: "./sound" },
         ]

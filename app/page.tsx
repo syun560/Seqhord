@@ -34,7 +34,6 @@ import { useConsole } from "./hooks/useConsole"
 // component
 import { Disp } from './component/display'
 import { PianoRoll } from './component/PianoRoll/PianoRoll'
-// import { NewPianoRoll } from "./component/PianoRoll/NewPianoRoll"
 import { TrackSelector } from './component/TrackSelector'
 import { SMMLEditor } from './component/SMMLEditor'
 import { Instrument } from "./component/Instrument"

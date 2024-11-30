@@ -46,16 +46,14 @@ export const compile = (tracks: Track[]) => {
     let p_mea = 0 // パラグラフが始まる前のmea
     let mea = 0
 
-    // console.log(res)
-
     // search strings
     lines.forEach((l, i) => {
         // 空白文字の削除
         const line = l.replace(/\s+/g, "");
 
         // restrict max rows
-        if (i > 500) {
-            res.errMsg += '入力可能な最大行数(500行)を超えています。コンパイルを中止します。\n'
+        if (i > 1000) {
+            res.errMsg += '入力可能な最大行数(1000行)を超えています。コンパイルを中止します。\n'
             return
         }
 

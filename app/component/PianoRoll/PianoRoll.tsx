@@ -90,8 +90,6 @@ export const PianoRoll: React.FC<PianoRollProps> = ({ notes, seq, chords }) => {
         )
     }),[notes])
 
-    // console.log("PianoRoll")
-    
     return <div>
         <table className="pianotable">
             <tbody>

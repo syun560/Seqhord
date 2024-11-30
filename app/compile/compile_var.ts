@@ -1,4 +1,4 @@
-import { Track, Var2, Note, Res } from '../types.ts'
+import { Track, Note, Res } from '../types.ts'
 import Lib from '../Lib.ts'
 
 const MajorScale = [0, 0, 2, 4, 5, 7, 9, 11, 12]

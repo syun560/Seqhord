@@ -50,7 +50,8 @@ export const Conductor = ({tickLength, seq, chords}: Props) => {
 
     // 対応するコードを探す
     const searchChord = useCallback((tick: number) => {
-        
+        const found = chords.find(c => c.tick === tick)?.chord_name
+        return found ? ` [${found}]` : found
     },[chords])
 
     const cells = [...Array(tickLength)].map((_, tick)=><td 
@@ -61,6 +62,7 @@ export const Conductor = ({tickLength, seq, chords}: Props) => {
         onClick={()=>seq.setNowTick(tick)}>
 
         {tick % a === 0 && tick / a}
+        {searchChord(tick)}
         
     </td>)
 
