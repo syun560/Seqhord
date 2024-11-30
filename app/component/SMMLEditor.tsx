@@ -1,5 +1,4 @@
 "use client"
-
 import React ,{ memo } from "react"
 import { Editor } from "@monaco-editor/react"
 import localFont from 'next/font/local'

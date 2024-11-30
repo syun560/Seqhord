@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import remarkBreaks from 'remark-breaks'
 import rehypeRaw from 'rehype-raw'
 import slugify from 'slugify'
 
@@ -110,6 +111,7 @@ export default function Main({params}:{params: { slug: string }}) {
                         table: CustomTable,
                         a: A
                     }}
+                    remarkPlugins={[remarkBreaks]}
                     rehypePlugins={[remarkGfm, rehypeRaw]}
                     skipHtml={true}
                     disallowedElements={['script']}
