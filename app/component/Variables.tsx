@@ -5,7 +5,7 @@ type VariablesPropsType = {
     vars: Var2[]
 }
 
-export const Variables = memo(({vars}:VariablesPropsType) => {
+export const Variables = memo(function variables ({vars}:VariablesPropsType) {
 
     return <table className="table table-sm">
         

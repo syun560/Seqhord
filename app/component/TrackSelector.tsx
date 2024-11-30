@@ -9,7 +9,7 @@ type TrackSelectorProps = {
     onDeleteTab: (param: number) => void
 }
 
-export const TrackSelector = memo(({tracks, tabnum, onTabChange, onAddTrack, onDeleteTab}:TrackSelectorProps) => {
+export const TrackSelector = memo(function trackSelector({tracks, tabnum, onTabChange, onAddTrack, onDeleteTab}:TrackSelectorProps) {
 
     console.log("Trackselector")
 

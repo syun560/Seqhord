@@ -40,7 +40,6 @@ export const compile = (tracks: Track[]) => {
     res.tracks[0].name = 'main'
     res.tracks[0].type = 'conductor'
 
-
     // 文字列を改行ごとに分割して配列に入れる
     const lines = tracks[0].texts.split('\n')
     let p_mea = 0 // パラグラフが始まる前のmea
@@ -97,27 +96,15 @@ export const compile = (tracks: Track[]) => {
             }
         }
         else{
-            // comment
-            if (line[0] === '#') {
-            }
-            // chord
-            else if (line[0] === 'c') {
-                compile_chord(line, i, res, 0)
-            }
-            // melody
-            else if (line[0] === 'n') {
-                compile_melody(line, i, res, 0, res.tracks[0].trans)                
-            }
-            // lyric
-            else if (line[0] === 'k') {
-                compile_lyric(line, i, res)
-            }
+            if (line[0] === '#') { }
+            else if (line[0] === 'c') compile_chord(line, i, res, 0)
+            else if (line[0] === 'n') compile_melody(line, i, res, 0, res.tracks[0].trans)                
+            else if (line[0] === 'k') compile_lyric(line, i, res)
+
             // 数値の場合は別のトラック
             else if (!isNaN(Number(line[0]))) {
                 const t = Number(line[0])
-                if (t < tracks.length) {
-                    expand_vars(line, res, t)
-                }
+                if (t < tracks.length) expand_vars(line, res, t)
             }
         }
     })

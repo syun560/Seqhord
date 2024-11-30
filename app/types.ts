@@ -99,6 +99,12 @@ export type Scale = {
     scale: string
 }
 
+export type hyoushi = {
+    tick: number // 始まりからの絶対的なtick
+    mea: number 
+    reso?: number // 分解能
+}
+
 export type Var2 = {
     name :string
     notes: Note[]
@@ -129,12 +135,12 @@ export type Sequencer = {
 
 // コンパイル結果
 export type Res = {
+    tracks: Track[]
     title: string
     bpm: number
     scales: Scale[]
-    errMsg: string
     mea: number
     vars: Var2[]
-    tracks: Track[]
     chords: Chord[]
+    errMsg: string
 }

@@ -9,7 +9,7 @@ interface SingerProps {
     bpm: number
 }
 
-export const Singer = memo(({vox, tracks, bpm} :SingerProps) => {
+export const Singer = memo(function singer({vox, tracks, bpm} :SingerProps)  {
 
     console.log("singer rendered!!")
 

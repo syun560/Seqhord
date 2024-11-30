@@ -53,7 +53,7 @@ type MenuComponentPropsType = {
     f: menuFunc
 }
 
-export const MenuComponent = memo (({ f }: MenuComponentPropsType) => {
+export const MenuComponent = memo (function menuComponent({ f }: MenuComponentPropsType) {
 
     console.log("menu rendered!!!")
 
