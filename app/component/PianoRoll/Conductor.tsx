@@ -27,7 +27,6 @@ export const Conductor = ({tickLength, seq, chords}: Props) => {
     const refs = useRef<React.RefObject<HTMLTableCellElement>[]>([])
     
     useEffect(()=>{
-        console.log("うんち")
         for (let i = 0; i < tickLength; i++) {
             refs.current[i] = (createRef<HTMLTableCellElement>())
         }
