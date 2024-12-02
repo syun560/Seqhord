@@ -17,7 +17,13 @@ body {
     right: 2vw;
     width: 20vw;
     height: 70vh;
-    /* background-color: orange; */
+    
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column-reverse;
+
+
+    background-color: orange;
     transition: filter 0.1s ease;
     filter: opacity(0.6);
 }
@@ -31,7 +37,7 @@ body {
     right: 18vw;
     width: 30vw;
     height: 18vh;
-    /* background-color: aqua; */
+    background-color: aqua;
     transition: filter 0.1s ease;
     filter: opacity(0.6);
 }

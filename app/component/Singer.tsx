@@ -49,7 +49,7 @@ export const Singer = memo(function singer({vox, tracks, bpm} :SingerProps)  {
         }
     }
 
-    return <span className='mx-2'>
+    return <>
     {vox.audioData &&
         <audio
         controls
@@ -78,5 +78,5 @@ export const Singer = memo(function singer({vox, tracks, bpm} :SingerProps)  {
         }
         </>
     }
-    </span>
+    </>
 })

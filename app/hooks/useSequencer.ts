@@ -40,7 +40,7 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number):Sequencer => {
     }
 
     const play = () => {
-        console.log(nowTickRef.current)
+        // console.log(nowTickRef.current)
 
         // トラックごとにイテレーション
         tracks.forEach(track=>{
@@ -59,7 +59,6 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number):Sequencer => {
         let s = nowTickRef.current + 8
         s = s - s % 8
 
-        console.log("endTick.current: ", endTick.current)
         setNowTick(s)
         if (s > endTick.current){
             stop()
@@ -94,7 +93,7 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number):Sequencer => {
             setIsPlaying(true)
             timer.current = setTimeout(proceed, delayTime.current)
         }
-    },[timer.current, isPlaying])
+    },[timer.current, isPlaying, tracks])
 
     return {nowTick, isPlaying, setNowTick, setMIDI, play, stop, nextMea, first, playToggle}
 }

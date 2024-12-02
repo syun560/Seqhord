@@ -47,6 +47,7 @@ import { compile } from './compile/compile'
 import { generate_midi } from './generate/generate_midi'
 import { generate_musicxml } from './generate/generate_musicxml'
 import { loadJSON } from './loadJSON'
+import { loadMIDI } from './loadMIDI'
 import Lib from './Lib'
 
 import './styles.css'
@@ -188,13 +189,25 @@ export default function Main() {
         input.click()
     }),[])
 
+    const showMIDIFileDialog = useCallback(() => new Promise(resolve => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.mid, .midi, .smf'
+        input.onchange = async () => { 
+            resolve((()=>{
+                loadMIDI(input.files, setTracks, setBpm)
+            })()) 
+        }
+        input.click()
+    }),[])
+
     const autoCompose = useCallback(() => {
         log.addLog("auto compose")
     },[])
 
     const menuFunc = useMemo(()=>({
-        saveAsJson, showOpenFileDialog ,onCompile, onNew, saveMIDI, saveMusicXML, saveText, autoCompose
-    }),[saveAsJson, showOpenFileDialog ,onCompile, onNew, saveMIDI, saveMusicXML, saveText, autoCompose])
+        saveAsJson, showOpenFileDialog, showMIDIFileDialog, onCompile, onNew, saveMIDI, saveMusicXML, saveText, autoCompose
+    }),[saveAsJson, showOpenFileDialog, showMIDIFileDialog, onCompile, onNew, saveMIDI, saveMusicXML, saveText, autoCompose])
 
     useEffect(() => {
         window.addEventListener("beforeunload", handleBeforeUnload)

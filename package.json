@@ -12,6 +12,7 @@
     "@fluentui/react-components": "^9.55.0",
     "@fluentui/react-nav-preview": "^0.10.1",
     "@monaco-editor/react": "^4.6.0",
+    "@tonejs/midi": "^2.0.28",
     "bootstrap": "5.3.0",
     "draft-js": "^0.11.7",
     "midi-writer-js": "^3.1.1",

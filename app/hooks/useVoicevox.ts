@@ -132,7 +132,7 @@ export const useVoiceVox = ():VoiceVox => {
             setCreating(false)
             return
         }
-    },[])
+    },[singer])
 
     return useMemo (()=>({ 
         audioData, queryJson, 

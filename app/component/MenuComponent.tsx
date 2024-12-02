@@ -45,6 +45,7 @@ type menuFunc = {
     saveText: () => void
     saveAsJson: () => void
     showOpenFileDialog: () => void
+    showMIDIFileDialog: () => void
     onCompile: () => void
     autoCompose: () => void
 }
@@ -67,6 +68,7 @@ export const MenuComponent = memo (function menuComponent({ f }: MenuComponentPr
                 <MenuItem icon={<FolderOpenIcon />} secondaryContent="Ctrl+O" onClick={f.showOpenFileDialog}>開く</MenuItem>
                 <MenuItem icon={<SaveIcon />} secondaryContent="Ctrl+S" onClick={f.saveAsJson}>保存する</MenuItem>
                 <MenuDivider />
+                <MenuItem icon={<MidiIcon />} onClick={f.showMIDIFileDialog}>MIDIファイルを読み込む</MenuItem>
                 <MenuItem icon={<MidiIcon />} onClick={f.saveMIDI}>MIDIで書き出す</MenuItem>
                 <MenuItem onClick={f.saveMusicXML}>musicXMLで書き出す</MenuItem>
                 <MenuItem onClick={f.saveText}>テキストを書き出す</MenuItem>
