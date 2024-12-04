@@ -237,7 +237,8 @@ export default function Main() {
         </span> */}
         <span className="me-2">
             Tick: <Label size="large" style={{fontFamily: "monospace"}}>
-                {String(Math.floor(seq.nowTick/8)).padStart(3, '\xa0')}:{String((seq.nowTick%8).toFixed(1)).padStart(2, '0')} / {Math.floor(maxTick/8)}:{maxTick%8}
+                {/* {String(Math.floor(seq.nowTick/8)).padStart(3, '\xa0')}:{String((seq.nowTick%8).toFixed(1)).padStart(2, '0')} / {Math.floor(maxTick/8)} */}
+                {String(Math.floor(seq.nowTick/8)).padStart(3, '\xa0')}:{String((seq.nowTick%8).toFixed(1)).padStart(2, '0')}
             </Label>
         </span>
         <span className="me-2">
@@ -297,7 +298,7 @@ export default function Main() {
         )}
         </ul>
 
-        <div style={{ height: "calc(100% - 42px)", overflow: "scroll" }}>
+        <div className="right-pane">
             {/* PianoRoll, info, etc... */}
             {rightTab === "preview" ?
             tracks[tabnum] === undefined || tracks[tabnum].notes === undefined ?
@@ -318,10 +319,12 @@ export default function Main() {
 
             <div className="fixed-div2">
                 <PianoBoard />
-            {midi.outPorts.length !== 0 && <Instrument midi={midi} />}
-            <Select appearance="filled-darker" className="d-inline" value={tracks[tabnum].program}>
-                {programs}
-            </Select>
+                <div>
+                    {midi.outPorts.length !== 0 && <Instrument midi={midi} />}
+                    <Select appearance="filled-darker" className="d-inline" value={tracks[tabnum].program}>
+                        {programs}
+                    </Select>
+                </div>
             </div>
 
         </div>

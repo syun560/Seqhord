@@ -10,22 +10,26 @@ body {
     height: calc(100vh - 72px);
     /* background-color: grey; */
 }
+.right-pane{
+    height: calc(100% - 42px);
+    overflow: scroll;
+}
 
 .fixed-div{
     position: fixed;
-    bottom: 0vh;
-    right: 2vw;
+    bottom: 25px;
+    right: 30px;
     width: 20vw;
     height: 70vh;
     
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     flex-direction: column-reverse;
 
 
-    background-color: orange;
-    transition: filter 0.1s ease;
-    filter: opacity(0.6);
+    /* background-color: orange; */
+    transition: filter 0.2s ease;
+    filter: opacity(0.2);
 }
 .fixed-div:hover {
     filter: opacity(1.0); /* 明るくする */
@@ -33,13 +37,18 @@ body {
 
 .fixed-div2{
     position: fixed;
-    bottom: 0vh;
-    right: 18vw;
-    width: 30vw;
+    bottom: 25px;
+    left: 50vw;
+    width: 25vw;
     height: 18vh;
-    background-color: aqua;
-    transition: filter 0.1s ease;
-    filter: opacity(0.6);
+
+    display: flex;
+    align-items: center;
+    flex-direction: column-reverse;
+
+    /* background-color: aqua; */
+    transition: filter 0.2s ease;
+    filter: opacity(0.2);
 }
 .fixed-div2:hover {
     filter: opacity(1.0); /* 明るくする */

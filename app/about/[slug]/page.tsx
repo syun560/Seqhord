@@ -56,6 +56,7 @@ const pageList = [
             { title: "コンパイル", url: "./compile" },
             { title: "UIについて", url: "./ui" },
             { title: "シーケンス関連", url: "./sequence" },
+            { title: "PianoBoardについて", url: "./piano_board" },
             { title: "エディタ", url: "./editor" },
             { title: "サウンド関連", url: "./sound" },
         ]

@@ -1,15 +1,14 @@
 // See https://github.com/danigb/soundfont-player
-// for more documentation on prop options.
+
 import Soundfont from 'soundfont-player';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 type Props = {
     instrumentName: string
     hostname: string
     format: 'mp3' | 'ogg'
     soundfont: 'MusyngKite' | 'FluidR3_GM'
-    audioContext: any
-    // audioContext: PropTypes.instanceOf(window.AudioContext),
+    audioContext: AudioContext
 }
 
 export const useSoundFont = ({instrumentName, hostname, format, soundfont ,audioContext}: Props) => {

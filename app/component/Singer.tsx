@@ -50,19 +50,11 @@ export const Singer = memo(function singer({vox, tracks, bpm} :SingerProps)  {
     }
 
     return <>
-    {vox.audioData &&
-        <audio
-        controls
-        src={vox.audioData ? window.URL.createObjectURL(vox.audioData) : undefined}>
-        </audio>
-    }
-
-    <img height="88%" src={vox.singers_portrait === "" ? zundamon.src : vox.singers_portrait} alt="singer"/>
 
     {items.length === 0 ? 
         <></>
         :
-        <>
+        <div>
         <Select className="d-inline ms-2" onChange={(e)=>onChangeSinger(Number(e.target.value))} value={vox.singer}>
             { items }
         </Select>
@@ -76,7 +68,16 @@ export const Singer = memo(function singer({vox, tracks, bpm} :SingerProps)  {
             Synth
         </Button>
         }
-        </>
+        </div>
     }
+
+    {vox.audioData &&
+        <audio
+        controls
+        src={vox.audioData ? window.URL.createObjectURL(vox.audioData) : undefined}>
+        </audio>
+    }
+
+    <img height="88%" src={vox.singers_portrait === "" ? zundamon.src : vox.singers_portrait} alt="singer"/>
     </>
 })
