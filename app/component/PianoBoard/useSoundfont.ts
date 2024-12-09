@@ -1,6 +1,6 @@
 // See https://github.com/danigb/soundfont-player
 
-import Soundfont from 'soundfont-player';
+import Soundfont, { InstrumentName } from 'soundfont-player';
 import { useState } from 'react';
 
 type Props = {
@@ -31,44 +31,44 @@ export const useSoundFont = ({instrumentName, hostname, format, soundfont ,audio
     //     }
     // }
 
-    // const loadInstrument = (instrumentName: string) => {
-    //     // Re-trigger loading state
-    //     setInstrument(null)
-    //     Soundfont.instrument(audioContext, instrumentName, {
-    //         format,
-    //         soundfont,
-    //         nameToUrl: (name, soundfont, format) => {
-    //             return `${hostname}/${soundfont}/${name}-${format}.js`
-    //         },
-    //     }).then(inst => {
-    //         setInstrument(inst)
-    //     })
-    // }
+    const loadInstrument = (instrumentName: InstrumentName) => {
+        // Re-trigger loading state
+        setInstrument(null)
+        Soundfont.instrument(audioContext, instrumentName, {
+            format,
+            soundfont,
+            nameToUrl: (name:string, soundfont:string, format:string) => {
+                return `${hostname}/${soundfont}/${name}-${format}.js`
+            },
+        }).then((inst:any) => {
+            setInstrument(inst)
+        })
+    }
 
     const playNote = (midiNumber:number) => {
-        // audioContext.resume().then(() => {
-        //     const audioNode = instrument.play(midiNumber);
-        //     this.setState({
-        //         activeAudioNodes: Object.assign({}, this.state.activeAudioNodes, {
-        //             [midiNumber]: audioNode,
-        //         }),
-        //     });
-        // });
+        audioContext.resume().then(() => {
+            const audioNode = instrument.play(midiNumber)
+            this.setState({
+                activeAudioNodes: Object.assign({}, this.state.activeAudioNodes, {
+                    [midiNumber]: audioNode,
+                }),
+            });
+        });
     };
 
     const stopNote = (midiNumber: number) => {
-        // audioContext.resume().then(() => {
-        //     if (!activeAudioNodes[midiNumber]) {
-        //         return;
-        //     }
-        //     const audioNode = activeAudioNodes[midiNumber];
-        //     audioNode.stop();
-        //     this.setState({
-        //         activeAudioNodes: Object.assign({}, activeAudioNodes, {
-        //             [midiNumber]: null,
-        //         })
-        //     })
-        // })
+        audioContext.resume().then(() => {
+            if (!activeAudioNodes[midiNumber]) {
+                return;
+            }
+            const audioNode = activeAudioNodes[midiNumber];
+            audioNode.stop();
+            this.setState({
+                activeAudioNodes: Object.assign({}, activeAudioNodes, {
+                    [midiNumber]: null,
+                })
+            })
+        })
     }
 
     // Clear any residual notes that don't get called with stopNote
