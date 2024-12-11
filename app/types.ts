@@ -1,3 +1,4 @@
+import Soundfont from 'soundfont-player';
 import  { Dispatch, SetStateAction } from "react"
 
 export type SingerInfo = {
@@ -112,13 +113,21 @@ export type Var2 = {
 }
 
 export type MIDI = {
-    load: ()=>void
+    setup: ()=>void
     noteOn: (pitch :number, ch:number, duration: number)=>void
     programChange: (program: number, ch:number)=>void
     volume: (val: number, ch:number)=>void
     allNoteOff: ()=>void
     outPorts: any
     changePorts: (port: string)=>void
+}
+
+export type Sound = {
+    isLoading: Soundfont.Player|null
+    setup: ()=>void
+    playNote: (midiNumber: string)=>void
+    stopNote: (midiNumber: string)=>void
+    stopAllNotes: ()=>void
 }
 
 export type Sequencer = {
@@ -132,6 +141,8 @@ export type Sequencer = {
     nowTick: number
     isPlaying: boolean
 }
+
+
 
 // コンパイル結果
 export type Res = {

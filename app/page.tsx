@@ -9,7 +9,7 @@ import { FluentProvider, webDarkTheme, Button, Select, Label } from "@fluentui/r
 import {
     bundleIcon,
     PlayRegular, PlayFilled, PauseRegular, PauseFilled, RewindRegular, RewindFilled, FastForwardRegular, FastForwardFilled,
-    MidiRegular, MidiFilled,
+    MidiRegular, MidiFilled, SoundWaveCircleFilled, SoundWaveCircleRegular,
     LayoutColumnTwoFocusLeftFilled, LayoutColumnTwoFocusRightFilled, LayoutColumnTwoRegular,
     PersonVoiceRegular
 } from "@fluentui/react-icons"
@@ -18,6 +18,7 @@ const PauseIcon = bundleIcon(PauseRegular, PauseFilled)
 const RewindIcon = bundleIcon(RewindRegular, RewindFilled)
 const FastForwardIcon = bundleIcon(FastForwardRegular, FastForwardFilled)
 const MidiIcon = bundleIcon(MidiRegular, MidiFilled)
+const SoundIcon = bundleIcon(SoundWaveCircleRegular, SoundWaveCircleFilled)
 
 // types
 import { Chord, Track, Var2 } from 'types'
@@ -30,6 +31,7 @@ import { useSequencer } from "./hooks/useSequencer"
 import { useInstrument } from "./hooks/useInstrument"
 import { useVoiceVox } from "./hooks/useVoicevox"
 import { useConsole } from "./hooks/useConsole"
+import { useSoundFont } from './hooks/useSoundfont'
 
 // component
 import { Disp } from './component/display'
@@ -64,6 +66,8 @@ const handleBeforeUnload = (e: any) => {
     e.returnValue = "ページを離れますか？（変更は保存されません）"
 }
 
+const soundfontHostname:string = 'https://d1pzp51pvbm36p.cloudfront.net'
+
 export default function Main() {
     // State
     const [tracks, setTracks] = useState<Track[]>(default_tracks)
@@ -87,6 +91,10 @@ export default function Main() {
 
     // custom hook
     const midi = useInstrument()
+    const sf = useSoundFont({
+        instrumentName: "acoustic_grand_piano",
+        hostname: soundfontHostname,
+    })
     const seq = useSequencer(midi, tracks, bpm)
     const vox = useVoiceVox()
     const log = useConsole()
@@ -258,7 +266,8 @@ export default function Main() {
     </span>
 
     <span className="mx-3">
-        <Button icon={<MidiIcon />} onClick={midi.load} />
+        <Button icon={<MidiIcon />} onClick={midi.setup} />
+        <Button icon={<SoundIcon />} onClick={sf.setup} />
         <Button icon={<PersonVoiceRegular />} onClick={vox.getSingers} />
     </span>
 
@@ -318,7 +327,7 @@ export default function Main() {
             </div>
 
             <div className="fixed-div2">
-                <PianoBoard />
+                <PianoBoard sf={sf} />
                 <div>
                     {midi.outPorts.length !== 0 && <Instrument midi={midi} />}
                     <Select appearance="filled-darker" className="d-inline" value={tracks[tabnum].program}>

@@ -29,7 +29,7 @@ export const useInstrument = (): MIDI => {
         output.current = outputs.get(portNumber)
     }
 
-    const load = async () => {
+    const setup = async () => {
         try {
             console.log("navigator.requestMIDIAccess start...")
             const midiAccess = await navigator.requestMIDIAccess()
@@ -63,5 +63,5 @@ export const useInstrument = (): MIDI => {
         }
     }
 
-    return { noteOn, load, volume, programChange, allNoteOff, changePorts, outPorts }
+    return { noteOn, setup, volume, programChange, allNoteOff, changePorts, outPorts }
 }
