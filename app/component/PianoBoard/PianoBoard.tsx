@@ -9,6 +9,7 @@ type PianoBoardPropsType = {
 }
 
 export const PianoBoard = memo(function pianoBoard({sf}:PianoBoardPropsType) {
+    console.log("piano board")
     const firstNote = MidiNumbers.fromNote('c3');
     const lastNote = MidiNumbers.fromNote('f5');
     const keyboardShortcuts = KeyboardShortcuts.create({

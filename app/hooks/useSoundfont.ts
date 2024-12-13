@@ -1,40 +1,35 @@
 // See https://github.com/danigb/soundfont-player
 
 import Soundfont, { InstrumentName } from 'soundfont-player';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Sound } from '@/types'
 
-type Props = {
-    instrumentName: InstrumentName
-    hostname: string
-    format?: 'mp3' | 'ogg'
-    soundfont?: 'MusyngKite' | 'FluidR3_GM'
-}
+const hostname:string = 'https://d1pzp51pvbm36p.cloudfront.net'
+const format: 'mp3' | 'ogg' = 'mp3'
+const soundfont: 'MusyngKite' | 'FluidR3_GM' = 'MusyngKite'
+
 
 type AudioNodes = {
     [key: string]: Soundfont.Player | null
 }
 
-export const useSoundFont = ({
-        instrumentName = 'acoustic_grand_piano',
-        hostname ,
-        format = 'mp3',
-        soundfont = 'MusyngKite',
-    }: Props):Sound => {
+export const useSoundFont = ():Sound => {
 
     const [activeAudioNodes, setActiveAudioNodes] = useState<AudioNodes>({})
     const [instrument ,setInstrument] = useState<Soundfont.Player|null>(null)
     const [audioContext, setAudioContext] = useState<AudioContext|null>(null)
+    const [instrumentName, setInstrumentName] = useState<InstrumentName>('acoustic_grand_piano')
 
-    const setup = () => {
+    const setup = useCallback(() => {
         setAudioContext(new window.AudioContext())
-    }        
+    },[])
 
     useEffect(()=>{
+        console.log('うせ')
         loadInstrument(instrumentName)
     }, [instrumentName, audioContext])
 
-    const loadInstrument = async (instrumentName: InstrumentName) => {
+    const loadInstrument = useCallback(async (instrumentName: InstrumentName) => {
         if (!audioContext) return
 
         // Re-trigger loading state
@@ -53,17 +48,17 @@ export const useSoundFont = ({
         catch(err){
             console.error("loadInstrument error: ", err)
         }
-    }
+    },[audioContext,instrumentName])
 
-    const playNote = (midiNumber:string) => {
+    const playNote = useCallback((midiNumber:string) => {
         if (!audioContext) return
         audioContext.resume().then(() => {
             const audioNode = instrument?.play(midiNumber)
             setActiveAudioNodes((aa)=>({...aa, [midiNumber]: audioNode!}))
         })
-    }
+    },[audioContext ,instrument])
 
-    const stopNote = (midiNumber: string) => {
+    const stopNote = useCallback((midiNumber: string) => {
         if (!audioContext) return
         audioContext.resume().then(() => {
             if (!activeAudioNodes[midiNumber]) return
@@ -71,10 +66,10 @@ export const useSoundFont = ({
             audioNode.stop();
             setActiveAudioNodes((aa)=>({...aa, [midiNumber]: null }))
         })
-    }
+    },[audioContext,activeAudioNodes])
 
     // Clear any residual notes that don't get called with stopNote
-    const stopAllNotes = () => {
+    const stopAllNotes = useCallback(() => {
         if (!audioContext) return
         audioContext.resume().then(() => {
             const aan = Object.values(activeAudioNodes);
@@ -83,7 +78,7 @@ export const useSoundFont = ({
             })
             setActiveAudioNodes({})
         })
-    }
+    },[audioContext, activeAudioNodes])
 
     return {
         isLoading: instrument,

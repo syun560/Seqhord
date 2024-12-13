@@ -5,7 +5,7 @@ import React from "react"
 import { useState, useEffect, useCallback, useRef, useMemo } from "react"
 
 // fluent ui
-import { FluentProvider, webDarkTheme, Button, Select, Label } from "@fluentui/react-components"
+import { FluentProvider, webDarkTheme, Button, Select, Label, Tooltip } from "@fluentui/react-components"
 import {
     bundleIcon,
     PlayRegular, PlayFilled, PauseRegular, PauseFilled, RewindRegular, RewindFilled, FastForwardRegular, FastForwardFilled,
@@ -66,8 +66,6 @@ const handleBeforeUnload = (e: any) => {
     e.returnValue = "ページを離れますか？（変更は保存されません）"
 }
 
-const soundfontHostname:string = 'https://d1pzp51pvbm36p.cloudfront.net'
-
 export default function Main() {
     // State
     const [tracks, setTracks] = useState<Track[]>(default_tracks)
@@ -91,10 +89,7 @@ export default function Main() {
 
     // custom hook
     const midi = useInstrument()
-    const sf = useSoundFont({
-        instrumentName: "acoustic_grand_piano",
-        hostname: soundfontHostname,
-    })
+    const sf = useSoundFont()
     const seq = useSequencer(midi, tracks, bpm)
     const vox = useVoiceVox()
     const log = useConsole()
@@ -259,21 +254,37 @@ export default function Main() {
     </span>
 
     <span className="mx-3">
-        <Button className="me-2" onClick={seq.first} icon={<RewindIcon />} />
-        <Button className="me-2" shape="circular" appearance="primary" onClick={seq.playToggle} size="large" icon={seq.isPlaying ? <PauseIcon />:<PlayIcon />} />
+        <Tooltip content="先頭へ" relationship="label" positioning="below-start">
+            <Button className="me-2" onClick={seq.first} icon={<RewindIcon />} />
+        </Tooltip>
+        <Tooltip content={seq.isPlaying ? "一時停止":"再生"} relationship="label" positioning="below-start">
+            <Button className="me-2" shape="circular" appearance="primary" onClick={seq.playToggle} size="large" icon={seq.isPlaying ? <PauseIcon />:<PlayIcon />} />
+        </Tooltip>
         {/* <Button className="me-2" onClick={()=>{seq.stop(); seq.first()}} icon={<StopIcon />} /> */}
-        <Button className="me-2" onClick={seq.nextMea} icon={<FastForwardIcon />} />
+        <Tooltip content="一小節先へ" relationship="label" positioning="below-start">
+            <Button className="me-2" onClick={seq.nextMea} icon={<FastForwardIcon />} />
+        </Tooltip>
     </span>
 
     <span className="mx-3">
-        <Button icon={<MidiIcon />} onClick={midi.setup} />
-        <Button icon={<SoundIcon />} onClick={sf.setup} />
-        <Button icon={<PersonVoiceRegular />} onClick={vox.getSingers} />
+        <Tooltip content="MIDI機器に接続" relationship="label" positioning="below-start">
+            <Button appearance={midi.outPorts.length !== 0 ? "primary" : "secondary"} icon={<MidiIcon />} onClick={midi.setup} />
+        </Tooltip>
+        <Tooltip content="SoundFontに接続" relationship="label" positioning="below-start">
+            <Button appearance={sf.isLoading !== null ? "primary" : "secondary"} icon={<SoundIcon />} onClick={sf.setup} />
+        </Tooltip>
+        <Tooltip content="VOICEVOXに接続" relationship="label" positioning="below-start">
+            <Button icon={<PersonVoiceRegular />} onClick={vox.getSingers} />
+        </Tooltip>
     </span>
 
     <span className="mx-3">
-        <Button onClick={()=>setLayout(layout === "right" ? "normal" : "right")} appearance="subtle" size="large" icon={layout === "right" ? <LayoutColumnTwoRegular /> : <LayoutColumnTwoFocusLeftFilled />} />
-        <Button onClick={()=>setLayout(layout === "left" ? "normal" : "left")} appearance="subtle" size="large" icon={layout === "left" ? <LayoutColumnTwoRegular /> : <LayoutColumnTwoFocusRightFilled />} />
+        <Tooltip content="Toggle Editor" relationship="label" positioning="below-start">
+            <Button onClick={()=>setLayout(layout === "right" ? "normal" : "right")} appearance="subtle" size="large" icon={layout === "right" ? <LayoutColumnTwoRegular /> : <LayoutColumnTwoFocusLeftFilled />} />
+        </Tooltip>
+        <Tooltip content="Toggle Preview" relationship="label" positioning="below-start">
+            <Button onClick={()=>setLayout(layout === "left" ? "normal" : "left")} appearance="subtle" size="large" icon={layout === "left" ? <LayoutColumnTwoRegular /> : <LayoutColumnTwoFocusRightFilled />} />
+        </Tooltip>
     </span>
     </>
 

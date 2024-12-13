@@ -14,7 +14,7 @@ import {
     PlayRegular, PlayFilled, PauseRegular, PauseFilled, RewindRegular, RewindFilled, FastForwardRegular, FastForwardFilled,
     SaveRegular, SaveFilled,
     ZoomInRegular, ZoomInFilled, ZoomOutRegular, ZoomOutFilled,
-    MidiRegular, MidiFilled,
+    MidiRegular, MidiFilled, SoundWaveCircleRegular, SoundWaveCircleFilled,
     ArrowTrendingTextRegular,
     DocumentRegular, ChatHelpRegular, ChatHelpFilled,
     FolderOpenRegular, FolderOpenFilled,
@@ -32,6 +32,7 @@ const SaveIcon = bundleIcon(SaveRegular, SaveFilled)
 const ZoomInIcon = bundleIcon(ZoomInRegular, ZoomInFilled)
 const ZoomOutIcon = bundleIcon(ZoomOutRegular, ZoomOutFilled)
 const MidiIcon = bundleIcon(MidiRegular, MidiFilled)
+const SoundIcon = bundleIcon(MidiRegular, MidiFilled)
 const ChatHelpIcon = bundleIcon(ChatHelpRegular, ChatHelpFilled)
 const FolderOpenIcon = bundleIcon(FolderOpenRegular, FolderOpenFilled)
 const SettingIcon = bundleIcon(SettingsRegular, SettingsFilled)
@@ -89,23 +90,13 @@ export const MenuComponent = memo (function menuComponent({ f }: MenuComponentPr
         </Menu>
         <Menu>
             <MenuTrigger disableButtonEnhancement>
-                <ToolbarButton>表示</ToolbarButton>
-            </MenuTrigger>
-            <MenuPopover>
-                <MenuList>
-                    <MenuItem icon={<LayoutColumnTwoFocusLeftFilled />}>左画面を最大化</MenuItem>
-                    <MenuItem icon={<LayoutColumnTwoFocusRightFilled />}>右画面を最大化</MenuItem>
-                </MenuList>
-            </MenuPopover>
-        </Menu>
-        <Menu>
-            <MenuTrigger disableButtonEnhancement>
                 <ToolbarButton>設定</ToolbarButton>
             </MenuTrigger>
             <MenuPopover>
                 <MenuList>
-                    <MenuItem icon={<MidiIcon />}>MIDI機器に接続する</MenuItem>
-                    <MenuItem icon={<PersonVoiceRegular />}>VoiceVoxに接続する</MenuItem>
+                    {/* <MenuItem icon={<MidiIcon />}>MIDI機器に接続する</MenuItem>
+                    <MenuItem icon={<SoundIcon />}>SoundFontに接続する</MenuItem>
+                    <MenuItem icon={<PersonVoiceRegular />}>VoiceVoxに接続する</MenuItem> */}
                     <MenuItemLink icon={<SettingIcon />} href="http://localhost:50021/setting" target="_blank">VoiceVox設定</MenuItemLink>
                 </MenuList>
             </MenuPopover>
