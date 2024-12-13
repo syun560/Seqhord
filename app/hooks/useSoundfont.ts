@@ -51,10 +51,10 @@ export const useSoundFont = ():Sound => {
     },[audioContext,instrumentName])
 
     const playNote = useCallback((midiNumber:string) => {
-        if (!audioContext) return
+        if (!audioContext || !instrument) return
         audioContext.resume().then(() => {
-            const audioNode = instrument?.play(midiNumber)
-            setActiveAudioNodes((aa)=>({...aa, [midiNumber]: audioNode!}))
+            const audioNode = instrument.play(midiNumber)
+            setActiveAudioNodes((aa)=>({...aa, [midiNumber]: audioNode}))
         })
     },[audioContext ,instrument])
 
