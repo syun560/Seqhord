@@ -63,7 +63,7 @@ export const useSoundFont = ():Sound => {
         audioContext.resume().then(() => {
             if (!activeAudioNodes[midiNumber]) return
             const audioNode = activeAudioNodes[midiNumber]
-            audioNode.stop();
+            audioNode?.stop()
             setActiveAudioNodes((aa)=>({...aa, [midiNumber]: null }))
         })
     },[audioContext,activeAudioNodes])
