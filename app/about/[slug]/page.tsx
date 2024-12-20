@@ -41,7 +41,7 @@ const useStyles = makeStyles({
 })
 
 const pageList = [
-    { title: "Cord Seekについて", url: "./index" },
+    { title: "Seqhordについて", url: "./index" },
     { title: "ユーザマニュアル",
         sub: [
             { title: "音を入力する", url: "./input_notes" },
@@ -98,7 +98,7 @@ export default function Main({params}:{params: { slug: string }}) {
     return <div>
         <div className={styles.root}>
             <div>
-                <span className="fs-2 p-3">CodeSeeker Docs</span>
+                <span className="fs-2 p-3">Seqhord Docs</span>
                 <ul className='mt-2'>
                     {pages}
                 </ul>

@@ -127,7 +127,6 @@ export const compile_var = (tracks: Track[], res: Res) => {
                                 duration: reso,
                                 channel: 2,
                                 velocity: 100,
-                                mea: 0,
                                 tick: tick
                             })
                             tick += reso
@@ -155,7 +154,6 @@ export const compile_var = (tracks: Track[], res: Res) => {
                                 duration: 1,
                                 channel: 0,
                                 velocity: 100,
-                                mea: 0,
                                 tick
                             })
                             tick += 0.5
@@ -167,7 +165,6 @@ export const compile_var = (tracks: Track[], res: Res) => {
                                 duration: 1,
                                 channel: 0,
                                 velocity: 100,
-                                mea: 0,
                                 tick
                             })
                             tick += 0.5

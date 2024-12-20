@@ -141,7 +141,7 @@ const bef = (monaco: any) => {
 
 export const SMMLEditor = memo (function smmlEditor({ value, doChange }: EditorComponentPropsType) {
 
-    console.log("SMML Editor rendered!!")
+    // console.log("SMML Editor rendered!!")
 
     const handleEditorChange = (val: any, event: any) => {
         doChange(val)

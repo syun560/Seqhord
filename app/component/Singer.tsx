@@ -11,7 +11,7 @@ interface SingerProps {
 
 export const Singer = memo(function singer({vox, tracks, bpm} :SingerProps)  {
 
-    console.log("singer rendered!!")
+    // console.log("singer rendered!!")
 
     const VoiceSynth = async () => {
         try {

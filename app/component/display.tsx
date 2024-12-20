@@ -20,7 +20,6 @@ export const Disp : React.FC<{title: string; bpm: number; mea: number; notes: No
         <table className="table table-sm">
         <thead>
             <tr>
-                <th>mea</th>
                 <th>tick%8</th>
                 <th>pitch</th>
                 <th>dur</th>
@@ -29,7 +28,6 @@ export const Disp : React.FC<{title: string; bpm: number; mea: number; notes: No
         </thead>
         <tbody>
         {notes === undefined ? '' : notes.map((n,i)=><tr key={i}>
-            <td>{n.mea}</td>
             <td>{n.tick % 8}</td>
             <td>{n.pitch_name}</td>
             <td>{n.duration}</td>
@@ -42,7 +40,6 @@ export const Disp : React.FC<{title: string; bpm: number; mea: number; notes: No
         <table className="table table-sm">
         <thead>
             <tr>
-                <th>mea</th>
                 <th>tick</th>
                 <th>name</th>
                 <th>on</th>
@@ -51,7 +48,6 @@ export const Disp : React.FC<{title: string; bpm: number; mea: number; notes: No
         </thead>
         <tbody>
         {chords.map((c,i)=><tr key={i}>
-            <td>{c.mea}</td>
             <td>{c.tick}</td>
             <td>{c.chord_name}</td>
             <td>{c.on}</td>

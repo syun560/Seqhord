@@ -11,7 +11,7 @@ type TrackSelectorProps = {
 
 export const TrackSelector = memo(function trackSelector({tracks, tabnum, onTabChange, onAddTrack, onDeleteTab}:TrackSelectorProps) {
 
-    console.log("Trackselector")
+    // console.log("Trackselector rendered")
 
     const tabChange = (t: number) => {
         if (t !== tabnum) {

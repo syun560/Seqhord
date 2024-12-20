@@ -5,23 +5,10 @@ import React from "react"
 import { useState, useEffect, useCallback, useRef, useMemo } from "react"
 
 // fluent ui
-import { FluentProvider, webDarkTheme, Button, Select, Label, Tooltip } from "@fluentui/react-components"
-import {
-    bundleIcon,
-    PlayRegular, PlayFilled, PauseRegular, PauseFilled, RewindRegular, RewindFilled, FastForwardRegular, FastForwardFilled,
-    MidiRegular, MidiFilled, SoundWaveCircleFilled, SoundWaveCircleRegular,
-    LayoutColumnTwoFocusLeftFilled, LayoutColumnTwoFocusRightFilled, LayoutColumnTwoRegular,
-    PersonVoiceRegular
-} from "@fluentui/react-icons"
-const PlayIcon = bundleIcon(PlayRegular, PlayFilled)
-const PauseIcon = bundleIcon(PauseRegular, PauseFilled)
-const RewindIcon = bundleIcon(RewindRegular, RewindFilled)
-const FastForwardIcon = bundleIcon(FastForwardRegular, FastForwardFilled)
-const MidiIcon = bundleIcon(MidiRegular, MidiFilled)
-const SoundIcon = bundleIcon(SoundWaveCircleRegular, SoundWaveCircleFilled)
+import { FluentProvider, webDarkTheme, Select, SSRProvider } from "@fluentui/react-components"
 
 // types
-import { Chord, Track, Var2 } from 'types'
+import { Chord, Track, Var2, MenuFunc } from 'types'
 
 // defalut val
 import { default_tracks } from "./default_vals/defalut_tracks"
@@ -42,7 +29,7 @@ import { Instrument } from "./component/Instrument"
 import { Singer } from "./component/Singer"
 import { PianoBoard } from "./component/PianoBoard/PianoBoard"
 import { Variables } from "./component/Variables"
-import { MenuComponent } from "./component/MenuComponent"
+import { MenuBar } from "./component/MenuBar"
 
 // script
 import { compile } from './compile/compile'
@@ -145,7 +132,6 @@ export default function Main() {
         setTitle(res.title)
         log.addLog(res.errMsg)
         setBpm(res.bpm)
-        setMea(res.mea)
         setVars(res.vars)
         setChords(res.chords)
     },[tracks])
@@ -208,8 +194,16 @@ export default function Main() {
         log.addLog("auto compose")
     },[])
 
-    const menuFunc = useMemo(()=>({
-        saveAsJson, showOpenFileDialog, showMIDIFileDialog, onCompile, onNew, saveMIDI, saveMusicXML, saveText, autoCompose
+    const menuFunc:MenuFunc = useMemo(()=>({
+        onNew,
+        saveMIDI,
+        saveMusicXML,
+        saveText,
+        saveAsJson, 
+        showOpenFileDialog, 
+        showMIDIFileDialog, 
+        onCompile,
+        autoCompose
     }),[saveAsJson, showOpenFileDialog, showMIDIFileDialog, onCompile, onNew, saveMIDI, saveMusicXML, saveText, autoCompose])
 
     useEffect(() => {
@@ -230,63 +224,6 @@ export default function Main() {
         })
         setMaxTick(m)
     }, [tracks])
-
-    // OperationBar
-    const OperationBar = <><span>
-        {/* <span className="me-2">
-            Tick: <Label size="large" style={{fontFamily: "monospace"}}>
-                {String(seq.nowTick).padStart(3, '0')}/{String(maxTick).padStart(3, '0')}
-            </Label>
-        </span> */}
-        <span className="me-2">
-            Tick: <Label size="large" style={{fontFamily: "monospace"}}>
-                {/* {String(Math.floor(seq.nowTick/8)).padStart(3, '\xa0')}:{String((seq.nowTick%8).toFixed(1)).padStart(2, '0')} / {Math.floor(maxTick/8)} */}
-                {String(Math.floor(seq.nowTick/8)).padStart(3, '\xa0')}:{String((seq.nowTick%8).toFixed(1)).padStart(2, '0')}
-            </Label>
-        </span>
-        <span className="me-2">
-            Beat: <Label size="large" style={{fontFamily: "monospace"}}>4/4</Label>
-        </span>
-        <span className="me-2">
-            Tempo: <Label  size="large" style={{fontFamily: "monospace"}}>{bpm}</Label>
-        </span>
-        {/* <span className="me-2">Key: G</span> */}
-    </span>
-
-    <span className="mx-3">
-        <Tooltip content="先頭へ" relationship="label" positioning="below-start">
-            <Button className="me-2" onClick={seq.first} icon={<RewindIcon />} />
-        </Tooltip>
-        <Tooltip content={seq.isPlaying ? "一時停止":"再生"} relationship="label" positioning="below-start">
-            <Button className="me-2" shape="circular" appearance="primary" onClick={seq.playToggle} size="large" icon={seq.isPlaying ? <PauseIcon />:<PlayIcon />} />
-        </Tooltip>
-        {/* <Button className="me-2" onClick={()=>{seq.stop(); seq.first()}} icon={<StopIcon />} /> */}
-        <Tooltip content="一小節先へ" relationship="label" positioning="below-start">
-            <Button className="me-2" onClick={seq.nextMea} icon={<FastForwardIcon />} />
-        </Tooltip>
-    </span>
-
-    <span className="mx-3">
-        <Tooltip content="MIDI機器に接続" relationship="label" positioning="below-start">
-            <Button appearance={midi.outPorts.length !== 0 ? "primary" : "secondary"} icon={<MidiIcon />} onClick={midi.setup} />
-        </Tooltip>
-        <Tooltip content="SoundFontに接続" relationship="label" positioning="below-start">
-            <Button appearance={sf.isLoading !== null ? "primary" : "secondary"} icon={<SoundIcon />} onClick={sf.setup} />
-        </Tooltip>
-        <Tooltip content="VOICEVOXに接続" relationship="label" positioning="below-start">
-            <Button icon={<PersonVoiceRegular />} onClick={vox.getSingers} />
-        </Tooltip>
-    </span>
-
-    <span className="mx-3">
-        <Tooltip content="Toggle Editor" relationship="label" positioning="below-start">
-            <Button onClick={()=>setLayout(layout === "right" ? "normal" : "right")} appearance="subtle" size="large" icon={layout === "right" ? <LayoutColumnTwoRegular /> : <LayoutColumnTwoFocusLeftFilled />} />
-        </Tooltip>
-        <Tooltip content="Toggle Preview" relationship="label" positioning="below-start">
-            <Button onClick={()=>setLayout(layout === "left" ? "normal" : "left")} appearance="subtle" size="large" icon={layout === "left" ? <LayoutColumnTwoRegular /> : <LayoutColumnTwoFocusRightFilled />} />
-        </Tooltip>
-    </span>
-    </>
 
     // LeftPane
     const LeftPane = <div className={"col-md-" + (layout === "left" ? 12 : 6) + " pe-0 pane"} key={"left"}>
@@ -354,24 +291,20 @@ export default function Main() {
     if (layout === 'left') MainPane = [LeftPane]
     if (layout === 'right') MainPane = [RightPane]
 
-    console.log("page rendered!!!")
+    // console.log("page rendered!!!")
 
     return (
         <FluentProvider theme={webDarkTheme}>
-
+        <SSRProvider>
         <div className="container-fluid">
-            <div>
-                <Button appearance="transparent">CodeSeq</Button>
-                <MenuComponent f={menuFunc} />
-            </div>     
-            <div>
-                {OperationBar}       
-            </div>
+            <MenuBar f={menuFunc} seq={seq} midi={midi} vox={vox} sound={sf} bpm={bpm} layout={layout} setLayout={setLayout} />
+
             <div className="row">
                 {MainPane}
             </div>
 
         </div>
+        </SSRProvider>
         </FluentProvider>
     )
 }

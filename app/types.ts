@@ -1,6 +1,18 @@
 import Soundfont from 'soundfont-player';
 import  { Dispatch, SetStateAction } from "react"
 
+export type MenuFunc = {
+    onNew: () => void
+    saveMIDI: () => void
+    saveMusicXML: () => void
+    saveText: () => void
+    saveAsJson: () => void
+    showOpenFileDialog: () => Promise<unknown>
+    showMIDIFileDialog: () => Promise<unknown>
+    onCompile: () => void
+    autoCompose: () => void
+}
+
 export type SingerInfo = {
     name: string
     speaker_uuid: string
@@ -63,13 +75,11 @@ export type Note = {
     duration: number // 1
     channel: number // 0
     velocity: number // 1~100
-    mea: number // 
     tick: number // 
     lyric?: string 
 }
 
 export type Chord = {
-    mea?: number
     tick: number
 
     chord_name: string
@@ -95,7 +105,6 @@ export type Track = {
 }
 
 export type Scale = {
-    mea?: number
     tick: number
     scale: string
 }
@@ -149,8 +158,8 @@ export type Res = {
     tracks: Track[]
     title: string
     bpm: number
+    tick: number
     scales: Scale[]
-    mea: number
     vars: Var2[]
     chords: Chord[]
     errMsg: string

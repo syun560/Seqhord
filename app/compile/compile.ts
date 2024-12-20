@@ -14,7 +14,7 @@ export const compile = (tracks: Track[]) => {
         bpm: 120,
         scales: [],
         errMsg: "",
-        mea: 0,
+        tick: 8,
         vars: [],
         tracks: [],
         chords: [],
@@ -42,13 +42,20 @@ export const compile = (tracks: Track[]) => {
 
     // 文字列を改行ごとに分割して配列に入れる
     const lines = tracks[0].texts.split('\n')
-    let p_mea = 0 // パラグラフが始まる前のmea
-    let mea = 0
+    // console.log(lines)
+    let next_tick = res.tick
 
     // search strings
     lines.forEach((l, i) => {
         // 空白文字の削除
         const line = l.replace(/\s+/g, "");
+
+        // 空行の場合は次のtickへ進む
+        if (line === "") res.tick = next_tick
+
+        // console.log("------")
+        // console.log("res.tick: ", res.tick)
+        // console.log("line: ", line)
 
         // restrict max rows
         if (i > 1000) {
@@ -77,8 +84,7 @@ export const compile = (tracks: Track[]) => {
                 const i = line.indexOf('=')
                 const t = line.slice(i + 1)
                 res.scales.push({
-                    mea: p_mea,
-                    tick: p_mea * 8,
+                    tick: res.tick,
                     scale: t
                 })
             }
@@ -91,25 +97,26 @@ export const compile = (tracks: Track[]) => {
             }
             // パラグラフ
             else if (line.indexOf('p') !== -1){
-                p_mea = Number(line.slice(line.indexOf('=') + 1))
-                res.mea = p_mea
+                // p_mea = Number(line.slice(line.indexOf('=') + 1))
+                // res.mea = p_mea
             }
         }
         else{
             if (line[0] === '#') { }
             else if (line[0] === 'c') compile_chord(line, i, res, 0)
-            else if (line[0] === 'n') compile_melody(line, i, res, 0, res.tracks[0].trans)                
+            else if (line[0] === 'n') next_tick = compile_melody(line, i, res, 0, res.tracks[0].trans)                
             else if (line[0] === 'k') compile_lyric(line, i, res)
 
             // 数値の場合は別のトラック
             else if (!isNaN(Number(line[0]))) {
                 const t = Number(line[0])
-                if (t < tracks.length) expand_vars(line, res, t)
+                if (t < tracks.length) {
+                    const n = expand_vars(line, res, t)
+                    if (n > next_tick) next_tick = n
+                }
             }
         }
     })
-
-    res.mea = mea
  
     // 実行時間を計測
     const end_time = performance.now()

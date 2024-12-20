@@ -1,7 +1,7 @@
 // See https://github.com/danigb/soundfont-player
 
 import Soundfont, { InstrumentName } from 'soundfont-player';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Sound } from '@/types'
 
 const hostname:string = 'https://d1pzp51pvbm36p.cloudfront.net'
@@ -25,7 +25,6 @@ export const useSoundFont = ():Sound => {
     },[])
 
     useEffect(()=>{
-        console.log('うせ')
         loadInstrument(instrumentName)
     }, [instrumentName, audioContext])
 
@@ -80,11 +79,11 @@ export const useSoundFont = ():Sound => {
         })
     },[audioContext, activeAudioNodes])
 
-    return {
+    return useMemo(()=>({
         isLoading: instrument,
         setup,
         playNote,
         stopNote,
         stopAllNotes
-    }
+    }),[instrument, setup, playNote, stopNote, stopAllNotes])
 }

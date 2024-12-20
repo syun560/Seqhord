@@ -18,8 +18,7 @@ export const compile_melody = (line: string, i: number, res: Res, c: number, tra
     let dur_cnt = 0 // 1小節をカウントする
     let is_note = false // 休符かnoteか
 
-    let mea = res.mea
-    let tick = mea * 8
+    let tick = res.tick
 
     const notes = res.tracks[0].notes
 
@@ -48,9 +47,8 @@ export const compile_melody = (line: string, i: number, res: Res, c: number, tra
         // 小節線
         else if (c === '|'){
             if (j !== 1 && dur_cnt !== 8) {
-                res.errMsg += `${mea}小節の音節が拍子と一致しません。（${dur_cnt}）\n`
+                res.errMsg += `tick: ${tick}の音節が拍子と一致しません。（${dur_cnt}）\n`
             }
-            if (j !== 1) mea += 1
             dur_cnt = 0
         }
         // 休符
@@ -78,7 +76,6 @@ export const compile_melody = (line: string, i: number, res: Res, c: number, tra
                 duration,
                 channel: 1,
                 velocity: 100,
-                mea,
                 tick
             })
             tick += duration
@@ -91,4 +88,6 @@ export const compile_melody = (line: string, i: number, res: Res, c: number, tra
             res.errMsg += `${i+1}行${j+1}文字目: 予期せぬ文字列「${c}」です。\n`
         }
     }
+
+    return tick
 }

@@ -93,7 +93,7 @@ export const PianoRoll: React.FC<PianoRollProps> = ({ notes, seq, chords }) => {
     return <div>
         <table className="pianotable">
             <tbody>
-                <Conductor tickLength={tick_max} seq={seq} chords={chords}/>
+                <Conductor tickLength={Math.ceil(tick_max)} seq={seq} chords={chords}/>
                 {roll}
             </tbody>
         </table>

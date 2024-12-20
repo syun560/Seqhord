@@ -17,7 +17,7 @@ const getNowScale = (tick: number, res: Res) => {
 const getNowChord = (tick: number, res: Res) => {
     let chof = [...res.chords].filter(cho=>cho.tick<=tick)
     if (chof.length === 0) {
-        chof = [{ mea:0, tick: 0, chord_name: "None", pitch: 0, third: "major", on: 0}]
+        chof = [{ tick: 0, chord_name: "None", pitch: 0, third: "major", on: 0}]
     }
     return chof[chof.length - 1]
 }
@@ -67,7 +67,6 @@ const setVar2Note = (vars2: Var2[], name: string, repeat: number, nowTick: numbe
                 duration: b.duration,
                 channel: b.channel,
                 velocity: b.velocity,
-                mea: Math.floor((b.tick + nowTick) / 8),
                 tick: b.tick + nowTick
             }
         })
@@ -105,7 +104,6 @@ const setVar2Note = (vars2: Var2[], name: string, repeat: number, nowTick: numbe
                     duration: p.duration,
                     channel: p.channel,
                     velocity: p.velocity,
-                    mea: Math.floor((p.tick + i*len) / 8),
                     tick: p.tick + i * len
                 }
             }))
@@ -119,7 +117,7 @@ const setVar2Note = (vars2: Var2[], name: string, repeat: number, nowTick: numbe
 // 変数を認識し、コンパイルする
 export const expand_vars = (line: string, res: Res, ch: number) => {
     // noteを用意する
-    let tick = res.mea * 8
+    let tick = res.tick
     let d_state = 0 // 0: 変数認識, 1:アスタリスク, 2:繰り返し回数認識受付状態
     let tmp_var = ''
     let tmp_repeat = 1
@@ -175,4 +173,6 @@ export const expand_vars = (line: string, res: Res, ch: number) => {
         }
         tmp_repeat = 1
     }
+
+    return tick
 }
