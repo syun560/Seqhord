@@ -12,6 +12,7 @@ import {
     bundleIcon,
     EditRegular, EditFilled,
     PlayRegular, PlayFilled, PauseRegular, PauseFilled, RewindRegular, RewindFilled, FastForwardRegular, FastForwardFilled,
+    CaretLeftRegular, CaretLeftFilled,
     SaveRegular, SaveFilled,
     MidiRegular, MidiFilled, SoundWaveCircleRegular, SoundWaveCircleFilled,
     ArrowTrendingTextRegular,
@@ -37,6 +38,7 @@ const InfoIcon = bundleIcon(InfoRegular, InfoFilled)
 const PauseIcon = bundleIcon(PauseRegular, PauseFilled)
 const RewindIcon = bundleIcon(RewindRegular, RewindFilled)
 const FastForwardIcon = bundleIcon(FastForwardRegular, FastForwardFilled)
+const PrevIcon = bundleIcon(CaretLeftRegular, CaretLeftFilled)
 
 type MenuBarPropsType = {
     f: MenuFunc
@@ -99,6 +101,9 @@ export const MenuBar = memo(function menuBar({ f, seq, midi, bpm, vox, sound, la
     const SeqBar = <div>
         <Tooltip content="先頭へ" relationship="label" positioning="below-start">
             <ToolbarButton onClick={seq.first} icon={<RewindIcon />} />
+        </Tooltip>
+        <Tooltip content="一小節前へ" relationship="label" positioning="below-start">
+            <ToolbarButton onClick={seq.prevMea} icon={<PrevIcon />} />
         </Tooltip>
         <Tooltip content={seq.isPlaying ? "一時停止" : "再生"} relationship="label" positioning="below-start">
             <Button className="mx-2" shape="circular" appearance="primary" onClick={seq.playToggle} size="large" icon={seq.isPlaying ? <PauseIcon /> : <PlayIcon />} />

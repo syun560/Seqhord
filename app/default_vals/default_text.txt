@@ -15,7 +15,7 @@ c|C
 3|high_root*4
 4|p_norm*4,
 
-c|C/E             |F            |G           |E/G#              |Am             |D/F#            |Dm___C/E___F|___G_____
+c|C/E             |F            |G           |E/G#              |Am             |D/F#            |Dm___C/E___F|___G ____
 1|all_stroke*8
 2|riff3, riff4
 3|root*8

@@ -27,7 +27,7 @@ export const compile_chord = (line: string, i: number, res: Res, c: number) => {
                     third: 'major',
                     on: pitch
                 })
-                m_state = 1
+                if(m_state === 0) m_state = 1
             }else{
                 res.chords[res.chords.length - 1].on = pitch
                 res.chords[res.chords.length - 1].chord_name += c

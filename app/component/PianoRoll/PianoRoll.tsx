@@ -5,6 +5,7 @@ import Lib from 'Lib'
 
 import { Conductor } from './Conductor.tsx'
 import PianoRollCell from './PianoRollCell.tsx'
+import { ChordDisplay } from './ChordDisplay.tsx'
 
 const th = {
     padding: '0px',
@@ -46,6 +47,7 @@ export const PianoRoll: React.FC<PianoRollProps> = ({ notes, seq, chords }) => {
 
     // tickの最大値
     let tick_max = notes.length > 0 ? notes[notes.length - 1].tick + notes[notes.length - 1].duration : 0
+    tick_max = Math.floor(tick_max)
 
     // ダミーの数値（Reactのkeyのため）
     const pitchs: number[] = []
@@ -93,7 +95,8 @@ export const PianoRoll: React.FC<PianoRollProps> = ({ notes, seq, chords }) => {
     return <div>
         <table className="pianotable">
             <tbody>
-                <Conductor tickLength={Math.ceil(tick_max)} seq={seq} chords={chords}/>
+                <Conductor tickLength={tick_max} seq={seq} />
+                <ChordDisplay tickLength={tick_max} chords={chords}/>
                 {roll}
             </tbody>
         </table>

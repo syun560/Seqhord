@@ -144,6 +144,7 @@ export type Sequencer = {
     stop: ()=>void
     first: ()=>void
     nextMea: ()=>void
+    prevMea: ()=>void
     playToggle: ()=>void
     setNowTick: Dispatch<SetStateAction<number>>
     setMIDI: Dispatch<SetStateAction<MIDI>>

@@ -1,10 +1,9 @@
-import React, { useRef, createRef, useEffect, useMemo, useCallback } from 'react'
-import { Sequencer, Chord } from '@/types'
+import React, { useRef, createRef, useEffect, useCallback } from 'react'
+import { Sequencer } from '@/types'
 
 type Props = {
     tickLength: number
     seq: Sequencer
-    chords: Chord[]
 }
 
 let a = 8 // 拍子
@@ -21,7 +20,7 @@ const tdStyle = (tick: number) => {
     return res
 }
 
-export const Conductor = ({tickLength, seq, chords}: Props) => {
+export const Conductor = ({tickLength, seq }: Props) => {
 
     // 自動スクロールするためにtickLengthぶんのrefを作成
     const refs = useRef<React.RefObject<HTMLTableCellElement>[]>([])
@@ -47,11 +46,6 @@ export const Conductor = ({tickLength, seq, chords}: Props) => {
          if (seq.nowTick % 20 === 0 ) scrollToCenter(seq.nowTick + 10)
     }, [seq.nowTick, seq.isPlaying])
 
-    // 対応するコードを探す
-    const searchChord = useCallback((tick: number) => {
-        const found = chords.find(c => c.tick === tick)?.chord_name
-        return found ? ` [${found}]` : found
-    },[chords])
 
     const cells = [...Array(tickLength)].map((_, tick)=><td 
         key={tick}
@@ -61,7 +55,6 @@ export const Conductor = ({tickLength, seq, chords}: Props) => {
         onClick={()=>seq.setNowTick(tick)}>
 
         {tick % a === 0 && tick / a}
-        {searchChord(tick)}
         
     </td>)
 

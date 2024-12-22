@@ -65,10 +65,20 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number):Sequencer => {
             first()
         }
     }
+    const prevMea = () => {
+        let s = nowTickRef.current - 8
+        s = s - s % 8
+        if (s < 0) s = 0
+
+        setNowTick(s)
+    }
+
     const first = useCallback(() => {
         setNowTick(0)
     },[])
     
+
+
     const setup = () => {
         bpm.current = b
         endTick.current = 1
@@ -95,5 +105,13 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number):Sequencer => {
         }
     },[timer.current, isPlaying, tracks])
 
-    return {nowTick, isPlaying, setNowTick, setMIDI, play, stop, nextMea, first, playToggle}
+    return {
+        nowTick,
+        isPlaying,
+        setNowTick,
+        setMIDI,
+        play, stop,
+        nextMea, prevMea, first,
+        playToggle
+    }
 }
