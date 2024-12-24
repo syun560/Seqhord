@@ -255,36 +255,41 @@ export default function Main() {
         )}
         </ul>
 
-        <div className="right-pane">
-            {/* PianoRoll, info, etc... */}
-            {rightTab === "preview" ?
-            tracks[tabnum] === undefined || tracks[tabnum].notes === undefined ?
-                '' :
-                piano ?
-                    <PianoRoll notes={tracks[tabnum].notes} seq={seq} chords={chords}/>
-                    // <NewPianoRoll notes={tracks[tabnum].notes} seq={seq} />
-                    :
-                    <Disp title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords} />
-            :
-            <Variables vars={vars} />
-            }
+        <div>
+                {/* PianoRoll, info, etc... */}
+                <div className="reverse-wrapper bar">
+                <div className="reverse-content">
 
-            {/* float element */}
-            <div className="fixed-div">               
-                <Singer vox={vox} tracks={tracks} bpm={bpm} />
-            </div>
+                {rightTab === "preview" ?
+                tracks[tabnum] === undefined || tracks[tabnum].notes === undefined ?
+                    '' :
+                    piano ?
+                        <PianoRoll notes={tracks[tabnum].notes} seq={seq} chords={chords}/>
+                        // <NewPianoRoll notes={tracks[tabnum].notes} seq={seq} />
+                        :
+                        <Disp title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords} />
+                :
+                <Variables vars={vars} />
+                }
+                </div>
+                </div>
 
-            <div className="fixed-div2">
-                <PianoBoard sf={sf} />
-                <div>
-                    {midi.outPorts.length !== 0 && <Instrument midi={midi} />}
-                    <Select appearance="filled-darker" className="d-inline" value={tracks[tabnum].program}>
-                        {programs}
-                    </Select>
+
+                {/* float element */}
+                <div className="fixed-div">               
+                    <Singer vox={vox} tracks={tracks} bpm={bpm} />
+                </div>
+
+                <div className="fixed-div2">
+                    <PianoBoard sf={sf} />
+                    <div>
+                        {midi.outPorts.length !== 0 && <Instrument midi={midi} />}
+                        <Select appearance="filled-darker" className="d-inline" value={tracks[tabnum].program}>
+                            {programs}
+                        </Select>
+                    </div>
                 </div>
             </div>
-
-        </div>
     </div>
 
     let MainPane = [LeftPane, RightPane]

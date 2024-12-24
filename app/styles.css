@@ -7,12 +7,15 @@ body {
     padding: 0;
 }
 .pane{
-    height: calc(100vh - 40px);
+    height: calc(100vh - 42px);
     /* background-color: grey; */
 }
-.right-pane{
-    height: calc(100% - 42px);
+.reverse-wrapper{
+    transform: rotateX(180deg);
     overflow: scroll;
+}
+.reverse-content{
+    transform: rotateX(180deg);
 }
 
 .fixed-div{
@@ -68,16 +71,16 @@ body {
 }
 
 .bar::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 12px;
+    height: 12px;
 }
 .bar::-webkit-scrollbar-thumb {
     background: #777;
     border-radius: 10px;
 }
 .bar::-webkit-scrollbar-track-piece:start {
-    background: #DDD;
+    background: #3c324a;
 }
 .bar::-webkit-scrollbar-track-piece:end {
-    background: #DDD;
+    background: #3c324a;
 }

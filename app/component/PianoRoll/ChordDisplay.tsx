@@ -27,13 +27,13 @@ const tdStyle = (tick: number, chord:string, found:string|undefined) => {
         width: '20px',
         position: 'sticky' as const,
         zIndex: found ? 2 : 1,
-        top: 0
+        top: 20
     }
     if (tick % a === 0) res = { ...res, borderLeft: '1px solid black' }
     return res
 }
 
-export const ChordDisplay = memo(function chordDisplay({tickLength, chords}: Props)  {
+export const ChordDisplay = memo(function ChordDisplay({tickLength, chords}: Props)  {
 
     // 対応するコードを探す
     const searchChord = useCallback((tick: number) => {
@@ -41,7 +41,7 @@ export const ChordDisplay = memo(function chordDisplay({tickLength, chords}: Pro
         return found ? ` ${found}` : found
     },[chords])
 
-    console.log("chordy!!")
+    // console.log("chordy!!")
 
     let foundChord = ""
 

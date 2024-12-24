@@ -5,13 +5,13 @@ import Link from "next/link";
 // fluent ui
 import {
     Button, Label, Tooltip, ToolbarButton, ToolbarDivider,
-    Menu, MenuTrigger, MenuPopover, MenuList, MenuItem
+    Menu, MenuTrigger, MenuPopover, MenuList, MenuItem,
+    Dialog, DialogTrigger, DialogSurface, DialogTitle, DialogBody, DialogActions, DialogContent,
 } from "@fluentui/react-components"
 
 import {
     bundleIcon,
-    EditRegular, EditFilled,
-    PlayRegular, PlayFilled, PauseRegular, PauseFilled, RewindRegular, RewindFilled, FastForwardRegular, FastForwardFilled,
+    PlayRegular, PlayFilled, PauseRegular, PauseFilled,
     CaretLeftRegular, CaretLeftFilled,
     SaveRegular, SaveFilled,
     MidiRegular, MidiFilled, SoundWaveCircleRegular, SoundWaveCircleFilled,
@@ -22,7 +22,9 @@ import {
     InfoRegular, InfoFilled,
     DocumentOnePageSparkleRegular, PersonVoiceRegular, HandshakeRegular,
     LayoutColumnTwoFocusLeftFilled, LayoutColumnTwoFocusRightFilled, LayoutColumnTwoRegular,
-    DocumentArrowDownRegular, DocumentArrowDownFilled, DocumentFilled
+    DocumentArrowDownRegular, DocumentArrowDownFilled, DocumentFilled,
+    ChevronDoubleLeftFilled, ChevronDoubleLeftRegular,
+    ChevronRightFilled, ChevronRightRegular, ChevronLeftFilled, ChevronLeftRegular, 
 } from "@fluentui/react-icons"
 
 const PlayIcon = bundleIcon(PlayRegular, PlayFilled)
@@ -36,9 +38,9 @@ const DownloadIcon = bundleIcon(DocumentArrowDownRegular, DocumentArrowDownFille
 const SettingIcon = bundleIcon(SettingsRegular, SettingsFilled)
 const InfoIcon = bundleIcon(InfoRegular, InfoFilled)
 const PauseIcon = bundleIcon(PauseRegular, PauseFilled)
-const RewindIcon = bundleIcon(RewindRegular, RewindFilled)
-const FastForwardIcon = bundleIcon(FastForwardRegular, FastForwardFilled)
-const PrevIcon = bundleIcon(CaretLeftRegular, CaretLeftFilled)
+const RewindIcon = bundleIcon(ChevronDoubleLeftRegular, ChevronDoubleLeftFilled)
+const FastForwardIcon = bundleIcon(ChevronRightRegular, ChevronRightFilled)
+const PrevIcon = bundleIcon(ChevronLeftRegular, ChevronLeftFilled)
 
 type MenuBarPropsType = {
     f: MenuFunc
@@ -121,7 +123,8 @@ export const MenuBar = memo(function menuBar({ f, seq, midi, bpm, vox, sound, la
             <ToolbarButton appearance={sound.isLoading !== null ? "primary" : "transparent"} icon={<SoundIcon />} onClick={sound.setup} />
         </Tooltip>
         <Tooltip content="VOICEVOXに接続" relationship="label" positioning="below-start">
-            <ToolbarButton icon={<PersonVoiceRegular />} onClick={vox.getSingers} />
+            {/* <ToolbarButton icon={<PersonVoiceRegular />} onClick={vox.getSingers} /> */}
+            <button onClick={vox.getSingers} className="btn btn-sm"><img src='/images/vvIcon.png' height="22px" /></button>
         </Tooltip>
     </div>
 
@@ -141,13 +144,39 @@ export const MenuBar = memo(function menuBar({ f, seq, midi, bpm, vox, sound, la
         <Tooltip content="ご支援" relationship="label" positioning="below-start">
         <Link href="https://camp-fire.jp/projects/691016/view?utm_campaign=cp_po_share_c_msg_mypage_projects_show" target="_blank"><ToolbarButton icon={<HandshakeRegular />} /></Link>
         </Tooltip>
-
+        <Tooltip content="Xで共有" relationship="label" positioning="below-start">
+            {/* <ToolbarButton icon={<PersonVoiceRegular />} onClick={vox.getSingers} /> */}
+            <Link href="https://twitter.com/intent/tweet?text=Sechord%E3%82%92%E4%BD%BF%E3%81%86%EF%BC%81%0Ahttps%3A%2F%2Fsechord.com%0A" target="_blank">
+                <button className="btn btn-sm"><img src='/images/x.png' height="16px" /></button>
+            </Link>
+        </Tooltip>
     </div>
 
     // console.log("menubar rendered!!!")
 
+    
+
     return <div className="d-flex">
-        <div className="fs-4 fw-bolder m-1 text-info">Seqhord</div>
+        <Dialog>
+            <DialogTrigger disableButtonEnhancement>
+                <div className="fs-4 fw-bolder m-1 text-info">Seqhord</div>
+            </DialogTrigger>
+            <DialogSurface>
+                <DialogBody>
+                    <DialogTitle>ようこそ</DialogTitle>
+                </DialogBody>
+                <DialogContent>
+                    Seqhordへようこそ
+                    支援者: ufffoUtl,
+                </DialogContent>
+                <DialogActions>
+                    <DialogTrigger disableButtonEnhancement>
+                        <Button appearance="secondary">Close</Button>
+                    </DialogTrigger>
+                    <Button appearance="primary">Do Something</Button>
+                </DialogActions>
+            </DialogSurface>
+        </Dialog>
         <div className="fs-5 fw-bolder m-2 text-secondary">ver1.0</div>
         <ToolbarDivider className="py-2"/>
         {LeftBar}

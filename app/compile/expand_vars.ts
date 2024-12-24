@@ -1,4 +1,4 @@
-import { Note, Res, Var2 } from '../types.ts'
+import { Res, Var2 } from '../types.ts'
 import Lib from '../Lib.ts'
 
 const MajorScale = [0, 0, 2, 4, 5, 7, 9, 11, 12]
@@ -6,20 +6,20 @@ const NoteName = ['C','C#', 'D', 'D#','E', 'F', 'F#','G', 'G#','A', 'A#','B']
 
 // 現在のスケールを取得する
 const getNowScale = (tick: number, res: Res) => {
-    let sf = [...res.scales].filter(sc=>sc.tick<=tick)
-    if (sf.length === 0) {
-        sf = [{tick:0, scale: "C"}]
+    let scales = [...res.scales].filter(sc => sc.tick<=tick)
+    if (scales.length === 0) {
+        scales = [{tick:0, scale: "C"}]
     }
-    return sf[sf.length - 1].scale
+    return scales[scales.length - 1].scale
 }
 
 // 現在のコードを取得する
 const getNowChord = (tick: number, res: Res) => {
-    let chof = [...res.chords].filter(cho=>cho.tick<=tick)
-    if (chof.length === 0) {
-        chof = [{ tick: 0, chord_name: "None", pitch: 0, third: "major", on: 0}]
+    let chords = [...res.chords].filter(cho=>cho.tick<=tick)
+    if (chords.length === 0) {
+        chords = [{ tick: 0, chord_name: "None", pitch: 0, third: "major", on: 0}]
     }
-    return chof[chof.length - 1]
+    return chords[chords.length - 1]
 }
 
 // 変数から実際のノートを生成する
@@ -29,12 +29,15 @@ const setVar2Note = (vars2: Var2[], name: string, repeat: number, nowTick: numbe
     const trans = res.tracks[ch].trans
     const type = res.tracks[ch].type
 
+    // 名前から変数を検索する
     const bn = vars2.find(v=> v.name === name)
+    // console.log(bn)
+
     if (bn !== undefined) {
 
         const len = bn.len
 
-        // tickとNoteをずらしたパターンを作る
+        // 実際のtickとNoteを反映したパターンを作る
         let pattern = bn.notes.map(b=>{
             let pitch = 0
             if(type !== 'drum') {
@@ -119,8 +122,8 @@ export const expand_vars = (line: string, res: Res, ch: number) => {
     // noteを用意する
     let tick = res.tick
     let d_state = 0 // 0: 変数認識, 1:アスタリスク, 2:繰り返し回数認識受付状態
-    let tmp_var = ''
-    let tmp_repeat = 1
+    let var_name = ''
+    let repeat_time = 1
 
     
     // 一文字目を飛ばして行をイテレート開始
@@ -133,45 +136,45 @@ export const expand_vars = (line: string, res: Res, ch: number) => {
         }
 
         // 繰り返しを表す記号
-        if (c === '*') {
+        else if (c === '*') {
             d_state = 1
         }
 
         // 数値であれば繰り返し回数として認識する
         else if (!isNaN(Number(c)) && d_state !== 0) {
             if (d_state === 1) {
-                tmp_repeat = Number(c)
+                repeat_time = Number(c)
                 d_state = 2
             }
             else if (d_state === 2) {
-                tmp_repeat *= 10
-                tmp_repeat += Number(c)
+                repeat_time *= 10
+                repeat_time += Number(c)
                 d_state = 2
             }
         }
         else if (c === '|' || c === ','){
-            if (tmp_var !== '') {
-                const bn = setVar2Note(res.vars,tmp_var,tmp_repeat,tick,res,ch)
-                tmp_var = ''
-                if (bn !== undefined){
-                    tick += tmp_repeat * bn.len
+            if (var_name !== '') {
+                const notes = setVar2Note(res.vars,var_name,repeat_time,tick,res,ch)
+                var_name = ''
+                if (notes !== undefined){
+                    tick += repeat_time * notes.len
                 }
-                tmp_repeat = 1
+                repeat_time = 1
             }
         }
         else {
             d_state = 0
-            tmp_var += c
+            var_name += c
         }
     }
     // 行末までイテレートした場合。
-    if (tmp_var !== '') {
-        const bn = setVar2Note(res.vars,tmp_var,tmp_repeat,tick,res,ch)
-        tmp_var = ''
+    if (var_name !== '') {
+        const bn = setVar2Note(res.vars,var_name,repeat_time,tick,res,ch)
+        var_name = ''
         if (bn !== undefined){
-            tick += tmp_repeat * bn.len
+            tick += repeat_time * bn.len
         }
-        tmp_repeat = 1
+        repeat_time = 1
     }
 
     return tick
