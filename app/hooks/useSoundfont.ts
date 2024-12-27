@@ -8,7 +8,6 @@ const hostname:string = 'https://d1pzp51pvbm36p.cloudfront.net'
 const format: 'mp3' | 'ogg' = 'mp3'
 const soundfont: 'MusyngKite' | 'FluidR3_GM' = 'MusyngKite'
 
-
 type AudioNodes = {
     [key: string]: Soundfont.Player | null
 }

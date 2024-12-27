@@ -5,10 +5,10 @@ import React from "react"
 import { useState, useEffect, useCallback, useRef, useMemo } from "react"
 
 // fluent ui
-import { FluentProvider, webDarkTheme, Select, SSRProvider } from "@fluentui/react-components"
+import { FluentProvider, webDarkTheme, SSRProvider } from "@fluentui/react-components"
 
 // types
-import { Chord, Track, Var2, MenuFunc } from 'types'
+import { Chord, Mark, Track, Var2, MenuFunc } from 'types'
 
 // defalut val
 import { default_tracks } from "./default_vals/defalut_tracks"
@@ -30,6 +30,7 @@ import { Singer } from "./component/Singer"
 import { PianoBoard } from "./component/PianoBoard/PianoBoard"
 import { Variables } from "./component/Variables"
 import { MenuBar } from "./component/MenuBar"
+import { MarkBar } from "./component/MarkBar"
 
 // script
 import { compile } from './compile/compile'
@@ -62,6 +63,7 @@ export default function Main() {
     const [chords, setChords] = useState<Chord[]>([])
     const [vars, setVars] = useState<Var2[]>([])
     const [piano, setPiano] = useState(true)
+    const [marks, setMarks] = useState<Mark[]>([{tick:0, name: "Setup"}, {tick:8, name:"Start"}])
     
     const [tabnum, setTabnum] = useState(0)
     const [rightTab, setRightTab] = useState("preview")
@@ -71,6 +73,8 @@ export default function Main() {
     const [autoCompile, setAutoCompile] = useState(true)
     const [autoFormat, setAutoFormat] = useState(true)
     const [maxTick, setMaxTick] = useState(0)
+
+    const pianoBar = useRef<HTMLDivElement>(null)
 
     const tabNames = ["preview", "vars"]
 
@@ -134,6 +138,7 @@ export default function Main() {
         setBpm(res.bpm)
         setVars(res.vars)
         setChords(res.chords)
+        setMarks(res.marks)
     },[tracks])
 
     const onAddTrack = useCallback(() => {
@@ -257,14 +262,14 @@ export default function Main() {
 
         <div>
                 {/* PianoRoll, info, etc... */}
-                <div className="reverse-wrapper bar">
+                <div className="reverse-wrapper bar" ref={pianoBar}>
                 <div className="reverse-content">
 
                 {rightTab === "preview" ?
                 tracks[tabnum] === undefined || tracks[tabnum].notes === undefined ?
                     '' :
                     piano ?
-                        <PianoRoll notes={tracks[tabnum].notes} seq={seq} chords={chords}/>
+                        <PianoRoll notes={tracks[tabnum].notes} seq={seq} chords={chords} pianoBar={pianoBar?.current}/>
                         // <NewPianoRoll notes={tracks[tabnum].notes} seq={seq} />
                         :
                         <Disp title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords} />
@@ -280,7 +285,7 @@ export default function Main() {
                     <Singer vox={vox} tracks={tracks} bpm={bpm} />
                 </div>
 
-                <div className="fixed-div2">
+                {/* <div className="fixed-div2">
                     <PianoBoard sf={sf} />
                     <div>
                         {midi.outPorts.length !== 0 && <Instrument midi={midi} />}
@@ -288,7 +293,7 @@ export default function Main() {
                             {programs}
                         </Select>
                     </div>
-                </div>
+                </div> */}
             </div>
     </div>
 
@@ -303,7 +308,7 @@ export default function Main() {
         <SSRProvider>
         <div className="container-fluid">
             <MenuBar f={menuFunc} seq={seq} midi={midi} vox={vox} sound={sf} bpm={bpm} layout={layout} setLayout={setLayout} />
-
+            <MarkBar marks={marks} seq={seq}/>
             <div className="row">
                 {MainPane}
             </div>

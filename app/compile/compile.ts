@@ -18,6 +18,7 @@ export const compile = (tracks: Track[]) => {
         vars: [],
         tracks: [],
         chords: [],
+        marks: [],
     }
     
     // init 2d array
@@ -86,6 +87,15 @@ export const compile = (tracks: Track[]) => {
                 res.scales.push({
                     tick: res.tick,
                     scale: t
+                })
+            }
+            // マーク
+            else if (line.indexOf('mark') !== -1){
+                const i = line.indexOf('=')
+                const t = line.slice(i + 1)
+                res.marks.push({
+                    tick: res.tick,
+                    name: t
                 })
             }
             // プログラムチェンジ

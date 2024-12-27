@@ -138,18 +138,20 @@ export const MenuBar = memo(function menuBar({ f, seq, midi, bpm, vox, sound, la
     </div>
 
     const OtherBar = <div className="py-1">
+        <Tooltip content="VOICEVOX設定" relationship="label" positioning="below-start">
+            <Link href="http://localhost:50021/setting" target="_blank"><ToolbarButton icon={<SettingIcon />} /></Link>
+        </Tooltip>
         <Tooltip content="マニュアル" relationship="label" positioning="below-start">
             <Link href="/about/index" target="_blank"><ToolbarButton icon={<ChatHelpIcon />} /></Link>
         </Tooltip>
         <Tooltip content="ご支援" relationship="label" positioning="below-start">
         <Link href="https://camp-fire.jp/projects/691016/view?utm_campaign=cp_po_share_c_msg_mypage_projects_show" target="_blank"><ToolbarButton icon={<HandshakeRegular />} /></Link>
         </Tooltip>
-        <Tooltip content="Xで共有" relationship="label" positioning="below-start">
-            {/* <ToolbarButton icon={<PersonVoiceRegular />} onClick={vox.getSingers} /> */}
+        {/* <Tooltip content="Xで共有" relationship="label" positioning="below-start">
             <Link href="https://twitter.com/intent/tweet?text=Sechord%E3%82%92%E4%BD%BF%E3%81%86%EF%BC%81%0Ahttps%3A%2F%2Fsechord.com%0A" target="_blank">
                 <button className="btn btn-sm"><img src='/images/x.png' height="16px" /></button>
             </Link>
-        </Tooltip>
+        </Tooltip> */}
     </div>
 
     // console.log("menubar rendered!!!")

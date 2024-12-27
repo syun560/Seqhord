@@ -38,9 +38,10 @@ type PianoRollProps = {
     notes: Note[]
     seq: Sequencer
     chords: Chord[]
+    pianoBar: HTMLDivElement|null
 }
 
-export const PianoRoll: React.FC<PianoRollProps> = ({ notes, seq, chords }) => {
+export const PianoRoll: React.FC<PianoRollProps> = ({ notes, seq, chords, pianoBar }) => {
     // 最小値と最大値
     const [minNote, maxNote] = useMemo(()=>Lib.getMinMaxNote(notes),[notes])
     // const [minNote, maxNote] = [0, 128]
@@ -95,7 +96,7 @@ export const PianoRoll: React.FC<PianoRollProps> = ({ notes, seq, chords }) => {
     return <div>
         <table className="pianotable">
             <tbody>
-                <Conductor tickLength={tick_max} seq={seq} />
+                <Conductor tickLength={tick_max} seq={seq} pianoBar={pianoBar} />
                 <ChordDisplay tickLength={tick_max} chords={chords}/>
                 {roll}
             </tbody>

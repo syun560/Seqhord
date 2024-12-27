@@ -109,6 +109,11 @@ export type Scale = {
     scale: string
 }
 
+export type Mark = {
+    tick: number
+    name: string
+}
+
 export type hyoushi = {
     tick: number // 始まりからの絶対的なtick
     mea: number 
@@ -152,8 +157,6 @@ export type Sequencer = {
     isPlaying: boolean
 }
 
-
-
 // コンパイル結果
 export type Res = {
     tracks: Track[]
@@ -164,4 +167,5 @@ export type Res = {
     vars: Var2[]
     chords: Chord[]
     errMsg: string
+    marks: Mark[]
 }

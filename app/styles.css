@@ -7,7 +7,7 @@ body {
     padding: 0;
 }
 .pane{
-    height: calc(100vh - 42px);
+    height: calc(100vh - 74px);
     /* background-color: grey; */
 }
 .reverse-wrapper{

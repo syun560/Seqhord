@@ -99,6 +99,12 @@ const bef = (monaco: any) => {
                     insertText: "program",
                     range: range,
                 },
+                {
+                    label: "mark",
+                    kind: monaco.languages.CompletionItemKind.Text,
+                    insertText: "mark",
+                    range: range,
+                },
                 // {
                 //     label: "@simpleText",
                 //     kind: monaco.languages.CompletionItemKind.Text,

@@ -78,6 +78,8 @@ export const Singer = memo(function singer({vox, tracks, bpm} :SingerProps)  {
         </audio>
     }
 
-    <img height="88%" src={vox.singers_portrait === "" ? zundamon.src : vox.singers_portrait} alt="singer"/>
+    {vox.singers_portrait !== "" &&
+        <img height="88%" src={vox.singers_portrait} alt="singer"/>
+    }
     </>
 })
