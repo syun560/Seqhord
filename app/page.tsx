@@ -127,6 +127,20 @@ export default function Main() {
         }
     },[tabnum, tracks, autoCompile, timer.current])
 
+    const setCompile = (tracks: Track[]) => {
+        const res = compile(tracks)
+
+        // 値のセット
+        // setNotes([...res.notes])
+        setTracks([...res.tracks])
+        setTitle(res.title)
+        log.addLog(res.errMsg)
+        setBpm(res.bpm)
+        setVars(res.vars)
+        setChords(res.chords)
+        setMarks(res.marks)
+    }
+
     const onCompile = useCallback(() => {
         const res = compile(tracks)
 
@@ -177,7 +191,7 @@ export default function Main() {
         input.accept = '.json, .smml'
         input.onchange = async () => { 
             resolve((()=>{
-                loadJSON(input.files, setTracks, setBpm)
+                loadJSON(input.files, setTracks, setBpm, setCompile)
             })()) 
         }
         input.click()

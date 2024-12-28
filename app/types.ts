@@ -148,6 +148,7 @@ export type Sequencer = {
     play: ()=>void
     stop: ()=>void
     first: ()=>void
+    last: ()=>void
     nextMea: ()=>void
     prevMea: ()=>void
     playToggle: ()=>void

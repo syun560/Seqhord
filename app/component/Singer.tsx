@@ -1,4 +1,4 @@
-import React, { memo } from 'react'
+import React, { memo, useEffect } from 'react'
 import { Track, VoiceVox } from 'types'
 import { Button, Select } from '@fluentui/react-components'
 import zundamon from "/public/images/zzm_zunmon027.png"
@@ -48,6 +48,10 @@ export const Singer = memo(function singer({vox, tracks, bpm} :SingerProps)  {
             console.error(err)
         }
     }
+
+    useEffect(()=>{
+
+    },[])
 
     return <>
 

@@ -25,7 +25,6 @@ export const Conductor = ({tickLength, seq, pianoBar }: Props) => {
 
     // scroll to current tick
     useEffect(()=> {
-        console.log("useEffect")
         if(pianoBar) {
             const bar_left = pianoBar.scrollLeft
             const bar_width = pianoBar.scrollWidth
@@ -34,7 +33,6 @@ export const Conductor = ({tickLength, seq, pianoBar }: Props) => {
             const gap = tick_pos - bar_left
             const behavior = (gap > 800 || gap < -400) ? 'instant' : 'smooth'
             if (gap > 400 || gap < 0){
-            console.log("scroll")
 
                 pianoBar.scroll({
                     top: 0,

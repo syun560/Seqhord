@@ -9,7 +9,9 @@ type MarkBarPropsType = {
 
 export const MarkBar = memo(function MarkBar({ marks, seq }: MarkBarPropsType) {
 
+
     return <div>
-        {marks.map(mark=><Button appearance="subtle" onClick={()=>seq.setNowTick(mark.tick)}>{mark.name}</Button>)}
+        <Button key="defalut" appearance="subtle" onClick={()=>seq.setNowTick(8)}>Start</Button>
+        {marks.map(mark=><Button key={mark.tick + mark.name} appearance="subtle" onClick={()=>seq.setNowTick(mark.tick)}>{mark.name}</Button>)}
     </div>
 })

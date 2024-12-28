@@ -76,8 +76,9 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number):Sequencer => {
     const first = useCallback(() => {
         setNowTick(0)
     },[])
-    
-
+    const last = () => {
+        setNowTick(endTick.current)
+    }
 
     const setup = () => {
         bpm.current = b
@@ -111,7 +112,7 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number):Sequencer => {
         setNowTick,
         setMIDI,
         play, stop,
-        nextMea, prevMea, first,
+        nextMea, prevMea, first, last,
         playToggle
     }
 }
