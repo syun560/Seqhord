@@ -57,7 +57,7 @@ type MenuBarPropsType = {
     setLayout: Dispatch<SetStateAction<"left" | "normal" | "right">>
 }
 
-export const MenuBar = memo(function menuBar({ f, seq, midi, bpm, vox, sound, layout, setLayout }: MenuBarPropsType) {
+export const MenuBar = memo(function MenuBar({ f, seq, midi, bpm, vox, sound, layout, setLayout }: MenuBarPropsType) {
 
     const [screen, setScreen] = useState<'normal'|'maximum'>('normal')
     const maximizeScreen = () => {
