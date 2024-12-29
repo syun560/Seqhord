@@ -1,17 +1,11 @@
 "use client"
 import React ,{ memo } from "react"
 import { Editor } from "@monaco-editor/react"
-import localFont from 'next/font/local'
 
 type EditorComponentPropsType = {
     value: string,
     doChange: (text: string) => void,
 }
-
-const MyricaM = localFont({
-    src: './fonts/MyricaM/MyricaM M.ttf',
-    variable: "--MyricaM-M"
-})
 
 const bef = (monaco: any) => {
     // Register a new language

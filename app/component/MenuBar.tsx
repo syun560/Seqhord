@@ -20,7 +20,7 @@ import {
     FolderOpenRegular, FolderOpenFilled,
     SettingsRegular, SettingsFilled,
     InfoRegular, InfoFilled,
-    DocumentOnePageSparkleRegular, PersonVoiceRegular, HandshakeRegular,
+    DocumentOnePageSparkleRegular, DocumentOnePageSparkleFilled, PersonVoiceRegular, HandshakeRegular,
     LayoutColumnTwoFocusLeftFilled, LayoutColumnTwoFocusRightFilled, LayoutColumnTwoRegular,
     DocumentArrowDownRegular, DocumentArrowDownFilled, DocumentFilled,
     ChevronDoubleLeftFilled, ChevronDoubleLeftRegular, ChevronDoubleRightFilled, ChevronDoubleRightRegular,
@@ -44,6 +44,7 @@ const FastForwardIcon = bundleIcon(ChevronRightRegular, ChevronRightFilled)
 const PrevIcon = bundleIcon(ChevronLeftRegular, ChevronLeftFilled)
 const MaximizeIcon = bundleIcon(FullScreenMaximizeRegular, FullScreenMaximizeFilled)
 const MinimizeIcon = bundleIcon(FullScreenMinimizeRegular, FullScreenMinimizeFilled)
+const CompileIcon = bundleIcon(DocumentOnePageSparkleRegular, DocumentOnePageSparkleFilled)
 
 type MenuBarPropsType = {
     f: MenuFunc
@@ -142,6 +143,9 @@ export const MenuBar = memo(function MenuBar({ f, seq, midi, bpm, vox, sound, la
             {/* <ToolbarButton icon={<PersonVoiceRegular />} onClick={vox.getSingers} /> */}
             <button onClick={vox.getSingers} className="btn btn-sm"><img src='/images/vvIcon.png' height="22px" /></button>
         </Tooltip>
+        <Tooltip content="VOICEVOX設定" relationship="label" positioning="below-start">
+            <Link href="http://localhost:50021/setting" target="_blank"><ToolbarButton icon={<SettingIcon />} /></Link>
+        </Tooltip>
     </div>
 
     const DisplayBar = <div className="py-1">
@@ -162,17 +166,15 @@ export const MenuBar = memo(function MenuBar({ f, seq, midi, bpm, vox, sound, la
 
     const OtherBar = <div className="py-1">
         <Tooltip content="コンパイル" relationship="label" positioning="below-start">
-            <ToolbarButton onClick={f.onCompile} icon={<DocumentOnePageSparkleRegular />}>コンパイル</ToolbarButton>
-        </Tooltip>
-        <Tooltip content="VOICEVOX設定" relationship="label" positioning="below-start">
-            <Link href="http://localhost:50021/setting" target="_blank"><ToolbarButton icon={<SettingIcon />} /></Link>
+            {/* <ToolbarButton onClick={f.onCompile} icon={<DocumentOnePageSparkleRegular />}>コンパイル</ToolbarButton> */}
+            <ToolbarButton onClick={f.onCompile} icon={<CompileIcon />} />
         </Tooltip>
         <Tooltip content="マニュアル" relationship="label" positioning="below-start">
             <Link href="/about/index" target="_blank"><ToolbarButton icon={<ChatHelpIcon />} /></Link>
         </Tooltip>
-        <Tooltip content="ご支援" relationship="label" positioning="below-start">
+        {/* <Tooltip content="ご支援" relationship="label" positioning="below-start">
             <Link href="https://camp-fire.jp/projects/691016/view?utm_campaign=cp_po_share_c_msg_mypage_projects_show" target="_blank"><ToolbarButton icon={<HandshakeRegular />} /></Link>
-        </Tooltip>
+        </Tooltip> */}
         {/* <Tooltip content="Xで共有" relationship="label" positioning="below-start">
             <Link href="https://twitter.com/intent/tweet?text=Sechord%E3%82%92%E4%BD%BF%E3%81%86%EF%BC%81%0Ahttps%3A%2F%2Fsechord.com%0A" target="_blank">
                 <button className="btn btn-sm"><img src='/images/x.png' height="16px" /></button>
@@ -187,7 +189,7 @@ export const MenuBar = memo(function MenuBar({ f, seq, midi, bpm, vox, sound, la
     return <div className="d-flex">
         <Dialog>
             <DialogTrigger disableButtonEnhancement>
-                <div className="fs-4 fw-bolder m-1 text-info">Seqhord</div>
+                <div className="fs-4 fw-bolder p-2 text-info">Seqhord</div>
             </DialogTrigger>
             <DialogSurface>
                 <DialogBody>
@@ -199,16 +201,15 @@ export const MenuBar = memo(function MenuBar({ f, seq, midi, bpm, vox, sound, la
                 </DialogContent>
                 <DialogActions>
                     <DialogTrigger disableButtonEnhancement>
-                        <Button appearance="secondary">Close</Button>
+                        <Button appearance="primary">OK</Button>
                     </DialogTrigger>
-                    <Button appearance="primary">Do Something</Button>
                 </DialogActions>
             </DialogSurface>
         </Dialog>
         {/* <div className="fs-5 fw-bolder m-2 text-secondary">ver1.0</div> */}
         <ToolbarDivider className="py-2"/>
         {LeftBar}
-        <ToolbarDivider className="py-2"/>
+        {/* <ToolbarDivider className="py-2"/> */}
         {OtherBar}
         <ToolbarDivider className="py-2"/>
         {ConductBar}
