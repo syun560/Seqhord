@@ -18,27 +18,17 @@ export const default_tracks: Track[] = [
         texts: default_text,
         volume: 100,
         panpot: 64,
-    }, {
-        name: 'rhythm guitar',
-        program: 4,
-        ch: 1,
-        trans: 5,
+    }, 
+    {
+        name: 'chord',
+        program: 0,
+        ch: 2,
+        trans: 4,
         type: 'chord',
         notes: [],
         texts: default_append,
-        volume: 100,
-        panpot: 64
-    },
-    {
-        name: 'lead guitar',
-        program: 4,
-        ch: 2,
-        trans: 5,
-        type: 'chord',
-        notes: [],
-        texts: default_guitar,
-        volume: 100,
-        panpot: 64
+        volume: 80,
+        panpot: 10
     },
     {
         name: 'bass',

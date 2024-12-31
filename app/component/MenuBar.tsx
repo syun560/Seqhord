@@ -1,10 +1,13 @@
 import React, { memo, useState, Dispatch, SetStateAction } from "react"
-import { Sequencer, MIDI, VoiceVox, Sound, MenuFunc } from "@/types";
+import { Sequencer, MIDI, VoiceVox, Sound, MenuFunc, Track, Scale } from "@/types";
+import { Instrument } from "./Instrument"
+import Lib from '../Lib'
+
 import Link from "next/link";
 
 // fluent ui
 import {
-    Button, Label, Tooltip, ToolbarButton, ToolbarDivider,
+    Button, Select, Label, Tooltip, ToolbarButton, ToolbarDivider,
     Menu, MenuTrigger, MenuPopover, MenuList, MenuItem,
     Dialog, DialogTrigger, DialogSurface, DialogTitle, DialogBody, DialogActions, DialogContent,
 } from "@fluentui/react-components"
@@ -52,13 +55,18 @@ type MenuBarPropsType = {
     midi: MIDI
     vox: VoiceVox
     sound: Sound
+    track: Track
+    scale: string
+    changeProgram: (program: number) => void
 
     bpm: number
     layout: "left" | "normal" | "right"
     setLayout: Dispatch<SetStateAction<"left" | "normal" | "right">>
 }
 
-export const MenuBar = memo(function MenuBar({ f, seq, midi, bpm, vox, sound, layout, setLayout }: MenuBarPropsType) {
+const programs = Lib.programName.map((p, i)=><option key={i} value={i}>{String(i).padStart(3, '0')}: {p}</option>)
+
+export const MenuBar = memo(function MenuBar({ f, seq, midi, bpm, vox, sound, scale, track, changeProgram, layout, setLayout }: MenuBarPropsType) {
 
     const [screen, setScreen] = useState<'normal'|'maximum'>('normal')
     const maximizeScreen = () => {
@@ -108,8 +116,11 @@ export const MenuBar = memo(function MenuBar({ f, seq, midi, bpm, vox, sound, la
         <span className="me-2">
             Beat: <Label size="large" style={{ fontFamily: "monospace" }}>4/4</Label>
         </span>
-        <span>
+        <span className="me-2">
             Tempo: <Label size="large" style={{ fontFamily: "monospace" }}>{bpm}</Label>
+        </span>
+        <span>
+            Key: <Label size="large" style={{ fontFamily: "monospace" }}>{scale}</Label>
         </span>
     </div>
 
@@ -184,7 +195,13 @@ export const MenuBar = memo(function MenuBar({ f, seq, midi, bpm, vox, sound, la
 
     // console.log("menubar rendered!!!")
 
-    
+
+    const instBar = <div className="py-1">
+    {midi.outPorts.length !== 0 && <Instrument midi={midi} />}
+    <Select appearance="filled-darker" className="d-inline" value={track.program} onChange={(e)=>changeProgram(Number(e.target.value))} >
+        {programs}
+    </Select>
+    </div>
 
     return <div className="d-flex">
         <Dialog>
@@ -196,8 +213,8 @@ export const MenuBar = memo(function MenuBar({ f, seq, midi, bpm, vox, sound, la
                     <DialogTitle>ようこそ</DialogTitle>
                 </DialogBody>
                 <DialogContent>
-                    Seqhordへようこそ
-                    支援者: ufffoUtl,
+                    <h1>Seqhordへようこそ</h1>
+                    <strong>支援者: あたなよく, NBCG/檀エディ</strong>
                 </DialogContent>
                 <DialogActions>
                     <DialogTrigger disableButtonEnhancement>
@@ -212,12 +229,14 @@ export const MenuBar = memo(function MenuBar({ f, seq, midi, bpm, vox, sound, la
         {/* <ToolbarDivider className="py-2"/> */}
         {OtherBar}
         <ToolbarDivider className="py-2"/>
+        {DisplayBar}
+        <ToolbarDivider className="py-2"/>
         {ConductBar}
         <ToolbarDivider className="py-2"/>
         {SeqBar}
         <ToolbarDivider className="py-2"/>
         {OperationBar}
         <ToolbarDivider className="py-2"/>
-        {DisplayBar}
+        {instBar}
     </div>
 })

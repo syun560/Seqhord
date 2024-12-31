@@ -8,7 +8,7 @@ import { useState, useEffect, useCallback, useRef, useMemo } from "react"
 import { FluentProvider, webDarkTheme, SSRProvider } from "@fluentui/react-components"
 
 // types
-import { Chord, Mark, Track, Var2, MenuFunc } from 'types'
+import { Chord, Scale, Mark, Track, Var2, MenuFunc } from 'types'
 
 // defalut val
 import { default_tracks } from "./default_vals/defalut_tracks"
@@ -25,7 +25,6 @@ import { Disp } from './component/display'
 import { PianoRoll } from './component/PianoRoll/PianoRoll'
 import { TrackSelector } from './component/TrackSelector'
 import { SMMLEditor } from './component/SMMLEditor'
-import { Instrument } from "./component/Instrument"
 import { Singer } from "./component/Singer"
 import { PianoBoard } from "./component/PianoBoard/PianoBoard"
 import { Variables } from "./component/Variables"
@@ -38,11 +37,9 @@ import { generate_midi } from './generate/generate_midi'
 import { generate_musicxml } from './generate/generate_musicxml'
 import { loadJSON } from './loadJSON'
 import { loadMIDI } from './loadMIDI'
-import Lib from './Lib'
 
 import './styles.css'
 
-const programs = Lib.programName.map((p, i)=><option key={i} value={i}>{String(i).padStart(3, '0')}: {p}</option>)
 const simpleDownload = (title: string, url: string) => {
     const a = document.createElement('a')
     a.download = title
@@ -64,6 +61,7 @@ export default function Main() {
     const [vars, setVars] = useState<Var2[]>([])
     const [piano, setPiano] = useState(true)
     const [marks, setMarks] = useState<Mark[]>([{tick:0, name: "Setup"}, {tick:8, name:"Start"}])
+    const [scales, setScales] = useState<Scale[]>([{tick:0, scale: 'C'}])
     
     const [tabnum, setTabnum] = useState(0)
     const [rightTab, setRightTab] = useState("preview")
@@ -139,6 +137,7 @@ export default function Main() {
         setVars(res.vars)
         setChords(res.chords)
         setMarks(res.marks)
+        setScales(res.scales)
     }
 
     const onCompile = useCallback(() => {
@@ -184,6 +183,28 @@ export default function Main() {
     const onTabChange = useCallback((t: number)=>{
         setTabnum(t)
     },[])
+
+    const nowScale = () => {
+        let sc = "C"
+        const found = scales.filter(s=>s.tick<=seq.nowTick)
+        console.log(found)
+        if (found.length > 0) {
+            sc = found[found.length - 1].scale
+        }
+        return sc
+    }
+
+    const changeProgram = (program: number) => {
+        midi.programChange(program, tabnum)
+        midi.noteOn(60, tabnum, 1000)
+
+        setTracks(tracks.map((track, i)=>{
+            if (i === tabnum) {
+                return {...track, program}
+            }
+            else return track
+        }))
+    }
 
     const showOpenFileDialog = useCallback(() => new Promise(resolve => {
         const input = document.createElement('input');
@@ -321,7 +342,7 @@ export default function Main() {
         <FluentProvider theme={webDarkTheme}>
         <SSRProvider>
         <div className="container-fluid">
-            <MenuBar f={menuFunc} seq={seq} midi={midi} vox={vox} sound={sf} bpm={bpm} layout={layout} setLayout={setLayout} />
+            <MenuBar f={menuFunc} seq={seq} midi={midi} vox={vox} scale={nowScale()} sound={sf} bpm={bpm} layout={layout} setLayout={setLayout} track={tracks[tabnum]} changeProgram={changeProgram} />
             <MarkBar marks={marks} seq={seq}/>
             <div className="row">
                 {MainPane}
