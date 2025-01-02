@@ -28,6 +28,14 @@ a {
 a:hover{
   text-decoration: underline;
 }
+
+pre {
+  background-color: #222;
+  color: #DDD;
+  border-radius: 8px;
+  padding: 24px;
+}
+
 /* .root {
   overflow: "hidden";
   display: "flex";

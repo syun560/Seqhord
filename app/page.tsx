@@ -187,7 +187,6 @@ export default function Main() {
     const nowScale = () => {
         let sc = "C"
         const found = scales.filter(s=>s.tick<=seq.nowTick)
-        console.log(found)
         if (found.length > 0) {
             sc = found[found.length - 1].scale
         }
@@ -341,7 +340,7 @@ export default function Main() {
     return (
         <FluentProvider theme={webDarkTheme}>
         <SSRProvider>
-        <div className="container-fluid">
+        <div className="container-fluid" data-bs-theme="dark">
             <MenuBar f={menuFunc} seq={seq} midi={midi} vox={vox} scale={nowScale()} sound={sf} bpm={bpm} layout={layout} setLayout={setLayout} track={tracks[tabnum]} changeProgram={changeProgram} />
             <MarkBar marks={marks} seq={seq}/>
             <div className="row">

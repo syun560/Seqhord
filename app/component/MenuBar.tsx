@@ -1,6 +1,7 @@
 import React, { memo, useState, Dispatch, SetStateAction } from "react"
 import { Sequencer, MIDI, VoiceVox, Sound, MenuFunc, Track, Scale } from "@/types";
 import { Instrument } from "./Instrument"
+import { FirstDialog } from "./FirstDialog"
 import Lib from '../Lib'
 
 import Link from "next/link";
@@ -9,7 +10,6 @@ import Link from "next/link";
 import {
     Button, Select, Label, Tooltip, ToolbarButton, ToolbarDivider,
     Menu, MenuTrigger, MenuPopover, MenuList, MenuItem,
-    Dialog, DialogTrigger, DialogSurface, DialogTitle, DialogBody, DialogActions, DialogContent,
 } from "@fluentui/react-components"
 
 import {
@@ -204,25 +204,7 @@ export const MenuBar = memo(function MenuBar({ f, seq, midi, bpm, vox, sound, sc
     </div>
 
     return <div className="d-flex">
-        <Dialog>
-            <DialogTrigger disableButtonEnhancement>
-                <div className="fs-4 fw-bolder p-2 text-info">Seqhord</div>
-            </DialogTrigger>
-            <DialogSurface>
-                <DialogBody>
-                    <DialogTitle>ようこそ</DialogTitle>
-                </DialogBody>
-                <DialogContent>
-                    <h1>Seqhordへようこそ</h1>
-                    <strong>支援者: あたなよく, NBCG/檀エディ</strong>
-                </DialogContent>
-                <DialogActions>
-                    <DialogTrigger disableButtonEnhancement>
-                        <Button appearance="primary">OK</Button>
-                    </DialogTrigger>
-                </DialogActions>
-            </DialogSurface>
-        </Dialog>
+        <FirstDialog />
         {/* <div className="fs-5 fw-bolder m-2 text-secondary">ver1.0</div> */}
         <ToolbarDivider className="py-2"/>
         {LeftBar}
