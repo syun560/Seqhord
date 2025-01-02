@@ -17,6 +17,7 @@ import {
     PlayRegular, PlayFilled, PauseRegular, PauseFilled,
     SaveRegular, SaveFilled,
     MidiRegular, MidiFilled, SoundWaveCircleRegular, SoundWaveCircleFilled,
+    ArrowCircleDownRegular, ArrowCircleDownFilled,
     ArrowTrendingTextRegular,
     DocumentRegular, ChatHelpRegular, ChatHelpFilled,
     FullScreenMaximizeFilled, FullScreenMaximizeRegular, FullScreenMinimizeRegular, FullScreenMinimizeFilled,
@@ -37,7 +38,7 @@ const SoundIcon = bundleIcon(SoundWaveCircleRegular, SoundWaveCircleFilled)
 const ChatHelpIcon = bundleIcon(ChatHelpRegular, ChatHelpFilled)
 const FolderOpenIcon = bundleIcon(FolderOpenRegular, FolderOpenFilled)
 const NewIcon = bundleIcon(DocumentRegular, DocumentFilled)
-const DownloadIcon = bundleIcon(DocumentArrowDownRegular, DocumentArrowDownFilled)
+const DownloadIcon = bundleIcon(ArrowCircleDownRegular, ArrowCircleDownFilled)
 const SettingIcon = bundleIcon(SettingsRegular, SettingsFilled)
 const InfoIcon = bundleIcon(InfoRegular, InfoFilled)
 const PauseIcon = bundleIcon(PauseRegular, PauseFilled)
@@ -107,7 +108,7 @@ export const MenuBar = memo(function MenuBar({ f, seq, midi, bpm, vox, sound, sc
     </div>
 
     // コンダクトバー
-    const ConductBar = <div className="p-2" style={{background: "#5c590a"}}>
+    const ConductBar = <div className="m-1 p-1" style={{background: "#445"}}>
         <span className="me-2">
             Tick: <Label size="large" style={{ fontFamily: "monospace" }}>
                 {String(Math.floor(seq.nowTick / 8)).padStart(3, '\xa0')}:{String((seq.nowTick % 8).toFixed(1)).padStart(2, '0')}
@@ -180,7 +181,7 @@ export const MenuBar = memo(function MenuBar({ f, seq, midi, bpm, vox, sound, sc
             {/* <ToolbarButton onClick={f.onCompile} icon={<DocumentOnePageSparkleRegular />}>コンパイル</ToolbarButton> */}
             <ToolbarButton onClick={f.onCompile} icon={<CompileIcon />} />
         </Tooltip>
-        <Tooltip content="マニュアル" relationship="label" positioning="below-start">
+        <Tooltip content="マニュアル（別タブで開きます）" relationship="label" positioning="below-start">
             <Link href="/about/index" target="_blank"><ToolbarButton icon={<ChatHelpIcon />} /></Link>
         </Tooltip>
         {/* <Tooltip content="ご支援" relationship="label" positioning="below-start">
