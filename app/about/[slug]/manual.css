@@ -1,12 +1,23 @@
+body {
+  font-family: "Helvetica Neue",
+    Arial,
+    "Hiragino Kaku Gothic ProN",
+    "Hiragino Sans",
+    Meiryo,
+    sans-serif;
+}
+
 h1 {
   font-size: 2rem;
-  padding-top: 2rem;
-  padding-bottom: 1.2rem;
+  font-weight: bolder;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
 }
 
 h2 {
   font-size: 1.5rem;
-  border-bottom: 1px solid #656565;
+  font-weight: bold;
+  border-bottom: 1px solid #CCC;
   padding-bottom: 0.4rem;
   margin-top: 40px;
   margin-bottom: 1rem;

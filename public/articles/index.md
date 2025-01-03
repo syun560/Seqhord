@@ -2,6 +2,8 @@
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/Uhj9IiNYFsk?si=cztyFTFL1FCMFYBk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
+---
+
 Seqhordはテキストエディタの記述を解釈（コンパイル）し、演奏データを生成する、
 **サウンドプログラミングミュージックシーケンサ**です。
 操作に関する簡単な説明は上の動画をご視聴ください。
