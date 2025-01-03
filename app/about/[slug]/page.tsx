@@ -102,8 +102,8 @@ export default function Main({params}:{params: { slug: string }}) {
     return <div>
         <div className={styles.root}>
             <div className="pe-5">
-                <span className="fs-2 p-3">Seqhord Docs</span>
-                <ul className='mt-2'>
+                <span className="fs-2 p-3 my-5">Seqhord Docs</span>
+                <ul className='mt-3'>
                     {pages}
                 </ul>
             </div>
