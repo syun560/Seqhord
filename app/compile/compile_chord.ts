@@ -6,11 +6,12 @@ const NoteName = ['C','C#', 'D', 'D#','E', 'F', 'F#','G', 'G#','A', 'A#','B']
 // コードを取得する
 export const compile_chord = (line: string, i: number, res: Res, c: number) => {
     
-    let mea = res.mea
-    let tick = mea * 8
+    let tick = res.tick
     let chord_name = ''
     const reso = 1
     let c_state = 0 // 0: 通常, 1: オンコード待機状態, 2:オンコード入力状態
+    let m_state = 0 // 0: 通常, 1: 1小節に1コード, 2: 1小節に複数コード（「_」使用時）
+
     for (let j = 2; j < line.length; j++) {
         
         const c = line[j]
@@ -20,13 +21,13 @@ export const compile_chord = (line: string, i: number, res: Res, c: number) => {
             if (c_state !== 1) {
                 chord_name = c
                 res.chords.push({
-                    mea: mea,
                     tick: tick++,
                     pitch: pitch,
                     chord_name: chord_name,
                     third: 'major',
                     on: pitch
                 })
+                if(m_state === 0) m_state = 1
             }else{
                 res.chords[res.chords.length - 1].on = pitch
                 res.chords[res.chords.length - 1].chord_name += c
@@ -61,11 +62,13 @@ export const compile_chord = (line: string, i: number, res: Res, c: number) => {
             res.chords[res.chords.length - 1].seventh = 'minor'
         }
         else if (c === '|'){
-            mea += 1
-            tick = mea * 8
+            if(m_state === 0) tick += 8
+            if(m_state === 1) tick += 7
+            m_state = 0
         }
         else if (c === '_'){
             tick += reso
+            m_state = 2
         }
     }
 }

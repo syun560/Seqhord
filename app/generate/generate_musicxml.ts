@@ -14,7 +14,7 @@ const getStemType = (duration: number) => {
 export const generate_musicxml = (trackIndex: number, allNotes: Note[], bpm: number) => {
     const reso = 1 // 8符音符の長さ
     const divisions = reso * 2 // 4部音符の長さ
-    const max_mea = allNotes[allNotes.length - 1].mea + 1
+    const max_mea = allNotes[allNotes.length - 1].tick * 8 + 1
 
     const m_cnt = 8 // 1小節のカウントの数
     
@@ -26,7 +26,7 @@ export const generate_musicxml = (trackIndex: number, allNotes: Note[], bpm: num
     // 全小節イテレートを行う
     for (let mea = 0; mea < max_mea; mea++){
         // 現在の小節のNotesを取得
-        let foundNotes = allNotes.filter(an => an.mea === mea)
+        let foundNotes = allNotes.filter(an => Math.floor(an.tick / 8) === mea)
         let notes:any = []
 
         // タイを追加

@@ -1,55 +1,26 @@
-import React  from 'react'
-import { useState } from 'react'
-import { Track } from 'types'
+import React, { memo, useState, useRef, useEffect } from 'react'
+import { Track, VoiceVox } from 'types'
 import { Button, Select } from '@fluentui/react-components'
-import {
-    bundleIcon,PersonVoiceRegular, PersonVoiceFilled,
-} from "@fluentui/react-icons"
+import zundamon from "/public/images/zzm_zunmon027.png"
 
-const PersonVoiceIcon = bundleIcon(PersonVoiceRegular, PersonVoiceFilled)
-
-type SingerInfo = {
-    name: string
-    speaker_uuid: string
-    styles: [
-        {
-            name: string
-            id: number
-            type: string
-        }
-    ]
-    version: string
-    supported_features: {
-        permitted_synthesis_morphing: string
-    }
-}
-
-interface Props {
-    vox: any
+interface SingerProps {
+    vox: VoiceVox
     tracks: Track[]
     bpm: number
 }
 
-export const Singer = ({vox, tracks, bpm} :Props) => {
+export const Singer = memo(function Singer({vox, tracks, bpm} :SingerProps)  {
 
-    const [singers_info, setSingersInfo] = useState<SingerInfo[]>([])
-    
-    // get singers from VoiceVox API
-    const getSingers = async () => {
-        try {
-            const res = await fetch("http://localhost:50021/singers")
-            const json = await res.json() as SingerInfo[]
-            // console.log(json)
-            setSingersInfo(json)
-        }
-        catch(err) {
-            console.error(err)
-        }
-    }
+    // console.log("singer rendered!!")
+    const [sample, setSample] = useState<string>("")
+    const [synthState, setSynthState] = useState<boolean>(false)
+
+    const sampleRef = useRef<HTMLAudioElement>(null)
 
     const VoiceSynth = async () => {
         try {
             await vox.synthVoice(tracks[0].notes, bpm)
+            setSynthState(true)
         }
         catch (err) {
             console.error("VoiceSynth Error:", err)
@@ -58,51 +29,81 @@ export const Singer = ({vox, tracks, bpm} :Props) => {
 
     // セレクトタグの内容を作る
     let items = null
-    items = singers_info.map(singer =>
+    items = vox.singers_info.map(singer =>
         <option key={singer.speaker_uuid} value={singer.styles[0].id}>
             {singer.name}
         </option>
     )
 
+    const sampleVoice = () => {
+        const audio = sampleRef.current
+        if (!audio) return
+        audio.paused ? audio.play() : audio.pause()
+    }
+
     const onChangeSinger = async (id: number) => {
         console.log("set singer: ",id)
         vox.setSinger(id)
 
-        const found = singers_info.find(singer=>singer.styles[0].id === id)
+        const found = vox.singers_info.find(singer=>singer.styles[0].id === id)
         const speaker_uuid = found?.speaker_uuid
         console.log("speaker_uuid:", speaker_uuid)
+        setSynthState(false)
 
         try {
             const url = `http://localhost:50021/singer_info?speaker_uuid=${speaker_uuid}&resource_format=url`
             const res = await fetch(url)
             const json = await res.json()
             vox.setSingersPortrait(json.portrait)
+            console.log(json)
+            setSample(json.style_infos[0].voice_samples[0])
         }
         catch(err) {
             console.error(err)
         }
     }
 
-    return <span className='mx-2'>
+    useEffect(()=>{
+        vox.setSingersPortrait("http://localhost:50021/_resources/8496e5617ad4d9a3f6a9e6647a91fe90f966243f35d775e8e213e8d9355d5030")
+    },[vox.singers_info])
+
+    // console.log(sample)
+
+    return <>
+
     {items.length === 0 ? 
-        <Button appearance="primary" icon={<PersonVoiceIcon />} onClick={getSingers} />
+        <></>
         :
-        <>
-        <label>Singer: </label>
+        <div>
         <Select className="d-inline ms-2" onChange={(e)=>onChangeSinger(Number(e.target.value))} value={vox.singer}>
             { items }
         </Select>
         
         {vox.creating ?
-            <Button onClick={vox.VoiceSynth}>
+        <Button disabledFocusable={true}>
             Creating...
-            </Button>
+        </Button>
         :
         <Button onClick={VoiceSynth}>
-            Voice Synth
+            Synth
         </Button>
         }
-        </>
+        </div>
     }
-    </span>
-}
+
+    <div>
+
+    {vox.audioData && synthState &&
+        <audio
+        controls
+        src={vox.audioData ? window.URL.createObjectURL(vox.audioData) : undefined}>
+        </audio>
+    }
+
+    {sample && sample !== "" && <audio src={sample} ref={sampleRef}/>}
+    </div>
+    {vox.singers_portrait !== "" && items.length !== 0 &&
+        <img onClick={sampleVoice} height="88%" src={vox.singers_portrait} alt="singer"/>
+    }
+    </>
+})

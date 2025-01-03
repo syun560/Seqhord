@@ -1,4 +1,73 @@
-import React, { Dispatch, SetStateAction } from "react"
+import Soundfont from 'soundfont-player';
+import  { Dispatch, SetStateAction } from "react"
+
+export type MenuFunc = {
+    onNew: () => void
+    saveMIDI: () => void
+    saveMusicXML: () => void
+    saveText: () => void
+    saveAsJson: () => void
+    showOpenFileDialog: () => Promise<unknown>
+    showMIDIFileDialog: () => Promise<unknown>
+    onCompile: () => void
+    autoCompose: () => void
+}
+
+export type SingerInfo = {
+    name: string
+    speaker_uuid: string
+    styles: [
+        {
+            name: string
+            id: number
+            type: string
+        }
+    ]
+    version: string
+    supported_features: {
+        permitted_synthesis_morphing: string
+    }
+}
+
+// Query型定義
+type Mora = {
+    text: string
+    consonant: string
+    consonant_length: number
+    vowel: string
+    vowel_length: number
+    pitch: number
+}
+
+export type Query = {
+    accent_phrases: {
+        moras: Mora[]
+        accent: number
+        pause_mora: Mora
+    }
+    speedScale: number
+    pitchScale: number
+    intonationScale: number
+    volumeScale: number
+    prePhonemeLength: number
+    postPhonemeLength: number
+    outputSamplingRate: number
+    outputStereo: boolean
+    kana: string
+}
+
+export type VoiceVox = {
+    audioData: Blob | undefined
+    queryJson: Query | undefined
+    synthVoice: (notes: Note[], bpm:number)=>void
+    creating: boolean
+    singer: number
+    setSinger: Dispatch<SetStateAction<number>>
+    singers_info: SingerInfo[]
+    getSingers: ()=>void,
+    singers_portrait: string
+    setSingersPortrait: Dispatch<SetStateAction<string>>
+}
 
 export type Note = {
     pitch: number   // 0~128
@@ -6,13 +75,11 @@ export type Note = {
     duration: number // 1
     channel: number // 0
     velocity: number // 1~100
-    mea: number // 
     tick: number // 
     lyric?: string 
 }
 
 export type Chord = {
-    mea?: number
     tick: number
 
     chord_name: string
@@ -38,9 +105,19 @@ export type Track = {
 }
 
 export type Scale = {
-    mea?: number
     tick: number
     scale: string
+}
+
+export type Mark = {
+    tick: number
+    name: string
+}
+
+export type hyoushi = {
+    tick: number // 始まりからの絶対的なtick
+    mea: number 
+    reso?: number // 分解能
 }
 
 export type Var2 = {
@@ -50,7 +127,7 @@ export type Var2 = {
 }
 
 export type MIDI = {
-    load: ()=>void
+    setup: ()=>void
     noteOn: (pitch :number, ch:number, duration: number)=>void
     programChange: (program: number, ch:number)=>void
     volume: (val: number, ch:number)=>void
@@ -59,10 +136,21 @@ export type MIDI = {
     changePorts: (port: string)=>void
 }
 
+export type Sound = {
+    isLoading: Soundfont.Player|null
+    setup: ()=>void
+    playNote: (midiNumber: string)=>void
+    stopNote: (midiNumber: string)=>void
+    stopAllNotes: ()=>void
+}
+
 export type Sequencer = {
     play: ()=>void
     stop: ()=>void
     first: ()=>void
+    last: ()=>void
+    nextMea: ()=>void
+    prevMea: ()=>void
     playToggle: ()=>void
     setNowTick: Dispatch<SetStateAction<number>>
     setMIDI: Dispatch<SetStateAction<MIDI>>
@@ -70,14 +158,15 @@ export type Sequencer = {
     isPlaying: boolean
 }
 
-
 // コンパイル結果
 export type Res = {
+    tracks: Track[]
     title: string
     bpm: number
+    tick: number
     scales: Scale[]
-    errMsg: string
-    mea: number
-    tracks: Track[]
+    vars: Var2[]
     chords: Chord[]
+    errMsg: string
+    marks: Mark[]
 }

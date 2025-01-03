@@ -1,15 +1,14 @@
-import { Track, Var2, Note, Res } from '../types.ts'
+import { Track, Note, Res } from '../types.ts'
 import Lib from '../Lib.ts'
 
 const MajorScale = [0, 0, 2, 4, 5, 7, 9, 11, 12]
-const NoteName = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 
 // 連想配列のインタフェース
 interface DrumProgram {  [key: string]: number }
 const program: DrumProgram = { k: 35, s: 38, h: 42, c: 49 }
 
 // 変数を認識し、コンパイルする
-export const compile_var = (tracks: Track[], vars: Var2[], res: Res) => {
+export const compile_var = (tracks: Track[], res: Res) => {
     
     // すべてのトラックのテキストをイテレート
     tracks.forEach((track, t) => {
@@ -62,7 +61,7 @@ export const compile_var = (tracks: Track[], vars: Var2[], res: Res) => {
                     res.tracks[t].panpot = Number(line.slice(line.indexOf('=') + 1))
                 }
                 else if (line[1] === 'n') {
-                    vars.push({
+                    res.vars.push({
                         name: line.slice(line.indexOf('=') + 1),
                         notes: [],
                         len: 8
@@ -70,8 +69,8 @@ export const compile_var = (tracks: Track[], vars: Var2[], res: Res) => {
                     tick = 0
                 }
                 if (line[1] === 'e') {
-                    vars[vars.length - 1].notes = [...tmp_notes]
-                    vars[vars.length - 1].len = max_tick
+                    res.vars[res.vars.length - 1].notes = [...tmp_notes]
+                    res.vars[res.vars.length - 1].len = max_tick
                     tmp_notes = []
                 }
             }
@@ -128,7 +127,6 @@ export const compile_var = (tracks: Track[], vars: Var2[], res: Res) => {
                                 duration: reso,
                                 channel: 2,
                                 velocity: 100,
-                                mea: 0,
                                 tick: tick
                             })
                             tick += reso
@@ -156,8 +154,7 @@ export const compile_var = (tracks: Track[], vars: Var2[], res: Res) => {
                                 duration: 1,
                                 channel: 0,
                                 velocity: 100,
-                                mea: 0,
-                                tick: tick
+                                tick
                             })
                             tick += 0.5
                         }
@@ -168,8 +165,7 @@ export const compile_var = (tracks: Track[], vars: Var2[], res: Res) => {
                                 duration: 1,
                                 channel: 0,
                                 velocity: 100,
-                                mea: 0,
-                                tick: tick
+                                tick
                             })
                             tick += 0.5
                         }

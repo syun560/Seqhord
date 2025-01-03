@@ -10,6 +10,13 @@ const nextConfig = {
                 hostname: 'localhost'
             }
         ]
+    },
+    webpack: (config) => {
+        config.module.rules.push({
+            test: /\.(txt|md)$/,
+            type: "asset/source"
+        })
+        return config
     }
 }
 

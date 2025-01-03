@@ -3,8 +3,7 @@ import { Res } from '../types.ts'
 // 歌詞を認識し、notes内に入れる
 export const compile_lyric = (line: string, i: number, res: Res) => {
 
-    let mea = res.mea
-    let tick = mea * 8
+    let tick = res.tick
 
     let isSeq = false // 前の歌詞と連続しているかどうか
     let isComma = false // 区切り記号（,）があったかどうか
@@ -26,7 +25,7 @@ export const compile_lyric = (line: string, i: number, res: Res) => {
 
         // 小節線
         if (c === '|'){
-            if (j !== 1) mea += 1
+            // if (j !== 1) mea += 1
         }
         // 前の歌詞に連続させる
         else if (c === '^') {
@@ -42,7 +41,7 @@ export const compile_lyric = (line: string, i: number, res: Res) => {
         // その他すべて歌詞として認識する
         else {
             if (fi >= res.tracks[0].notes.length && isSeq === false){
-                res.errMsg += `The number of characters in the lyrics are exceeded (mea: ${mea})\n`
+                res.errMsg += `The number of characters in the lyrics are exceeded (tick: ${tick})\n`
                 return
             }
 

@@ -16,6 +16,8 @@
 # production
 /build
 
+voicevox.json
+
 # misc
 .DS_Store
 *.pem

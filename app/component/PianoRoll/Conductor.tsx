@@ -1,79 +1,63 @@
-import React, { useRef, createRef, useEffect, useMemo } from 'react'
+import React, { useRef, createRef, useEffect, useCallback } from 'react'
 import { Sequencer } from '@/types'
 
-interface Props {
+type Props = {
     tickLength: number
     seq: Sequencer
+    pianoBar: HTMLDivElement|null
 }
 
-export const Conductor = (props: Props) => {
+let a = 8 // 拍子
 
-    // 自動スクロールするためにtickLengthぶんのrefを作成
-    const refs = useRef<React.RefObject<HTMLTableCellElement>[]>([])
-    
-    for (let i = 0; i < props.tickLength; i++) {
-        refs.current[i] = (createRef<HTMLTableCellElement>())
+const tdStyle = (tick: number) => {
+    let res = {
+        borderBottom: '1px solid black',
+        borderLeft: '',
+        width: '20px',
+        position: 'sticky' as const,
+        top: 0
     }
+    if (tick % a === 0) res = { ...res, borderLeft: '1px solid black' }
+    return res
+}
 
-    const scrollToCenter = (i: number) => {
-        if (i < props.tickLength)
-            refs.current[i].current?.scrollIntoView({
-                behavior: 'smooth',
-                // behavior: 'auto',
-                block: 'center',
-                inline: 'center',
-            })
-    }
-
-    const doClick = (tick: number) => {
-        props.seq.setNowTick(tick)
-    }
+export const Conductor = ({tickLength, seq, pianoBar }: Props) => {
 
     // scroll to current tick
     useEffect(()=> {
-         if (props.seq.nowTick % 20 === 0 ) scrollToCenter(props.seq.nowTick + 10)
-    }, [props.seq.nowTick, props.seq.isPlaying])
-    
+        if(pianoBar) {
+            const bar_left = pianoBar.scrollLeft
+            const bar_width = pianoBar.scrollWidth
+            const tick_ratio = seq.nowTick / tickLength
+            const tick_pos = tick_ratio * bar_width
+            const gap = tick_pos - bar_left
+            const behavior = (gap > 800 || gap < -400) ? 'instant' : 'smooth'
+            if (gap > 400 || gap < 0){
 
-
-    //let a = state.timeSignatures[0].timeSignature[0] * 2
-    let a = 8 // 拍子
-    if (a === 6) a *= 2
-
-    const tdStyle = (tick: number) => {
-        let res = {
-            borderBottom: '1px solid black',
-            borderLeft: '',
-            width: '20px',
-            position: 'sticky' as const,
-            top: 0
+                pianoBar.scroll({
+                    top: 0,
+                    left: tick_pos - 50,
+                    behavior,
+                })
+            }
         }
-        if (tick % a === 0) res = { ...res, borderLeft: '1px solid black' }
-        return res
-    }
+        // scrollToCenter(seq.nowTick + 10)
+    }, [seq.nowTick, seq.isPlaying])
 
-    const cells = (()=> {
-        const res: JSX.Element[] = []
-        for (let tick = 0; tick <= props.tickLength; tick++) {
-            res.push(
-                <td 
-                    key={tick}
-                    style={tdStyle(tick)}
-                    ref={refs.current[tick]}
-                    className={props.seq.nowTick - 1 === tick ? 'bg-info' : ''}
-                    onClick={()=>doClick(tick)}
-                >
-                    {tick % a === 0 ? 
-                        tick / a
-                    : ''}
-                </td>
-            )
-        }
-        return res
-    })()
+
+    const cells = [...Array(tickLength)].map((_, tick)=><td 
+        key={tick}
+        style={tdStyle(tick)}
+        className={Math.floor(seq.nowTick) === tick ? 'bg-info' : ''}
+        onClick={()=>seq.setNowTick(tick)}>
+
+        {tick % a === 0 && tick / a}
+        
+    </td>)
+
 
     return <tr>
-        <th style={tdStyle(1)} className={props.seq.nowTick === 0 ? 'bg-info' : ''}></th>
+        <th style={tdStyle(1)}></th>
         {cells}
     </tr>
 }

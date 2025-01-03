@@ -1,0 +1,83 @@
+h1 {
+  font-size: 2rem;
+  padding-top: 2rem;
+  padding-bottom: 1.2rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+  border-bottom: 1px solid #656565;
+  padding-bottom: 0.4rem;
+  margin-top: 40px;
+  margin-bottom: 1rem;
+}
+
+h3 {
+  font-size: 1.2rem;
+  margin-top: 20px;
+  margin-bottom: 1rem;
+}
+
+img {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+a {
+  text-decoration: none;
+}
+a:hover{
+  text-decoration: underline;
+}
+
+pre {
+  background-color: #222;
+  color: #DDD;
+  border-radius: 8px;
+  padding: 24px;
+}
+
+/* .root {
+  overflow: "hidden";
+  display: "flex";
+}
+
+.content {
+  flex: "1";
+  padding: "0 10vw";
+  height: "100vh";
+  display: "grid";
+  overflow-y: "scroll";
+  justify-content: "flex-start";
+  align-items: "flex-start";
+} */
+
+.side {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 150px;
+  height: 100vh;
+  background: lightgray;
+
+  /* 縦方向のスクロールバーを表示 */
+  overflow-y: scroll;
+
+  /* IE などのスクロールバーの色設定 */
+  scrollbar-face-color: #999;
+  scrollbar-track-color: #eee;
+
+  /* スマホ用の慣性スクロール */
+  -webkit-overflow-scrolling: touch;
+}
+
+.side::-webkit-scrollbar {
+  width: 5px;
+}
+
+.side::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.side::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
