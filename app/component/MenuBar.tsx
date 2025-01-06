@@ -148,9 +148,9 @@ export const MenuBar = memo(function MenuBar({ f, seq, midi, bpm, vox, sound, sc
         <Tooltip content="MIDI機器に接続" relationship="label" positioning="below-start">
             <ToolbarButton appearance={midi.outPorts.length !== 0 ? "primary" : "subtle"} icon={<MidiIcon />} onClick={midi.setup} />
         </Tooltip>
-        {/* <Tooltip content="SoundFontに接続" relationship="label" positioning="below-start">
+        <Tooltip content="SoundFontに接続" relationship="label" positioning="below-start">
             <ToolbarButton appearance={sound.isLoading !== null ? "primary" : "transparent"} icon={<SoundIcon />} onClick={sound.setup} />
-        </Tooltip> */}
+        </Tooltip>
         <Tooltip content="VOICEVOXに接続" relationship="label" positioning="below-start">
             {/* <ToolbarButton icon={<PersonVoiceRegular />} onClick={vox.getSingers} /> */}
             <button onClick={vox.getSingers} className="btn btn-sm"><img src='/images/vvIcon.png' height="22px" /></button>

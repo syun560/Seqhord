@@ -1589,11 +1589,6 @@ acorn@^8.9.0:
   resolved "https://registry.npmjs.org/acorn/-/acorn-8.11.2.tgz"
   integrity sha512-nc0Axzp/0FILLEVsm4fNwLCwMttvhEI263QtVPQcbpfZZ3ts0hLsZGOpE6czNlid7CJ9MlyH8reXkpsf3YUY4w==
 
-adsr@^1.0.0:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/adsr/-/adsr-1.0.1.tgz#a7bc08e5ef8a71e6364abc96fce7df1c44881cc3"
-  integrity sha512-thr9LK4jxApOzBA33IWOA83bXJFbyfbeozpHXyrMQOIhUni198uRxXqDhobW0S/51iokqty2Yz2WbLZbE6tntQ==
-
 ajv@^6.12.4:
   version "6.12.6"
   resolved "https://registry.npmjs.org/ajv/-/ajv-6.12.6.tgz"
@@ -1728,11 +1723,6 @@ asynciterator.prototype@^1.0.0:
   integrity sha512-wwHYEIS0Q80f5mosx3L/dfG5t5rjEa9Ft51GTaNt862EnpyGHpgz2RkZvLPp1oF5TnAiTohkEKVEu8pQPJI7Vg==
   dependencies:
     has-symbols "^1.0.3"
-
-audio-loader@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/audio-loader/-/audio-loader-0.5.0.tgz#9c125d1b25c33cd9626084054d9f6b7f31ddc908"
-  integrity sha512-mEoYRjZhqkBSen/X9i2PNosqvafEsur8bI5MNoPr0wsJu9Nzlul3Yv1elYeMPsXxTxYhXLY8AZlScBvaK4mydg==
 
 available-typed-arrays@^1.0.5:
   version "1.0.5"
@@ -3601,11 +3591,6 @@ midi-writer-js@^3.1.1:
   dependencies:
     "@tonaljs/midi" "^4.9.0"
 
-midimessage@^1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/midimessage/-/midimessage-1.0.5.tgz#ad99f04d863a053a2563d553c5bf35070b48802c"
-  integrity sha512-MPJ2tDupFOfZB5/PLp8fri1IS4fd9hPj0Bio//FBhWRQ+TsJA7/49CF1aJyraDxa0Jq8zMHAwrwXl2GINvLvgw==
-
 minimatch@^3.0.4, minimatch@^3.0.5, minimatch@^3.1.2:
   version "3.1.2"
   resolved "https://registry.npmjs.org/minimatch/-/minimatch-3.1.2.tgz"
@@ -3667,16 +3652,6 @@ node-fetch@^2.6.12:
   integrity sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==
   dependencies:
     whatwg-url "^5.0.0"
-
-note-parser@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/note-parser/-/note-parser-1.1.0.tgz#12e9f17e51450ec994f1364a01982c22667b8e6b"
-  integrity sha512-YTqWQBsRp40EFrEznnkGtmx68gcgOQ8CdoBspqGBA3G1/4mJwIYbDe/vuNpX3oGX2DhP7b1dBgTmj7p3Zr0P1Q==
-
-note-parser@^2.0.0:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/note-parser/-/note-parser-2.0.1.tgz#2438fd57a46894b402b3a2071798660129c8fbc1"
-  integrity sha512-w9o6Fv46y3NsFxeezTZSmftBtUM/ypme6iZWVrTJvvsD5RN+w0XNDePWtfreNrZFL3jSjBFhadPoXb+pJO4UdA==
 
 object-assign@^4.1.0, object-assign@^4.1.1:
   version "4.1.1"
@@ -3933,14 +3908,6 @@ react-piano@^3.1.3:
     lodash.difference "^4.5.0"
     prop-types "^15.6.2"
 
-react-soundfont-player@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/react-soundfont-player/-/react-soundfont-player-1.0.2.tgz#86ab26d780957a0df0cd1032c764b4a28f518910"
-  integrity sha512-R6MMfws/epmUOHA3H2ZsfzybBzjIcqh0b0PScr0a6G/jg3LLWyLALvj3TBeciRK/K9WK/UNk86Rk4Fo2kFPaQQ==
-  dependencies:
-    render-and-add-props "^0.5.0"
-    soundfont-player danigb/soundfont-player
-
 react-transition-group@^4.4.1:
   version "4.4.5"
   resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-4.4.5.tgz#e53d4e3f3344da8521489fbef8f2581d42becdd1"
@@ -4044,11 +4011,6 @@ remark-stringify@^11.0.0:
     mdast-util-to-markdown "^2.0.0"
     unified "^11.0.0"
 
-render-and-add-props@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/render-and-add-props/-/render-and-add-props-0.5.0.tgz#79e35b2251936ec187188322826e56401c2ef70b"
-  integrity sha512-jIVQsWxGDHwpMcI0d9w6OxF/GCtwL02Lyqk8aGjyF6LyR9GPLY+1ONwPjs6kbQ2d6gTApWk8aprZkBli0tpG/w==
-
 resolve-from@^4.0.0:
   version "4.0.0"
   resolved "https://registry.npmjs.org/resolve-from/-/resolve-from-4.0.0.tgz"
@@ -4121,15 +4083,6 @@ safe-regex-test@^1.0.0:
     call-bind "^1.0.2"
     get-intrinsic "^1.1.3"
     is-regex "^1.1.4"
-
-sample-player@^0.5.5:
-  version "0.5.5"
-  resolved "https://registry.yarnpkg.com/sample-player/-/sample-player-0.5.5.tgz#bc35bea3449c6fa972528f022a9bbc2872195637"
-  integrity sha512-VQ9pXPJ1m/eTH8QK6OQ8Dn/HSVToNyY9w9vnv+y/yjkJeRm87tJ/gBEm66jItfSLhKe6VG1DfX8+oT+Mg7QUpg==
-  dependencies:
-    adsr "^1.0.0"
-    midimessage "^1.0.5"
-    note-parser "^1.1.0"
 
 sax@^1.2.4:
   version "1.4.1"
@@ -4213,13 +4166,10 @@ slugify@^1.6.6:
   resolved "https://registry.yarnpkg.com/slugify/-/slugify-1.6.6.tgz#2d4ac0eacb47add6af9e04d3be79319cbcc7924b"
   integrity sha512-h+z7HKHYXj6wJU+AnS/+IH8Uh9fdcX1Lrhg1/VMdf9PwoBQXFcXiAdsy2tSK0P6gKwJLXp02r90ahUCqHk9rrw==
 
-soundfont-player@danigb/soundfont-player:
-  version "0.12.0"
-  resolved "https://codeload.github.com/danigb/soundfont-player/tar.gz/2b89587d7cc396c5c7b91056f8cb78831ead7436"
-  dependencies:
-    audio-loader "^0.5.0"
-    note-parser "^2.0.0"
-    sample-player "^0.5.5"
+smplr@^0.16.1:
+  version "0.16.1"
+  resolved "https://registry.yarnpkg.com/smplr/-/smplr-0.16.1.tgz#05e71a06cc04491028015378ab0dc3eacec9529f"
+  integrity sha512-qmCwaib5gj6qRUo4vwH0uERQI5FiwpnC2niahBwl95RmpK5iZQBB5ocIbXQaSfIbQb0KJ/EieS2jk+TYVsyqbg==
 
 source-map-js@^1.0.2:
   version "1.0.2"

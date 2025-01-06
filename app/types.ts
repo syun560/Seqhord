@@ -1,4 +1,4 @@
-import Soundfont from 'soundfont-player';
+import { Soundfont } from 'smplr';
 import  { Dispatch, SetStateAction } from "react"
 
 export type MenuFunc = {
@@ -137,7 +137,7 @@ export type MIDI = {
 }
 
 export type Sound = {
-    isLoading: Soundfont.Player|null
+    isLoading: Soundfont|null
     setup: ()=>void
     playNote: (midiNumber: string)=>void
     stopNote: (midiNumber: string)=>void
