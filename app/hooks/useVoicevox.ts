@@ -15,9 +15,9 @@ const convertNotes = (notes: Note[], bpm: number): VoiceNote[] => {
     const quarter = 60 / bpm / 2 // 実現したい8分音符の長さ（秒）
     const frame = 1 / frame_rate // VOICEVOXの1フレーム当たりの長さ（秒）
 
-    // let default_frame_length = Math.floor(quarter / frame)
-    // if (default_frame_length % 2 !== 0) default_frame_length += 1 
-    let default_frame_length = quarter / frame
+    let default_frame_length = Math.floor(quarter / frame)
+    if (default_frame_length % 2 !== 0) default_frame_length += 1 
+    // let default_frame_length = quarter / frame
 
     let tick_max = notes.length > 0 ? notes[notes.length - 1].tick + notes[notes.length - 1].duration : 0
     const ticks: number[] = []

@@ -16,7 +16,7 @@ h1 {
 
 h2 {
   font-size: 1.5rem;
-  font-weight: bold;
+  font-weight: bolder;
   border-bottom: 1px solid #CCC;
   padding-bottom: 0.4rem;
   margin-top: 40px;
@@ -25,10 +25,17 @@ h2 {
 
 h3 {
   font-size: 1.2rem;
-  margin-top: 20px;
+  font-weight: bold;
+  border-left: 8px solid #00BCD4;
+  padding-left: 0.5rem;
+  margin-top: 30px;
+  margin-bottom: 1.2em;
+}
+.first{
+  font-size: 1.2rem;
+  /* font-weight: bold; */
   margin-bottom: 1rem;
 }
-
 img {
   width: 100%;
   margin-bottom: 1rem;
