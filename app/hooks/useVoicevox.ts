@@ -15,9 +15,10 @@ const convertNotes = (notes: Note[], bpm: number): VoiceNote[] => {
     const quarter = 60 / bpm / 2 // 実現したい8分音符の長さ（秒）
     const frame = 1 / frame_rate // VOICEVOXの1フレーム当たりの長さ（秒）
 
-    let default_frame_length = Math.floor(quarter / frame)
-    if (default_frame_length % 2 !== 0) default_frame_length += 1 
-    // let default_frame_length = quarter / frame
+    // let default_frame_length = Math.floor(quarter / frame)
+    // if (default_frame_length % 2 !== 0) default_frame_length += 1 
+    let default_frame_length = quarter / frame
+    // console.log(default_frame_length)
 
     let tick_max = notes.length > 0 ? notes[notes.length - 1].tick + notes[notes.length - 1].duration : 0
     const ticks: number[] = []
@@ -32,7 +33,7 @@ const convertNotes = (notes: Note[], bpm: number): VoiceNote[] => {
 
     notes.forEach((note, i) => {
         pitch = note.pitch
-        frame_length = default_frame_length * note.duration
+        frame_length = Math.round(default_frame_length * note.duration)
         pitch = note.pitch
 
         if (i > 0) {
@@ -41,7 +42,7 @@ const convertNotes = (notes: Note[], bpm: number): VoiceNote[] => {
             if (difftick > prevnote.duration) {
                 voiceNotes.push({
                     key: null,
-                    frame_length: default_frame_length * (difftick - prevnote.duration),
+                    frame_length: Math.round(default_frame_length * (difftick - prevnote.duration)),
                     lyric: ""
                 })
             }
@@ -59,8 +60,8 @@ const convertNotes = (notes: Note[], bpm: number): VoiceNote[] => {
 
         voiceNotes.push({
             key: pitch,
-            frame_length: frame_length,
-            lyric: lyric
+            frame_length,
+            lyric
         })
     })
 
@@ -103,7 +104,7 @@ export const useVoiceVox = ():VoiceVox => {
     const synthVoice = useCallback(async (notes: Note[], bpm:number) => {
         const voiceNotes = convertNotes(notes, bpm)
         inputmusic.notes = voiceNotes
-        console.log(inputmusic)
+        // console.log(inputmusic)
 
         try {
             const url = "http://localhost:50021/sing_frame_audio_query?speaker=6000"
