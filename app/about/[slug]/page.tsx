@@ -51,7 +51,7 @@ const pageList = [
             { title: "演奏パターンを入力する", url: "./input_patterns" },
             { title: "プレビュー再生する", url: "./preview" },
             { title: "歌詞を入力する", url: "./input_lyrics" },
-            { title: "VOICEVOXとの連携を行う", url: "./voicevox" },
+            { title: "VOICEVOXで歌声合成を行う", url: "./voicevox" },
             // { title: "予約済キーワード一覧", url: "./reserved" },
         ]
     },
@@ -70,7 +70,8 @@ const pageList = [
     // { title: "更新履歴", url: "./update" },
 ]
 const pages = pageList.map(page=>(
-    <li key={page.title} style={{listStyle: "none"}}>
+    <li key={page.title} style={{listStyle: "none"}} className='first'>
+        
         {page.url ?
             <Link href={page.url}>{page.title}</Link>    
             :<>{page.title}</>
