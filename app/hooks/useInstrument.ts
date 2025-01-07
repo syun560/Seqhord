@@ -16,10 +16,17 @@ export const useInstrument = (): MIDI => {
     const volume = (val: number, ch: number) => {
         output.current?.send([0xB0 + ch, 7, val])
     }
+    const allVolume = () => {
 
-    const noteOn = (pitch: number, ch: number, duration: number) => {
+    }
+
+    const noteOn = (pitch: number, ch: number, duration?: number) => {
         output.current?.send([0x90 + ch, pitch, 64])
-        output.current?.send([0x80 + ch, pitch, 64], window.performance.now() + duration - 1) // 1秒後にノートオフ
+        if (duration !== undefined)
+        output.current?.send([0x80 + ch, pitch, 64], window.performance.now() + duration - 1)
+    }
+    const noteOff = (pitch: number, ch: number) => {
+        output.current?.send([0x80 + ch, pitch, 64])
     }
     const allNoteOff = () => {
         output.current?.send([0xB0, 0x7B, 0])
@@ -63,5 +70,5 @@ export const useInstrument = (): MIDI => {
         }
     }
 
-    return { noteOn, setup, volume, programChange, allNoteOff, changePorts, outPorts }
+    return { noteOn, noteOff, setup, volume, programChange, allNoteOff, changePorts, outPorts }
 }

@@ -8,7 +8,7 @@ type Props = {
 
 let a = 8 // 拍子
 
-const chords_name = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+const chords_name = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#', 'G#', 'D#', 'A#', 'F']
 
 const chord_color = (chord: string):number => {
     let index = 0
@@ -23,7 +23,7 @@ const tdStyle = (tick: number, chord:string, found:string|undefined) => {
     let res = {
         borderBottom: '1px solid black',
         borderLeft: '',
-        background: `hsl(${chord_color(chord)},55%,29%)`,
+        background: `hsl(${chord_color(chord)},55%,35%)`,
         width: '20px',
         position: 'sticky' as const,
         zIndex: found ? 2 : 1,

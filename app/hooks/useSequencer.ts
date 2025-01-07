@@ -9,6 +9,7 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number):Sequencer => {
     const timer = useRef<any>()
     const bpm = useRef(b)
 
+    const now = useRef(performance.now())
 
     // nowTickはなぜRefが必要なのか？
     const [nowTick, setNowTick] = useState(0)
@@ -19,17 +20,28 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number):Sequencer => {
     const endTick = useRef(128)
     
     // 現在のBPMから何ms待つか決定する
-    const delayTime = useRef(60 * 1000 / (bpm.current * 4))
+    const delay_time = useRef(60 * 1000 / (bpm.current * 4))
 
     // tickが進むごとに実行される関数
     const proceed = () => {
         setNowTick(n=>n+0.5)
 
         // 現在のBPMから何ms待つか決定する
-        delayTime.current = 60 * 1000 / (bpm.current * 4)
+        const ideal = 60 * 1000 / (bpm.current * 4)
+        const diff = performance.now() - now.current
+        const delay = diff > ideal ? diff - ideal : 0
+        delay_time.current = ideal - delay
+
+
+        if (delay_time.current < 4) delay_time.current = 4
         
+        // console.log("ideal_delay: ", ideal)
+        // console.log("real_delay: ", delay)
+
+        now.current = performance.now()
+
         // この関数をdelayTime後に再度実行する
-        timer.current = setTimeout(proceed, delayTime.current)
+        timer.current = setTimeout(proceed, delay_time.current)
         
         if (nowTickRef.current > endTick.current){
             stop()
@@ -46,7 +58,7 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number):Sequencer => {
         tracks.forEach(track=>{
             const notes = track.notes.filter(n=>n.tick === nowTickRef.current)
             notes.forEach(n=>{
-                midi.noteOn(n.pitch, track.ch, n.duration * delayTime.current * 2)
+                midi.noteOn(n.pitch, track.ch, n.duration * delay_time.current * 2)
             })
         })
     }
@@ -83,6 +95,7 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number):Sequencer => {
     const setup = () => {
         bpm.current = b
         endTick.current = 1
+        now.current = performance.now()
         tracks.forEach(track=>{
             midi.programChange(track.program, track.ch)
             midi.volume(track.volume, track.ch)
@@ -102,7 +115,7 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number):Sequencer => {
         else {
             setup()
             setIsPlaying(true)
-            timer.current = setTimeout(proceed, delayTime.current)
+            timer.current = setTimeout(proceed, delay_time.current)
         }
     },[timer.current, isPlaying, tracks])
 

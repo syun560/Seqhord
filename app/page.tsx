@@ -320,7 +320,7 @@ export default function Main() {
                 </div>
 
                 <div className="fixed-div2">
-                    <PianoBoard sf={sf} />
+                    <PianoBoard sf={sf} midi={midi} ch={tabnum} />
                 </div>
             </div>
     </div>

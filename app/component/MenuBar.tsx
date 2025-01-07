@@ -9,7 +9,9 @@ import Link from "next/link";
 // fluent ui
 import {
     Button, Select, Label, Tooltip, ToolbarButton, ToolbarDivider,
-    Menu, MenuTrigger, MenuPopover, MenuList, MenuItem,
+    Menu, MenuTrigger, MenuPopover, MenuList, MenuItem, Slider,
+    useId,
+    SliderProps
 } from "@fluentui/react-components"
 
 import {
@@ -78,6 +80,10 @@ export const MenuBar = memo(function MenuBar({ f, seq, midi, bpm, vox, sound, sc
         document.exitFullscreen()
         setScreen('normal')
     }
+
+    const id = useId()
+    const [sliderValue, setSliderValue] = useState(80)
+    const onSliderChange: SliderProps["onChange"] = (_, data) => setSliderValue(data.value)
 
     // ファイル操作
     const LeftBar = <div className="py-1">
@@ -148,9 +154,9 @@ export const MenuBar = memo(function MenuBar({ f, seq, midi, bpm, vox, sound, sc
         <Tooltip content="MIDI機器に接続" relationship="label" positioning="below-start">
             <ToolbarButton appearance={midi.outPorts.length !== 0 ? "primary" : "subtle"} icon={<MidiIcon />} onClick={midi.setup} />
         </Tooltip>
-        <Tooltip content="SoundFontに接続" relationship="label" positioning="below-start">
+        {/* <Tooltip content="SoundFontに接続" relationship="label" positioning="below-start">
             <ToolbarButton appearance={sound.isLoading !== null ? "primary" : "transparent"} icon={<SoundIcon />} onClick={sound.setup} />
-        </Tooltip>
+        </Tooltip> */}
         <Tooltip content="VOICEVOXに接続" relationship="label" positioning="below-start">
             {/* <ToolbarButton icon={<PersonVoiceRegular />} onClick={vox.getSingers} /> */}
             <button onClick={vox.getSingers} className="btn btn-sm"><img src='/images/vvIcon.png' height="22px" /></button>
@@ -221,5 +227,6 @@ export const MenuBar = memo(function MenuBar({ f, seq, midi, bpm, vox, sound, sc
         {OperationBar}
         <ToolbarDivider className="py-2"/>
         {instBar}
+        {/* <Slider value={sliderValue} min={0} max={100} onChange={onSliderChange} id={id} /> */}
     </div>
 })

@@ -10,7 +10,7 @@ export const useSoundFont = ():Sound => {
     const [audioContext, setAudioContext] = useState<AudioContext|null>(null)
     const [instrumentName, setInstrumentName] = useState<string>('cello')
 
-    console.log(getSoundfontNames())
+    // console.log(getSoundfontNames())
 
     const setup = useCallback(() => {
         setAudioContext(new window.AudioContext())
