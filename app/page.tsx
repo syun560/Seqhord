@@ -319,15 +319,9 @@ export default function Main() {
                     <Singer vox={vox} tracks={tracks} bpm={bpm} />
                 </div>
 
-                {/* <div className="fixed-div2">
-                    <PianoBoard sf={sf} />
-                    <div>
-                        {midi.outPorts.length !== 0 && <Instrument midi={midi} />}
-                        <Select appearance="filled-darker" className="d-inline" value={tracks[tabnum].program}>
-                            {programs}
-                        </Select>
-                    </div>
-                </div> */}
+                <div className="fixed-div2">
+                    <PianoBoard sf={sf} midi={midi} ch={tabnum} />
+                </div>
             </div>
     </div>
 

@@ -1,7 +1,7 @@
 import { Note } from './types.ts'
 
 class Lib {
-    // ノートナンバー（64）をノート（C5）に変換する
+    // ノートナンバー（64）をノートネーム（C5）に変換する
     static noteNumberToNoteName(num: number) {
         const notes_name = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
         const base = Math.floor(num / 12) - 1

@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'styles.css'
 
 export const metadata: Metadata = {
-    title: 'Seqhord -シーコード',
+    title: 'Seqhord',
     description: 'Seqhordはブラウザで動く音楽プログラミング環境です',
 }
 

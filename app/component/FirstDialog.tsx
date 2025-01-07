@@ -34,7 +34,7 @@ export const FirstDialog = memo(function FirstDialog() {
 
     return <Dialog open={open} onOpenChange={(event, data) => setOpen(data.open)}>
         <DialogTrigger disableButtonEnhancement>
-            <div className="fs-4 fw-bolder p-2 text-info" style={{ cursor: "pointer" }}>Seqhord</div>
+            <div className="p-1 text-info" style={{ cursor: "pointer" }}><h1 className="fs-4 fw-bolder ">Seqhord</h1></div>
         </DialogTrigger>
         <DialogSurface>
             <DialogBody>
@@ -43,8 +43,10 @@ export const FirstDialog = memo(function FirstDialog() {
             <DialogContent>
                 <br />
                 <p>Seqhord（シーコード）はテキストを解釈し、演奏データを生成する<br />
-                    <strong>サウンドプログラミングミュージックシーケンサ</strong>です。<br />
-                    操作方法など簡単な説明については<Link href="https://youtu.be/Uhj9IiNYFsk?si=4QzzXbfAaDRHrqse">紹介動画</Link>をご覧ください。</p>
+                    <strong>ミュージックプログラミングシーケンサ</strong>です。</p>
+                <p>
+                    操作方法など簡単な説明については<Link href="https://youtu.be/Uhj9IiNYFsk?si=4QzzXbfAaDRHrqse" target="_blank">紹介動画</Link>をご覧ください。
+                </p>
                 <p>■ 支援者一覧（敬称略）<br />
                 <strong>NBCG/檀エディ, あたなよく</strong></p>
                 <Checkbox checked={checked} onChange={(ev, data) => change(Boolean(data.checked))} label="読込時に表示"/>
