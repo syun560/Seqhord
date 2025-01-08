@@ -48,7 +48,7 @@ const pageList = [
         sub: [
             { title: "音を入力する", url: "./input_notes" },
             { title: "コード（和音）を付与する", url: "./input_chords" },
-            { title: "演奏パターンを入力する", url: "./input_patterns" },
+            { title: "演奏パターンを定義する", url: "./input_patterns" },
             { title: "プレビュー再生する", url: "./preview" },
             { title: "歌詞を入力する", url: "./input_lyrics" },
             { title: "VOICEVOXで歌声合成を行う", url: "./voicevox" },
