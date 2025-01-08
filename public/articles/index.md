@@ -27,7 +27,7 @@ SMMLは、MML（Music Macro Language）で使用されていたABC記法を簡�
 これにより、各種DTMにソフトに読み込ませて編集を続けることが出来ます。
 また、歌詞付きのMusicXMLファイルを書き出すことができるため、NEUTRINOや、VOICEVOX等音声合成システムとも簡単に連携することが出来ます。
 
-## VOICEVOXの利用について
+## 歌声合成機能（VOICEVOX）の利用について
 [VOICEVOXの利用規約](https://voicevox.hiroshiba.jp/term/)に準じます。
 各音声ライブラリの利用規約をよくご確認の上、ご利用ください。
 
