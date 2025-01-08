@@ -52,7 +52,10 @@ export const compile = (tracks: Track[]) => {
         const line = l.replace(/\s+/g, "");
 
         // 空行の場合は次のtickへ進む
-        if (line === "") res.tick = next_tick
+        if (line === "") {
+            res.tick = next_tick
+            return
+        }
 
         // console.log("------")
         // console.log("res.tick: ", res.tick)

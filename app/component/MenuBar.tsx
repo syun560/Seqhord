@@ -19,8 +19,7 @@ import {
     PlayRegular, PlayFilled, PauseRegular, PauseFilled,
     SaveRegular, SaveFilled,
     MidiRegular, MidiFilled, SoundWaveCircleRegular, SoundWaveCircleFilled,
-    ArrowCircleDownRegular, ArrowCircleDownFilled,
-    ArrowTrendingTextRegular,
+    ArrowCircleDownRegular, ArrowCircleDownFilled, ArrowCircleRightRegular, ArrowCircleRightFilled,
     DocumentRegular, ChatHelpRegular, ChatHelpFilled,
     FullScreenMaximizeFilled, FullScreenMaximizeRegular, FullScreenMinimizeRegular, FullScreenMinimizeFilled,
     FolderOpenRegular, FolderOpenFilled,
@@ -30,7 +29,7 @@ import {
     LayoutColumnTwoFocusLeftFilled, LayoutColumnTwoFocusRightFilled, LayoutColumnTwoRegular,
     DocumentArrowDownRegular, DocumentArrowDownFilled, DocumentFilled,
     ChevronDoubleLeftFilled, ChevronDoubleLeftRegular, ChevronDoubleRightFilled, ChevronDoubleRightRegular,
-    ChevronRightFilled, ChevronRightRegular, ChevronLeftFilled, ChevronLeftRegular, 
+    ChevronRightFilled, ChevronRightRegular, ChevronLeftFilled, ChevronLeftRegular,
 } from "@fluentui/react-icons"
 
 const PlayIcon = bundleIcon(PlayRegular, PlayFilled)
@@ -50,7 +49,8 @@ const FastForwardIcon = bundleIcon(ChevronRightRegular, ChevronRightFilled)
 const PrevIcon = bundleIcon(ChevronLeftRegular, ChevronLeftFilled)
 const MaximizeIcon = bundleIcon(FullScreenMaximizeRegular, FullScreenMaximizeFilled)
 const MinimizeIcon = bundleIcon(FullScreenMinimizeRegular, FullScreenMinimizeFilled)
-const CompileIcon = bundleIcon(DocumentOnePageSparkleRegular, DocumentOnePageSparkleFilled)
+const FormatIcon = bundleIcon(DocumentOnePageSparkleRegular, DocumentOnePageSparkleFilled)
+const CompileIcon = bundleIcon(ArrowCircleRightRegular, ArrowCircleRightFilled)
 
 type MenuBarPropsType = {
     f: MenuFunc
@@ -183,6 +183,9 @@ export const MenuBar = memo(function MenuBar({ f, seq, midi, bpm, vox, sound, sc
     </div>
 
     const OtherBar = <div className="py-1">
+        <Tooltip content="フォーマットする" relationship="label" positioning="below-start">
+            <ToolbarButton onClick={f.formatText} icon={<FormatIcon />} />
+        </Tooltip>
         <Tooltip content="コンパイル" relationship="label" positioning="below-start">
             {/* <ToolbarButton onClick={f.onCompile} icon={<DocumentOnePageSparkleRegular />}>コンパイル</ToolbarButton> */}
             <ToolbarButton onClick={f.onCompile} icon={<CompileIcon />} />
@@ -215,7 +218,7 @@ export const MenuBar = memo(function MenuBar({ f, seq, midi, bpm, vox, sound, sc
         {/* <div className="fs-5 fw-bolder m-2 text-secondary">ver1.0</div> */}
         <ToolbarDivider className="py-2"/>
         {LeftBar}
-        {/* <ToolbarDivider className="py-2"/> */}
+        <ToolbarDivider className="py-2"/>
         {OtherBar}
         <ToolbarDivider className="py-2"/>
         {DisplayBar}

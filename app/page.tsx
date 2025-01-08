@@ -33,6 +33,7 @@ import { MarkBar } from "./component/MarkBar"
 
 // script
 import { compile } from './compile/compile'
+import { format_text } from "./compile/format_text"
 import { generate_midi } from './generate/generate_midi'
 import { generate_musicxml } from './generate/generate_musicxml'
 import { loadJSON } from './loadJSON'
@@ -111,6 +112,14 @@ export default function Main() {
         }
         onCompile()
     },[tracks])
+
+    const formatText = useCallback(() => {
+        const formatted = format_text(tracks[tabnum].texts)
+        setTracks(trks=>trks.map((trk, ch)=>{
+            if (ch === tabnum) return {...trk, texts: formatted}
+            else return trk
+        }))
+    },[tracks, tabnum])
 
     const onTextChange = useCallback((text: string) => {
         // setTexts(texts.map((t, i) => (i === tabnum ? text : t)))
@@ -242,8 +251,9 @@ export default function Main() {
         showOpenFileDialog, 
         showMIDIFileDialog, 
         onCompile,
+        formatText,
         autoCompose
-    }),[saveAsJson, showOpenFileDialog, showMIDIFileDialog, onCompile, onNew, saveMIDI, saveMusicXML, saveText, autoCompose])
+    }),[saveAsJson, showOpenFileDialog, showMIDIFileDialog, onCompile, onNew, formatText, saveMIDI, saveMusicXML, saveText, autoCompose])
 
     useEffect(() => {
         window.addEventListener("beforeunload", handleBeforeUnload)

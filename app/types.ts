@@ -9,6 +9,7 @@ export type MenuFunc = {
     saveAsJson: () => void
     showOpenFileDialog: () => Promise<unknown>
     showMIDIFileDialog: () => Promise<unknown>
+    formatText: () => void
     onCompile: () => void
     autoCompose: () => void
 }
