@@ -98,6 +98,8 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number):Sequencer => {
         now.current = performance.now()
         tracks.forEach(track=>{
             midi.programChange(track.program, track.ch)
+            midi.controlChange(track.ch, 10, track.panpot) // パンの設定
+            midi.controlChange(track.ch, 91, track.reverb) // リバーブの設定
             midi.volume(track.volume, track.ch)
             
             // console.log(`program: ${track.program}, ch: ${track.ch}`)

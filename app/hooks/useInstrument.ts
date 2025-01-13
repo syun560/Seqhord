@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { MIDI } from '@/types'
 
 export const useInstrument = (): MIDI => {
@@ -12,6 +12,10 @@ export const useInstrument = (): MIDI => {
     const programChange = (program: number, ch: number) => {
         output.current?.send([0xC0 + ch, program])
     }
+    const controlChange = ( ch:number, eventNumber: number, val:number) => {
+        // console.log(`ch: ${ch} panpot: ${eventNumber} val: ${val}`)
+        output.current?.send([0xB0 + ch, eventNumber, val])
+    }
 
     const volume = (val: number, ch: number) => {
         output.current?.send([0xB0 + ch, 7, val])
@@ -21,12 +25,12 @@ export const useInstrument = (): MIDI => {
     }
 
     const noteOn = (pitch: number, ch: number, duration?: number) => {
-        output.current?.send([0x90 + ch, pitch, 64])
+        output.current?.send([0x90 + ch, pitch, 100])
         if (duration !== undefined)
-        output.current?.send([0x80 + ch, pitch, 64], window.performance.now() + duration - 1)
+        output.current?.send([0x80 + ch, pitch, 100], window.performance.now() + duration - 1)
     }
     const noteOff = (pitch: number, ch: number) => {
-        output.current?.send([0x80 + ch, pitch, 64])
+        output.current?.send([0x80 + ch, pitch, 100])
     }
     const allNoteOff = () => {
         output.current?.send([0xB0, 0x7B, 0])
@@ -70,5 +74,5 @@ export const useInstrument = (): MIDI => {
         }
     }
 
-    return { noteOn, noteOff, setup, volume, programChange, allNoteOff, changePorts, outPorts }
+    return { noteOn, noteOff, setup, volume, programChange, controlChange, allNoteOff, changePorts, outPorts }
 }

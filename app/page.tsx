@@ -73,6 +73,8 @@ export default function Main() {
     const [autoFormat, setAutoFormat] = useState(true)
     const [maxTick, setMaxTick] = useState(0)
 
+    const audioRef = useRef<HTMLAudioElement>(null)
+
     const pianoBar = useRef<HTMLDivElement>(null)
 
     const tabNames = ["preview", "vars"]
@@ -86,7 +88,7 @@ export default function Main() {
     const timer = useRef<NodeJS.Timeout | null>(null);
 
     const saveMIDI = useCallback(() => {
-        const uri = generate_midi(tracks, bpm)
+        const uri = generate_midi(tracks, bpm, marks)
         simpleDownload(`${title}.mid`, uri)
     },[tracks,title,bpm])
 
@@ -161,6 +163,7 @@ export default function Main() {
         setVars(res.vars)
         setChords(res.chords)
         setMarks(res.marks)
+        setScales(res.scales)
     },[tracks])
 
     const onAddTrack = useCallback(() => {
@@ -175,7 +178,8 @@ export default function Main() {
             notes: [],
             texts: '',
             volume: 100,
-            panpot: 64
+            panpot: 64,
+            reverb: 40
         }
         ])
     },[tracks])
@@ -326,11 +330,11 @@ export default function Main() {
 
                 {/* float element */}
                 <div className="fixed-div">               
-                    <Singer vox={vox} tracks={tracks} bpm={bpm} />
+                    <Singer vox={vox} tracks={tracks} bpm={bpm} audioRef={audioRef} />
                 </div>
 
                 <div className="fixed-div2">
-                    <PianoBoard sf={sf} midi={midi} ch={tabnum} />
+                    <PianoBoard sf={sf} midi={midi} ch={tabnum} scale={nowScale()} />
                 </div>
             </div>
     </div>
@@ -345,7 +349,7 @@ export default function Main() {
         <FluentProvider theme={webDarkTheme}>
         <SSRProvider>
         <div className="container-fluid" data-bs-theme="dark">
-            <MenuBar f={menuFunc} seq={seq} midi={midi} vox={vox} scale={nowScale()} sound={sf} bpm={bpm} layout={layout} setLayout={setLayout} track={tracks[tabnum]} changeProgram={changeProgram} />
+            <MenuBar f={menuFunc} seq={seq} midi={midi} vox={vox} scale={nowScale()} sound={sf} bpm={bpm} layout={layout} setLayout={setLayout} track={tracks[tabnum]} changeProgram={changeProgram} audioRef={audioRef} />
             <MarkBar marks={marks} seq={seq}/>
             <div className="row">
                 {MainPane}

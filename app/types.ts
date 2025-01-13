@@ -102,6 +102,7 @@ export type Track = {
     texts: string
     program: number // プログラムナンバー(1～128)
     volume: number
+    reverb: number
     panpot: number
 }
 
@@ -111,6 +112,11 @@ export type Scale = {
 }
 
 export type Mark = {
+    tick: number
+    name: string
+}
+
+export type ControlChangeEvent = {
     tick: number
     name: string
 }
@@ -132,6 +138,7 @@ export type MIDI = {
     noteOn: (pitch :number, ch:number, duration?: number)=>void
     noteOff: (pitch :number, ch:number )=>void
     programChange: (program: number, ch:number)=>void
+    controlChange: (ch: number, eventNumber: number, val:number)=>void
     volume: (val: number, ch:number)=>void
     allNoteOff: ()=>void
     outPorts: any

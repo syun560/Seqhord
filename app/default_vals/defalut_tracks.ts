@@ -18,6 +18,7 @@ export const default_tracks: Track[] = [
         texts: default_text,
         volume: 100,
         panpot: 64,
+        reverb: 40,
     }, 
     {
         name: 'chord',
@@ -28,7 +29,8 @@ export const default_tracks: Track[] = [
         notes: [],
         texts: default_append,
         volume: 80,
-        panpot: 10
+        panpot: 10,
+        reverb: 40
     },
     {
         name: 'bass',
@@ -39,7 +41,8 @@ export const default_tracks: Track[] = [
         notes: [],
         texts: default_bass,
         volume: 100,
-        panpot: 64
+        panpot: 64,
+        reverb: 40
     }, {
         name: 'drum',
         program: 0,
@@ -49,6 +52,7 @@ export const default_tracks: Track[] = [
         notes: [],
         texts: default_drum,
         volume: 100,
-        panpot: 64
+        panpot: 64,
+        reverb: 40
     }
 ]

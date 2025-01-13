@@ -65,11 +65,12 @@ type MenuBarPropsType = {
     bpm: number
     layout: "left" | "normal" | "right"
     setLayout: Dispatch<SetStateAction<"left" | "normal" | "right">>
+    audioRef: React.RefObject<HTMLAudioElement>
 }
 
 const programs = Lib.programName.map((p, i)=><option key={i} value={i}>{String(i).padStart(3, '0')}: {p}</option>)
 
-export const MenuBar = memo(function MenuBar({ f, seq, midi, bpm, vox, sound, scale, track, changeProgram, layout, setLayout }: MenuBarPropsType) {
+export const MenuBar = memo(function MenuBar({ f, seq, midi, bpm, vox, sound, audioRef, scale, track, changeProgram, layout, setLayout }: MenuBarPropsType) {
 
     const [screen, setScreen] = useState<'normal'|'maximum'>('normal')
     const maximizeScreen = () => {
@@ -79,6 +80,12 @@ export const MenuBar = memo(function MenuBar({ f, seq, midi, bpm, vox, sound, sc
     const minimizeScreen = () => {
         document.exitFullscreen()
         setScreen('normal')
+    }
+    const play2 = () => {
+        seq.playToggle()
+        const audio = audioRef.current
+        if (!audio) return
+        audio.paused ? audio.play() : audio.pause()
     }
 
     const id = useId()
@@ -140,7 +147,7 @@ export const MenuBar = memo(function MenuBar({ f, seq, midi, bpm, vox, sound, sc
             <ToolbarButton onClick={seq.prevMea} icon={<PrevIcon />} />
         </Tooltip>
         <Tooltip content={seq.isPlaying ? "一時停止" : "再生"} relationship="label" positioning="below-start">
-            <Button className="mx-2" shape="circular" appearance="primary" onClick={seq.playToggle} size="large" icon={seq.isPlaying ? <PauseIcon /> : <PlayIcon />} />
+            <Button className="mx-2" shape="circular" appearance="primary" onClick={play2} size="large" icon={seq.isPlaying ? <PauseIcon /> : <PlayIcon />} />
         </Tooltip>
         <Tooltip content="一小節先へ" relationship="label" positioning="below-start">
             <ToolbarButton onClick={seq.nextMea} icon={<FastForwardIcon />} />
