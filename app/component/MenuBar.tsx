@@ -3,7 +3,6 @@ import { Sequencer, MIDI, VoiceVox, Sound, MenuFunc, Track, Scale } from "@/type
 import { Instrument } from "./Instrument"
 import { FirstDialog } from "./FirstDialog"
 import Lib from '../Lib'
-
 import Link from "next/link";
 
 // fluent ui
@@ -20,6 +19,7 @@ import {
     SaveRegular, SaveFilled,
     MidiRegular, MidiFilled, SoundWaveCircleRegular, SoundWaveCircleFilled,
     ArrowCircleDownRegular, ArrowCircleDownFilled, ArrowCircleRightRegular, ArrowCircleRightFilled,
+    ArrowCircleUpRegular, ArrowCircleUpFilled,
     DocumentRegular, ChatHelpRegular, ChatHelpFilled,
     FullScreenMaximizeFilled, FullScreenMaximizeRegular, FullScreenMinimizeRegular, FullScreenMinimizeFilled,
     FolderOpenRegular, FolderOpenFilled,
@@ -40,6 +40,7 @@ const ChatHelpIcon = bundleIcon(ChatHelpRegular, ChatHelpFilled)
 const FolderOpenIcon = bundleIcon(FolderOpenRegular, FolderOpenFilled)
 const NewIcon = bundleIcon(DocumentRegular, DocumentFilled)
 const DownloadIcon = bundleIcon(ArrowCircleDownRegular, ArrowCircleDownFilled)
+const UploadIcon = bundleIcon(ArrowCircleUpRegular, ArrowCircleUpFilled)
 const SettingIcon = bundleIcon(SettingsRegular, SettingsFilled)
 const InfoIcon = bundleIcon(InfoRegular, InfoFilled)
 const PauseIcon = bundleIcon(PauseRegular, PauseFilled)
@@ -103,9 +104,12 @@ export const MenuBar = memo(function MenuBar({ f, seq, midi, bpm, vox, sound, au
         <Tooltip content="保存する" relationship="label" positioning="below-start">
             <ToolbarButton onClick={f.saveAsJson} icon={<SaveIcon />} />
         </Tooltip>
+        <Tooltip content="MIDIをインポート" relationship="label" positioning="below-start">
+            <ToolbarButton onClick={f.saveAsJson} icon={<UploadIcon />} />
+        </Tooltip>
         <Menu>
             <MenuTrigger>
-                <Tooltip content="書き出す" relationship="label" positioning="below-start">
+                <Tooltip content="エクスポート" relationship="label" positioning="below-start">
                     <ToolbarButton icon={<DownloadIcon />} />
                 </Tooltip>
             </MenuTrigger>

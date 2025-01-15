@@ -7,6 +7,7 @@ export type MenuFunc = {
     saveMusicXML: () => void
     saveText: () => void
     saveAsJson: () => void
+    importMIDI: () => void
     showOpenFileDialog: () => Promise<unknown>
     showMIDIFileDialog: () => Promise<unknown>
     formatText: () => void

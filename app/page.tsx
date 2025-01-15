@@ -246,6 +246,10 @@ export default function Main() {
         log.addLog("auto compose")
     },[])
 
+    const importMIDI = useCallback(() => {
+
+    },[])
+
     const menuFunc:MenuFunc = useMemo(()=>({
         onNew,
         saveMIDI,
@@ -254,10 +258,11 @@ export default function Main() {
         saveAsJson, 
         showOpenFileDialog, 
         showMIDIFileDialog, 
+        importMIDI,
         onCompile,
         formatText,
         autoCompose
-    }),[saveAsJson, showOpenFileDialog, showMIDIFileDialog, onCompile, onNew, formatText, saveMIDI, saveMusicXML, saveText, autoCompose])
+    }),[saveAsJson, showOpenFileDialog, showMIDIFileDialog, importMIDI, onCompile, onNew, formatText, saveMIDI, saveMusicXML, saveText, autoCompose])
 
     useEffect(() => {
         window.addEventListener("beforeunload", handleBeforeUnload)
