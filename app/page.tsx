@@ -218,19 +218,23 @@ export default function Main() {
         }))
     }
 
-    const showOpenFileDialog = useCallback(() => new Promise(resolve => {
+    const showOpenFileDialog = useCallback(() => {
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = '.json, .smml'
-        input.onchange = async () => { 
-            resolve((()=>{
-                loadJSON(input.files, setTracks)
-                seq.stop()
-                seq.first()
-            })()) 
+        input.onchange = async () => {
+            seq.stop()
+            seq.first()
+            try {
+                const jsonData = await loadJSON(input.files) as Track[]
+                setCompile(jsonData)
+            }
+            catch(error){
+                console.error(error)
+            }
         }
         input.click()
-    }),[])
+    },[])
 
     const showMIDIFileDialog = useCallback(() => new Promise(resolve => {
         const input = document.createElement('input');
