@@ -224,20 +224,23 @@ export const MenuBar = memo(function MenuBar({ f, seq, midi, bpm, vox, sound, au
     </Select>
     </div>
 
-    return <div className="d-flex">
+    return <div className="d-flex bg-black">
         <FirstDialog />
         {/* <div className="fs-5 fw-bolder m-2 text-secondary">ver1.0</div> */}
-        <ToolbarDivider className="py-2"/>
+        {/* <ToolbarDivider className="py-2"/> */}
         {LeftBar}
-        <ToolbarDivider className="py-2"/>
+        {/* <ToolbarDivider className="py-2"/> */}
         {OtherBar}
-        <ToolbarDivider className="py-2"/>
+        {/* <ToolbarDivider className="py-2"/> */}
         {DisplayBar}
+
         <ToolbarDivider className="py-2"/>
         {ConductBar}
+
         <ToolbarDivider className="py-2"/>
         {SeqBar}
         <ToolbarDivider className="py-2"/>
+        
         {OperationBar}
         <ToolbarDivider className="py-2"/>
         {instBar}

@@ -7,12 +7,12 @@ body {
     padding: 0;
 }
 .pane{
-    height: calc(100vh - 77px);
-    /* background-color: grey; */
+    height: calc(100vh - 80px);
 }
 .reverse-wrapper{
     transform: rotateX(180deg);
-    overflow: scroll;
+    overflow-x: scroll;
+    overflow-y: scroll;
 }
 .reverse-content{
     transform: rotateX(180deg);
@@ -61,9 +61,7 @@ body {
     cursor: pointer
 }
 
-.pianodiv {
-    overflow: auto;
-}
+
 .pianotable {
     white-space: nowrap;
     table-layout: fixed;

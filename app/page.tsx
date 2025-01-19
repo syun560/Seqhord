@@ -224,7 +224,9 @@ export default function Main() {
         input.accept = '.json, .smml'
         input.onchange = async () => { 
             resolve((()=>{
-                loadJSON(input.files, setTracks, setBpm, setCompile)
+                loadJSON(input.files, setTracks)
+                seq.stop()
+                seq.first()
             })()) 
         }
         input.click()
@@ -353,13 +355,12 @@ export default function Main() {
     return (
         <FluentProvider theme={webDarkTheme}>
         <SSRProvider>
-        <div className="container-fluid" data-bs-theme="dark">
+        <div className="container-fluid overflow-hidden p-0" data-bs-theme="dark">
             <MenuBar f={menuFunc} seq={seq} midi={midi} vox={vox} scale={nowScale()} sound={sf} bpm={bpm} layout={layout} setLayout={setLayout} track={tracks[tabnum]} changeProgram={changeProgram} audioRef={audioRef} />
             <MarkBar marks={marks} seq={seq}/>
             <div className="row">
                 {MainPane}
             </div>
-
         </div>
         </SSRProvider>
         </FluentProvider>

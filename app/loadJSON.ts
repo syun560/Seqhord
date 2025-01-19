@@ -1,7 +1,7 @@
 import { Track } from 'types'
 import { compile } from './compile/compile'
 
-export const loadJSON = (files: any, setTracks: (tracks: Track[])=>void ,setBPM: (bpm: number)=> void, setCompile: (tracks: Track[])=>void) => {
+export const loadJSON = (files: any, setCompile: (tracks: Track[])=>void) => {
     if (!files || files.length === 0) {
         console.error('ファイルを選択して下さい')
         return
