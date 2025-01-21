@@ -15,13 +15,12 @@ import { default_tracks } from "./default_vals/defalut_tracks"
 
 // custom hook
 import { useSequencer } from "./hooks/useSequencer"
-import { useInstrument } from "./hooks/useInstrument"
+import { useMIDI } from "./hooks/useMIDI"
 import { useVoiceVox } from "./hooks/useVoicevox"
 import { useConsole } from "./hooks/useConsole"
 import { useSoundFont } from './hooks/useSoundfont'
 
 // component
-import { Disp } from './component/display'
 import { PianoRoll } from './component/PianoRoll/PianoRoll'
 import { TrackSelector } from './component/TrackSelector'
 import { SMMLEditor } from './component/SMMLEditor'
@@ -29,7 +28,7 @@ import { Singer } from "./component/Singer"
 import { PianoBoard } from "./component/PianoBoard/PianoBoard"
 import { Variables } from "./component/Variables"
 import { MenuBar } from "./component/MenuBar"
-import { MarkBar } from "./component/MarkBar"
+import { MenuBar2 } from "./component/MenuBar2"
 
 // script
 import { compile } from './compile/compile'
@@ -56,11 +55,9 @@ export default function Main() {
     // State
     const [tracks, setTracks] = useState<Track[]>(default_tracks)
     const [bpm, setBpm] = useState(120)
-    const [mea, setMea] = useState(0)
     const [title, setTitle] = useState('none')
     const [chords, setChords] = useState<Chord[]>([])
     const [vars, setVars] = useState<Var2[]>([])
-    const [piano, setPiano] = useState(true)
     const [marks, setMarks] = useState<Mark[]>([{tick:0, name: "Setup"}, {tick:8, name:"Start"}])
     const [scales, setScales] = useState<Scale[]>([{tick:0, scale: 'C'}])
     
@@ -71,7 +68,6 @@ export default function Main() {
 
     const [autoCompile, setAutoCompile] = useState(true)
     const [autoFormat, setAutoFormat] = useState(true)
-    const [maxTick, setMaxTick] = useState(0)
 
     const audioRef = useRef<HTMLAudioElement>(null)
 
@@ -80,7 +76,7 @@ export default function Main() {
     const tabNames = ["preview", "vars"]
 
     // custom hook
-    const midi = useInstrument()
+    const midi = useMIDI()
     const sf = useSoundFont()
     const seq = useSequencer(midi, tracks, bpm)
     const vox = useVoiceVox()
@@ -278,17 +274,6 @@ export default function Main() {
         }
     }, [])
 
-    // MaxTickを求める
-    useEffect(() => {
-        let m = 0
-        tracks.forEach(t=>{
-            if(t.notes.length > 0 && t.notes.at(-1)!.tick > m) {
-                m = t.notes.at(-1)!.tick
-            }
-        })
-        setMaxTick(m)
-    }, [tracks])
-
     // LeftPane
     const LeftPane = <div className={"col-md-" + (layout === "left" ? 12 : 6) + " pe-0 pane"} key={"left"}>
 
@@ -327,11 +312,7 @@ export default function Main() {
                 {rightTab === "preview" ?
                 tracks[tabnum] === undefined || tracks[tabnum].notes === undefined ?
                     '' :
-                    piano ?
-                        <PianoRoll notes={tracks[tabnum].notes} seq={seq} chords={chords} pianoBar={pianoBar?.current}/>
-                        // <NewPianoRoll notes={tracks[tabnum].notes} seq={seq} />
-                        :
-                        <Disp title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords} />
+                    <PianoRoll notes={tracks[tabnum].notes} seq={seq} chords={chords} pianoBar={pianoBar?.current}/>
                 :
                 <Variables vars={vars} />
                 }
@@ -360,8 +341,8 @@ export default function Main() {
         <FluentProvider theme={webDarkTheme}>
         <SSRProvider>
         <div className="container-fluid overflow-hidden p-0" data-bs-theme="dark">
-            <MenuBar f={menuFunc} seq={seq} midi={midi} vox={vox} scale={nowScale()} sound={sf} bpm={bpm} layout={layout} setLayout={setLayout} track={tracks[tabnum]} changeProgram={changeProgram} audioRef={audioRef} />
-            <MarkBar marks={marks} seq={seq}/>
+            <MenuBar f={menuFunc} midi={midi} vox={vox} layout={layout} setLayout={setLayout} track={tracks[tabnum]} changeProgram={changeProgram} />
+            <MenuBar2 seq={seq} scale={nowScale()} bpm={bpm} audioRef={audioRef} marks={marks} />
             <div className="row">
                 {MainPane}
             </div>

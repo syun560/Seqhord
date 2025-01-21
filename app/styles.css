@@ -7,7 +7,7 @@ body {
     padding: 0;
 }
 .pane{
-    height: calc(100vh - 80px);
+    height: calc(100vh - 86px);
 }
 .reverse-wrapper{
     transform: rotateX(180deg);
@@ -77,7 +77,7 @@ body {
     border-radius: 10px;
 }
 .bar::-webkit-scrollbar-track-piece:start {
-    background: #3c324a;
+    background: #0e3542
 }
 .bar::-webkit-scrollbar-track-piece:end {
     background: #3c324a;

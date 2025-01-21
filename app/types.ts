@@ -1,5 +1,5 @@
 import { Soundfont } from 'smplr';
-import  { Dispatch, SetStateAction } from "react"
+import  { Dispatch, MutableRefObject, RefObject, SetStateAction } from "react"
 
 export type MenuFunc = {
     onNew: () => void
@@ -140,10 +140,11 @@ export type MIDI = {
     noteOff: (pitch :number, ch:number )=>void
     programChange: (program: number, ch:number)=>void
     controlChange: (ch: number, eventNumber: number, val:number)=>void
-    volume: (val: number, ch:number)=>void
+    setVolume: (val: number, ch:number)=>void
     allNoteOff: ()=>void
     outPorts: any
     changePorts: (port: string)=>void
+    masterVolume: MutableRefObject<number>
 }
 
 export type Sound = {
