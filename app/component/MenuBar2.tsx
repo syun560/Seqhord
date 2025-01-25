@@ -39,7 +39,7 @@ export const MenuBar2 = memo(function MenuBar({ seq, bpm, audioRef, scale, marks
     }
 
     // コンダクトバー
-    const ConductBar = <div className="m-1 p-1" style={{background: "#445"}}>
+    const ConductBar = <div className="m-1 p-1 d-none d-sm-block" style={{background: "#445"}}>
         <span className="me-2">
             Tick: <Label size="large" style={{ fontFamily: "monospace" }}>
                 {String(Math.floor(seq.nowTick / 8)).padStart(3, '\xa0')}:{String((seq.nowTick % 8).toFixed(1)).padStart(2, '0')}
@@ -75,12 +75,31 @@ export const MenuBar2 = memo(function MenuBar({ seq, bpm, audioRef, scale, marks
         </Tooltip>
     </div>
 
-    return <div className="d-flex bg-black">
+    const MarkBar = <div className="d-none d-sm-block">
+        <button key="defalut" className="btn btn-sm btn-dark" onClick={()=>seq.setNowTick(8)}>Start</button>
+
+        {marks.map((mark,i)=>{
+            let isMark = false
+            if (i < marks.length - 1){
+                if (mark.tick <= seq.nowTick && seq.nowTick < marks[i+1].tick) isMark = true
+            }else{
+                if (mark.tick <= seq.nowTick) isMark = true
+            }
+            return <button 
+                className={"btn btn-sm " + (isMark ? "btn-primary" : "btn-dark")}
+                key={mark.tick + mark.name}
+                onClick={()=>seq.setNowTick(mark.tick)}
+                >
+                {mark.name}
+            </button>
+        })}
+    </div>
+
+    return <div className="d-flex" style={{background: "#10203b"}}>
         {ConductBar}
         <ToolbarDivider className="py-2"/>
         {SeqBar}
         <ToolbarDivider className="py-2"/>
-        <Button key="defalut" appearance="subtle" onClick={()=>seq.setNowTick(8)}>Start</Button>
-        {marks.map(mark=><Button key={mark.tick + mark.name} appearance="subtle" onClick={()=>seq.setNowTick(mark.tick)}>{mark.name}</Button>)}
+        {MarkBar}        
     </div>
 })

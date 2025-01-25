@@ -34,7 +34,7 @@ export const FirstDialog = memo(function FirstDialog() {
 
     return <Dialog open={open} onOpenChange={(event, data) => setOpen(data.open)}>
         <DialogTrigger disableButtonEnhancement>
-            <div className="p-1 text-info" style={{ cursor: "pointer" }}><h1 className="fs-4 fw-bolder ">Seqhord</h1></div>
+            <div className="p-1 text-info" style={{ cursor: "pointer" }}><h1 className="px-2 fs-4 fw-bolder ">Seqhord</h1></div>
         </DialogTrigger>
         <DialogSurface>
             <DialogBody>
@@ -43,9 +43,10 @@ export const FirstDialog = memo(function FirstDialog() {
             <DialogContent>
                 <br />
                 <p>Seqhord（シーコード）はテキストを解釈し、演奏データを生成する<br />
-                    <strong>ミュージックプログラミングシーケンサ</strong>です。</p>
+                    <strong>ミュージックプログラミングシーケンサ</strong>です。
+                    (PC、Webブラウザでの利用想定)</p>
                 <p>
-                    操作方法など簡単な説明については<Link href="https://youtu.be/Uhj9IiNYFsk?si=4QzzXbfAaDRHrqse" target="_blank">紹介動画</Link>をご覧ください。
+                    操作方法など簡単な説明については<Link href="/about/index" target="_blank">ドキュメント</Link>をご覧ください。
                 </p>
                 <p>■ 支援者一覧（敬称略）<br />
                 <strong>NBCG/檀エディ, あたなよく</strong></p>

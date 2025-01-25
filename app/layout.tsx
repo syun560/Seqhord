@@ -4,15 +4,27 @@ import 'styles.css'
 
 export const metadata: Metadata = {
     title: 'Seqhord',
-    description: 'Seqhordはブラウザで動く音楽プログラミング環境です',
-    twitter: {
-        card: 'summary_large_image',
+    description: 'Seqhord（シーコード）はブラウザで動く音楽プログラミング環境です',
+    icons: {
+        icon: "/images/icon.png",
+    },
+    openGraph: {
+        type: "website",
         title: 'Seqhord',
-        description: 'Seqhordはブラウザで動く音楽プログラミング環境です',
-        siteId: '1467726470533754880',
-        creator: '@nextjs',
-        creatorId: '1467726470533754880',
-        images: ['https://nextjs.org/og.png'], // Must be an absolute URL
+        description: 'Seqhord（シーコード）はブラウザで動く音楽プログラミング環境です',
+        siteName: "Seqhord",
+        url: "https://seqhord.com",
+        images: {
+            url: "https://seqhord.com/images/icon.png",
+            type: "image/png"
+        }
+    },
+    twitter: {
+        card: 'summary',
+        title: 'Seqhord',
+        description: 'Seqhord（シーコード）はブラウザで動く音楽プログラミング環境です',
+        creator: '@keymon561',
+        images: ['https://seqhord.com/images/icon.png'], // Must be an absolute URL
     },
 }
 

@@ -4,6 +4,8 @@ import { Sequencer, MIDI, Track } from '@/types'
 
 export const useSequencer = (m: MIDI, tracks: Track[], b: number):Sequencer => {
     const [isPlaying, setIsPlaying] = useState(false)
+    const isPlayingRef = useRef(false)
+
     const [midi, setMIDI] = useState<MIDI>(m)
     
     const timer = useRef<any>()
@@ -64,6 +66,7 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number):Sequencer => {
     }
     const stop = () => {
         setIsPlaying(false)
+        isPlayingRef.current = false
         midi.allNoteOff()
         clearTimeout(timer.current)
     }
@@ -110,16 +113,17 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number):Sequencer => {
             }
         })
     }
-    const playToggle = useCallback(() => {
-        if (isPlaying) {
+    const playToggle = () => {
+        if (isPlayingRef.current) {
             stop()
         }
         else {
             setup()
             setIsPlaying(true)
+            isPlayingRef.current = true
             timer.current = setTimeout(proceed, delay_time.current)
         }
-    },[timer.current, isPlaying, tracks])
+    }
 
     return {
         nowTick,

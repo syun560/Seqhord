@@ -5,6 +5,7 @@ body {
     "Hiragino Sans",
     Meiryo,
     sans-serif;
+  background: #f8f8f8;
 }
 
 h1 {
@@ -15,7 +16,7 @@ h1 {
 }
 
 h2 {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: bolder;
   border-bottom: 1px solid #CCC;
   padding-bottom: 0.4rem;
@@ -53,49 +54,50 @@ pre {
   border-radius: 8px;
   padding: 24px;
 }
-
-/* .root {
-  overflow: "hidden";
-  display: "flex";
+.myindex {
+  position: sticky;
+  top: 0; /* 固定位置を指定 */
+  padding-top: 80px;
+  min-width: 300px;
+  height: 100vh; /* 画面の高さを目一杯使用 */
+  overflow-y: auto; /* スクロール可能にする */
+  transition: min-width 300ms ease;
 }
-
-.content {
-  flex: "1";
-  padding: "0 10vw";
-  height: "100vh";
-  display: "grid";
-  overflow-y: "scroll";
-  justify-content: "flex-start";
-  align-items: "flex-start";
-} */
-
-.side {
+.collapse-index {
   position: fixed;
-  top: 0px;
-  left: 0px;
-  width: 150px;
-  height: 100vh;
-  background: lightgray;
-
-  /* 縦方向のスクロールバーを表示 */
-  overflow-y: scroll;
-
-  /* IE などのスクロールバーの色設定 */
-  scrollbar-face-color: #999;
-  scrollbar-track-color: #eee;
-
-  /* スマホ用の慣性スクロール */
-  -webkit-overflow-scrolling: touch;
+  top: 0; /* 固定位置を指定 */
+  background-color: #f8f8f8;
+  padding-top: 80px;
+  min-width: 300px;
+  height: 100vh; /* 画面の高さを目一杯使用 */
+  overflow-y: auto; /* スクロール可能にする */
+  transition: left 300ms ease;
+}
+.open {
+  left: 0;
+}
+.close {
+  left: -300px;
 }
 
-.side::-webkit-scrollbar {
-  width: 5px;
+iframe {
+  width: 100%;
+  max-width: 600px;
+
+}
+.mybrand {
+  color: #07b9c3;
+  padding-top: 0.5rem;
+  padding-bottom: 0;
+}
+.content {
+  padding-top: 30px;
+  padding-bottom: 90px;
+  margin: auto;
+
+  height: "100vh";
+  max-width: 800px;
+
+  overflow-y: "scroll";
 }
 
-.side::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.3);
-}
-
-.side::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.1);
-}

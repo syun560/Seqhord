@@ -105,7 +105,7 @@ export const MenuBar = memo(function MenuBar({ f, midi, vox, track, changeProgra
         </Menu>
     </div>
 
-    const OperationBar = <div className="py-1">
+    const OperationBar = <div className="py-1 d-none d-lg-block">
         <Tooltip content="MIDI機器に接続" relationship="label" positioning="below-start">
             <ToolbarButton appearance={midi.outPorts.length !== 0 ? "primary" : "subtle"} icon={<MidiIcon />} onClick={midi.setup} />
         </Tooltip>
@@ -121,7 +121,7 @@ export const MenuBar = memo(function MenuBar({ f, midi, vox, track, changeProgra
         </Tooltip>
     </div>
 
-    const DisplayBar = <div className="py-1">
+    const DisplayBar = <div className="py-1 d-none d-lg-block">
         <Tooltip content="Toggle Editor" relationship="label" positioning="below-start">
             <ToolbarButton onClick={() => setLayout(layout === "right" ? "normal" : "right")} appearance="subtle" icon={layout === "right" ? <LayoutColumnTwoRegular /> : <LayoutColumnTwoFocusLeftFilled />} />
         </Tooltip>
@@ -137,7 +137,7 @@ export const MenuBar = memo(function MenuBar({ f, midi, vox, track, changeProgra
         
     </div>
 
-    const OtherBar = <div className="py-1">
+    const OtherBar = <div className="py-1 d-none d-lg-block">
         <Tooltip content="フォーマットする" relationship="label" positioning="below-start">
             <ToolbarButton onClick={f.formatText} icon={<FormatIcon />} />
         </Tooltip>
@@ -161,26 +161,23 @@ export const MenuBar = memo(function MenuBar({ f, midi, vox, track, changeProgra
     // console.log("menubar rendered!!!")
 
 
-    const instBar = <div className="py-1">
+    const instBar = <div className="py-1 d-none d-sm-block">
     {midi.outPorts.length !== 0 && <Instrument midi={midi} />}
     <Select appearance="filled-darker" className="d-inline" value={track.program} onChange={(e)=>changeProgram(Number(e.target.value))} >
         {programs}
     </Select>
     </div>
 
-    return <div className="d-flex bg-black">
+    return <div className="d-flex" style={{background: "#00203b"}}>
         <FirstDialog />
         {/* <div className="fs-5 fw-bolder m-2 text-secondary">ver1.0</div> */}
-        <ToolbarDivider className="py-2"/>
         {LeftBar}
-        <ToolbarDivider className="py-2"/>
         {OtherBar}
-        <ToolbarDivider className="py-2"/>
         {DisplayBar}
-        <ToolbarDivider className="py-2"/>       
         {OperationBar}
-        <ToolbarDivider className="py-2"/>
         {instBar}
-        <Slider value={sliderValue} min={0} max={100} onChange={onSliderChange} id={id} />
+        <div className="py-1 d-none d-sm-block">
+            <Slider value={sliderValue} min={0} max={100} onChange={onSliderChange} id={id} />
+        </div>
     </div>
 })

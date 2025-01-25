@@ -1,5 +1,5 @@
 body {
-    background-color: #221
+    background-color: grey
 }
 .editor{
     font-family: monospace;
@@ -7,7 +7,18 @@ body {
     padding: 0;
 }
 .pane{
-    height: calc(100vh - 86px);
+    height: calc(100vh - 85px);
+    /* animation: flash 5.3s linear infinite; */
+}
+
+@keyframes flash {
+	0%,
+	100% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0;
+	}
 }
 .reverse-wrapper{
     transform: rotateX(180deg);
