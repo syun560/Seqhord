@@ -88,7 +88,7 @@ export default function Main({ params }: { params: { slug: string } }) {
 
         <nav className="navbar navbar-expand-md fixed-top border-bottom bg-body-tertiary">
             <div className="container-fluid">
-                <h1 className="navbar-brand fs-4 mybrand">Sechord Docs</h1>
+                <h1 className="navbar-brand fs-4 mybrand">Seqhord Docs</h1>
 
                 <button className="navbar-toggler" type="button" onClick={() => setOpen(prev => !prev)}>
                     <span className="navbar-toggler-icon"></span>
