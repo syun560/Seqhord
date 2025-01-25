@@ -15,13 +15,12 @@ import { default_tracks } from "./default_vals/defalut_tracks"
 
 // custom hook
 import { useSequencer } from "./hooks/useSequencer"
-import { useInstrument } from "./hooks/useInstrument"
+import { useMIDI } from "./hooks/useMIDI"
 import { useVoiceVox } from "./hooks/useVoicevox"
 import { useConsole } from "./hooks/useConsole"
 import { useSoundFont } from './hooks/useSoundfont'
 
 // component
-import { Disp } from './component/display'
 import { PianoRoll } from './component/PianoRoll/PianoRoll'
 import { TrackSelector } from './component/TrackSelector'
 import { SMMLEditor } from './component/SMMLEditor'
@@ -29,10 +28,11 @@ import { Singer } from "./component/Singer"
 import { PianoBoard } from "./component/PianoBoard/PianoBoard"
 import { Variables } from "./component/Variables"
 import { MenuBar } from "./component/MenuBar"
-import { MarkBar } from "./component/MarkBar"
+import { MenuBar2 } from "./component/MenuBar2"
 
 // script
 import { compile } from './compile/compile'
+import { format_text } from "./compile/format_text"
 import { generate_midi } from './generate/generate_midi'
 import { generate_musicxml } from './generate/generate_musicxml'
 import { loadJSON } from './loadJSON'
@@ -55,11 +55,9 @@ export default function Main() {
     // State
     const [tracks, setTracks] = useState<Track[]>(default_tracks)
     const [bpm, setBpm] = useState(120)
-    const [mea, setMea] = useState(0)
     const [title, setTitle] = useState('none')
     const [chords, setChords] = useState<Chord[]>([])
     const [vars, setVars] = useState<Var2[]>([])
-    const [piano, setPiano] = useState(true)
     const [marks, setMarks] = useState<Mark[]>([{tick:0, name: "Setup"}, {tick:8, name:"Start"}])
     const [scales, setScales] = useState<Scale[]>([{tick:0, scale: 'C'}])
     
@@ -70,14 +68,15 @@ export default function Main() {
 
     const [autoCompile, setAutoCompile] = useState(true)
     const [autoFormat, setAutoFormat] = useState(true)
-    const [maxTick, setMaxTick] = useState(0)
+
+    const audioRef = useRef<HTMLAudioElement>(null)
 
     const pianoBar = useRef<HTMLDivElement>(null)
 
     const tabNames = ["preview", "vars"]
 
     // custom hook
-    const midi = useInstrument()
+    const midi = useMIDI()
     const sf = useSoundFont()
     const seq = useSequencer(midi, tracks, bpm)
     const vox = useVoiceVox()
@@ -85,7 +84,7 @@ export default function Main() {
     const timer = useRef<NodeJS.Timeout | null>(null);
 
     const saveMIDI = useCallback(() => {
-        const uri = generate_midi(tracks, bpm)
+        const uri = generate_midi(tracks, bpm, marks)
         simpleDownload(`${title}.mid`, uri)
     },[tracks,title,bpm])
 
@@ -111,6 +110,14 @@ export default function Main() {
         }
         onCompile()
     },[tracks])
+
+    const formatText = useCallback(() => {
+        const formatted = format_text(tracks[tabnum].texts)
+        setTracks(trks=>trks.map((trk, ch)=>{
+            if (ch === tabnum) return {...trk, texts: formatted}
+            else return trk
+        }))
+    },[tracks, tabnum])
 
     const onTextChange = useCallback((text: string) => {
         // setTexts(texts.map((t, i) => (i === tabnum ? text : t)))
@@ -152,6 +159,7 @@ export default function Main() {
         setVars(res.vars)
         setChords(res.chords)
         setMarks(res.marks)
+        setScales(res.scales)
     },[tracks])
 
     const onAddTrack = useCallback(() => {
@@ -166,7 +174,8 @@ export default function Main() {
             notes: [],
             texts: '',
             volume: 100,
-            panpot: 64
+            panpot: 64,
+            reverb: 40
         }
         ])
     },[tracks])
@@ -205,17 +214,23 @@ export default function Main() {
         }))
     }
 
-    const showOpenFileDialog = useCallback(() => new Promise(resolve => {
+    const showOpenFileDialog = useCallback(() => {
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = '.json, .smml'
-        input.onchange = async () => { 
-            resolve((()=>{
-                loadJSON(input.files, setTracks, setBpm, setCompile)
-            })()) 
+        input.onchange = async () => {
+            seq.stop()
+            seq.first()
+            try {
+                const jsonData = await loadJSON(input.files) as Track[]
+                setCompile(jsonData)
+            }
+            catch(error){
+                console.error(error)
+            }
         }
         input.click()
-    }),[])
+    },[])
 
     const showMIDIFileDialog = useCallback(() => new Promise(resolve => {
         const input = document.createElement('input');
@@ -233,6 +248,10 @@ export default function Main() {
         log.addLog("auto compose")
     },[])
 
+    const importMIDI = useCallback(() => {
+
+    },[])
+
     const menuFunc:MenuFunc = useMemo(()=>({
         onNew,
         saveMIDI,
@@ -241,9 +260,11 @@ export default function Main() {
         saveAsJson, 
         showOpenFileDialog, 
         showMIDIFileDialog, 
+        importMIDI,
         onCompile,
+        formatText,
         autoCompose
-    }),[saveAsJson, showOpenFileDialog, showMIDIFileDialog, onCompile, onNew, saveMIDI, saveMusicXML, saveText, autoCompose])
+    }),[saveAsJson, showOpenFileDialog, showMIDIFileDialog, importMIDI, onCompile, onNew, formatText, saveMIDI, saveMusicXML, saveText, autoCompose])
 
     useEffect(() => {
         window.addEventListener("beforeunload", handleBeforeUnload)
@@ -252,17 +273,6 @@ export default function Main() {
             window.removeEventListener("beforeunload", handleBeforeUnload)
         }
     }, [])
-
-    // MaxTickを求める
-    useEffect(() => {
-        let m = 0
-        tracks.forEach(t=>{
-            if(t.notes.length > 0 && t.notes.at(-1)!.tick > m) {
-                m = t.notes.at(-1)!.tick
-            }
-        })
-        setMaxTick(m)
-    }, [tracks])
 
     // LeftPane
     const LeftPane = <div className={"col-md-" + (layout === "left" ? 12 : 6) + " pe-0 pane"} key={"left"}>
@@ -302,11 +312,7 @@ export default function Main() {
                 {rightTab === "preview" ?
                 tracks[tabnum] === undefined || tracks[tabnum].notes === undefined ?
                     '' :
-                    piano ?
-                        <PianoRoll notes={tracks[tabnum].notes} seq={seq} chords={chords} pianoBar={pianoBar?.current}/>
-                        // <NewPianoRoll notes={tracks[tabnum].notes} seq={seq} />
-                        :
-                        <Disp title={title} bpm={bpm} mea={mea} notes={tracks[tabnum].notes} chords={chords} />
+                    <PianoRoll notes={tracks[tabnum].notes} seq={seq} chords={chords} pianoBar={pianoBar?.current}/>
                 :
                 <Variables vars={vars} />
                 }
@@ -316,11 +322,11 @@ export default function Main() {
 
                 {/* float element */}
                 <div className="fixed-div">               
-                    <Singer vox={vox} tracks={tracks} bpm={bpm} />
+                    <Singer vox={vox} tracks={tracks} bpm={bpm} audioRef={audioRef} />
                 </div>
 
                 <div className="fixed-div2">
-                    <PianoBoard sf={sf} midi={midi} ch={tabnum} />
+                    <PianoBoard sf={sf} midi={midi} ch={tabnum} scale={nowScale()} />
                 </div>
             </div>
     </div>
@@ -334,13 +340,12 @@ export default function Main() {
     return (
         <FluentProvider theme={webDarkTheme}>
         <SSRProvider>
-        <div className="container-fluid" data-bs-theme="dark">
-            <MenuBar f={menuFunc} seq={seq} midi={midi} vox={vox} scale={nowScale()} sound={sf} bpm={bpm} layout={layout} setLayout={setLayout} track={tracks[tabnum]} changeProgram={changeProgram} />
-            <MarkBar marks={marks} seq={seq}/>
+        <div className="container-fluid overflow-hidden p-0" data-bs-theme="dark">
+            <MenuBar f={menuFunc} midi={midi} vox={vox} layout={layout} setLayout={setLayout} track={tracks[tabnum]} changeProgram={changeProgram} />
+            <MenuBar2 seq={seq} scale={nowScale()} bpm={bpm} audioRef={audioRef} marks={marks} />
             <div className="row">
                 {MainPane}
             </div>
-
         </div>
         </SSRProvider>
         </FluentProvider>

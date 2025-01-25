@@ -31,18 +31,43 @@ const convertNotes = (notes: Note[], bpm: number): VoiceNote[] => {
     let frame_length = 0
     let lyric = ""
 
+    // roundによるズレの補正
+    let round_shift = 0
+
     notes.forEach((note, i) => {
-        pitch = note.pitch
-        frame_length = Math.round(default_frame_length * note.duration)
+
+        // ズレの補正
+        const dur = default_frame_length * note.duration
+        round_shift += dur - Math.round(dur)
+        if (-1 < round_shift && round_shift < 1) {
+            frame_length = Math.round(dur)
+        }else {
+            frame_length = Math.round(dur) + Math.round(round_shift)
+            round_shift = round_shift - Math.round(round_shift)
+        }
+
         pitch = note.pitch
 
         if (i > 0) {
             const prevnote = notes[i - 1]
             const difftick = note.tick - prevnote.tick
+            // 休符の挿入
             if (difftick > prevnote.duration) {
+
+                // ズレの補正
+                let rest_length = 0
+                const dur = default_frame_length * (difftick - prevnote.duration)
+                round_shift += dur - Math.round(dur)
+                if (-1 < round_shift && round_shift < 1) {
+                    rest_length = Math.round(dur)
+                }else {
+                    rest_length = Math.round(dur) + Math.round(round_shift)
+                    round_shift = round_shift - Math.round(round_shift)
+                }
+
                 voiceNotes.push({
                     key: null,
-                    frame_length: Math.round(default_frame_length * (difftick - prevnote.duration)),
+                    frame_length: rest_length,
                     lyric: ""
                 })
             }

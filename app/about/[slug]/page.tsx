@@ -9,8 +9,6 @@ import slugify from 'slugify'
 
 import './manual.css'
 
-import { makeStyles } from "@fluentui/react-components";
-
 // custom component
 const H2 = ({ node, children, ...props }: any) => {
     const id = slugify(children.toString(), { lower: true });
@@ -27,24 +25,10 @@ const A = ({ node, children, ...props }: any) => {
     return <a href={props.href} target="_blank">{children}</a>;
 }
 
-const useStyles = makeStyles({
-    root: {
-        overflow: "hidden",
-        display: "flex",
-        backgroundColor: "#EEE"
-    },
-    content: {
-        flex: "1",
-        padding: "0 10vw 10vw",
-        height: "100vh",
-        backgroundColor: "#FFF",
-        overflowY: "scroll",
-    },
-})
-
 const pageList = [
     { title: "Seqhordについて", url: "./index" },
-    { title: "ユーザマニュアル",
+    {
+        title: "ユーザマニュアル",
         sub: [
             { title: "音を入力する", url: "./input_notes" },
             { title: "コード（和音）を付与する", url: "./input_chords" },
@@ -69,26 +53,26 @@ const pageList = [
     // { title: "利用規約・クレジット", url: "./credit" },
     // { title: "更新履歴", url: "./update" },
 ]
-const pages = pageList.map(page=>(
-    <li key={page.title} style={{listStyle: "none"}} className='first'>
-        
+const pages = (s :string) => pageList.map(page => (
+    <li key={page.title} className='nav-item first'>
+
         {page.url ?
-            <Link href={page.url}>{page.title}</Link>    
-            :<>{page.title}</>
+            <Link href={page.url}>{page.title}</Link>
+            : <>{page.title}</>
         }
         <ul>
-        {page.sub && page.sub.map(ps=>(
-            <li key={page.title + ps.title} style={{listStyle: "none"}}>
-                <Link href={ps.url}>{ps.title}</Link>
-            </li>
-        ))}
+            {page.sub && page.sub.map(ps => (
+                <li key={page.title + ps.title + s} style={{listStyle: "none"}}>
+                    <Link href={ps.url}>{ps.title}</Link>
+                </li>
+            ))}
         </ul>
     </li>
-    ))
+))
 
-export default function Main({params}:{params: { slug: string }}) {
-    const styles = useStyles()
+export default function Main({ params }: { params: { slug: string } }) {
     const [markdown, setMarkdown] = useState("")
+    const [open, setOpen] = useState(false)
 
     const slug = params.slug
 
@@ -98,32 +82,52 @@ export default function Main({params}:{params: { slug: string }}) {
         setMarkdown(b)
     }
 
-    useEffect(()=>{loadArticle()}, [])
+    useEffect(() => { loadArticle() }, [])
 
     return <div>
-        <div className={styles.root}>
-            <div className="pe-5">
-                <span className="fs-2 p-3 my-5">Seqhord Docs</span>
-                <ul className='mt-3'>
-                    {pages}
-                </ul>
-            </div>
 
-            <div className={styles.content}>
-                <ReactMarkdown
-                    components={{
-                        h2: H2,
-                        h3: H3,
-                        table: CustomTable,
-                        a: A
-                    }}
-                    remarkPlugins={[remarkBreaks]}
-                    rehypePlugins={[remarkGfm, rehypeRaw]}
-                    skipHtml={true}
-                    disallowedElements={['script']}
+        <nav className="navbar navbar-expand-md fixed-top border-bottom bg-body-tertiary">
+            <div className="container-fluid">
+                <h1 className="navbar-brand fs-4 mybrand">Sechord Docs</h1>
+
+                <button className="navbar-toggler" type="button" onClick={() => setOpen(prev => !prev)}>
+                    <span className="navbar-toggler-icon"></span>
+                </button>
+
+            </div>
+        </nav>
+
+        <div className="container-fluid">
+            <div className="d-flex">
+
+                <nav className={`d-md-none collapse-index ${open ? 'open' : 'close'}`}>
+                    <ul className='nav flex-column'>
+                        {pages("sub")}
+                    </ul>
+                </nav>
+
+                <nav className="d-none d-md-block myindex">
+                    <ul className='nav flex-column'>
+                        {pages("main")}
+                    </ul>
+                </nav>
+
+                <div className="bg-light content">
+                    <ReactMarkdown
+                        components={{
+                            h2: H2,
+                            h3: H3,
+                            table: CustomTable,
+                            a: A
+                        }}
+                        remarkPlugins={[remarkBreaks]}
+                        rehypePlugins={[remarkGfm, rehypeRaw]}
+                        skipHtml={true}
+                        disallowedElements={['script']}
                     >
-                    {markdown}
-                </ReactMarkdown>
+                        {markdown}
+                    </ReactMarkdown>
+                </div>
             </div>
         </div>
     </div>

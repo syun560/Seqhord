@@ -32,7 +32,8 @@ export const compile = (tracks: Track[]) => {
             notes: [],
             texts: tracks[i].texts,
             volume: 100,
-            panpot: 64
+            panpot: 64,
+            reverb: 40
         })
     }
     
@@ -52,7 +53,10 @@ export const compile = (tracks: Track[]) => {
         const line = l.replace(/\s+/g, "");
 
         // 空行の場合は次のtickへ進む
-        if (line === "") res.tick = next_tick
+        if (line === "") {
+            res.tick = next_tick
+            return
+        }
 
         // console.log("------")
         // console.log("res.tick: ", res.tick)
@@ -104,6 +108,12 @@ export const compile = (tracks: Track[]) => {
             }
             else if (line.indexOf('volume') !== -1) {
                 res.tracks[0].volume = Number(line.slice(line.indexOf('=') + 1))
+            }
+            else if (line.indexOf('panpot') !== -1) {
+                res.tracks[0].panpot = Number(line.slice(line.indexOf('=') + 1))
+            }
+            else if (line.indexOf('reverb') !== -1) {
+                res.tracks[0].reverb = Number(line.slice(line.indexOf('=') + 1))
             }
             // パラグラフ
             else if (line.indexOf('p') !== -1){

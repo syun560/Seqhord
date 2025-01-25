@@ -27,16 +27,19 @@ export default function PianoRollCell(props: Props) {
         borderBottom: '0px black solid',
         borderLeft: '',
         overflow: 'visible',
-        fontSize: '0.8em',
+        fontSize: '1em',
     }
     let pianodiv: {[key: string]: string}= {
         background: 'black',
         position: 'relative',
+        color: '#1e5782',
+        fontWeight: 'bold',
         // right: '-50px',
         height: `${height}px`,
         width: `${width * props.duration + 2 }px`,
         margin: '-1px',
-        padding: '0px',
+        lineHeight: '1.3',
+        padding: '0 0 0 0.15em',
         border: '1px #555 solid',
     }
 
@@ -53,7 +56,7 @@ export default function PianoRollCell(props: Props) {
     // 拍子はa/bで表される
     let a = 4
 
-    if (props.tick % 2 === 0) td = { ...td, borderLeft: '1px solid #999999' }    // 1拍ごとの線
+    if (props.tick % 2 === 0) td = { ...td, borderLeft: '1px solid #999999' } // 1拍ごとの線
     if (props.tick % (a * 2) === 0) td = { ...td, borderLeft: '1px solid #DDD' } // 1小節ごとの線
 
     // console.log("pianocell")
@@ -61,7 +64,7 @@ export default function PianoRollCell(props: Props) {
     return <td style={td}>
         {!props.selected ? <></> :
         <div style={pianodiv} className='shadow-lg'>
-            <span className='text-primary'>{props.lyric}</span>
+            <span>{props.lyric}</span>
         </div>
         }
     </td>

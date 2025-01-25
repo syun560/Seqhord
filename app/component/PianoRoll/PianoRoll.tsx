@@ -66,7 +66,7 @@ export const PianoRoll: React.FC<PianoRollProps> = ({ notes, seq, chords, pianoB
         const pitch = 127 - indexRow
         if (pitch < minNote || pitch > maxNote) return
         else return (
-            <tr key={fuga}>
+            <tr key={fuga} onClick={seq.playToggle}>
                 {/* 音階 */}
                 <th style={pitch % 12 ? st(pitch) : th_base}>
                     <div style={note_name_style}>

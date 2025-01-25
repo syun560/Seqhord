@@ -14,10 +14,14 @@ const tdStyle = (tick: number) => {
         borderBottom: '1px solid black',
         borderLeft: '',
         width: '20px',
+        cursor: 'pointer',
         position: 'sticky' as const,
-        top: 0
+        top: 0,
     }
-    if (tick % a === 0) res = { ...res, borderLeft: '1px solid black' }
+    if (tick % a === 0) res = { 
+        ...res,
+        borderLeft: '1px solid black',
+    }
     return res
 }
 

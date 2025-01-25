@@ -1,5 +1,5 @@
 import { Soundfont } from 'smplr';
-import  { Dispatch, SetStateAction } from "react"
+import  { Dispatch, MutableRefObject, RefObject, SetStateAction } from "react"
 
 export type MenuFunc = {
     onNew: () => void
@@ -7,8 +7,10 @@ export type MenuFunc = {
     saveMusicXML: () => void
     saveText: () => void
     saveAsJson: () => void
-    showOpenFileDialog: () => Promise<unknown>
+    importMIDI: () => void
+    showOpenFileDialog: () => void
     showMIDIFileDialog: () => Promise<unknown>
+    formatText: () => void
     onCompile: () => void
     autoCompose: () => void
 }
@@ -101,6 +103,7 @@ export type Track = {
     texts: string
     program: number // プログラムナンバー(1～128)
     volume: number
+    reverb: number
     panpot: number
 }
 
@@ -110,6 +113,11 @@ export type Scale = {
 }
 
 export type Mark = {
+    tick: number
+    name: string
+}
+
+export type ControlChangeEvent = {
     tick: number
     name: string
 }
@@ -131,10 +139,12 @@ export type MIDI = {
     noteOn: (pitch :number, ch:number, duration?: number)=>void
     noteOff: (pitch :number, ch:number )=>void
     programChange: (program: number, ch:number)=>void
-    volume: (val: number, ch:number)=>void
+    controlChange: (ch: number, eventNumber: number, val:number)=>void
+    setVolume: (val: number, ch:number)=>void
     allNoteOff: ()=>void
     outPorts: any
     changePorts: (port: string)=>void
+    masterVolume: MutableRefObject<number>
 }
 
 export type Sound = {

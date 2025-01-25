@@ -1,15 +1,15 @@
 import React, { memo, useState, useRef, useEffect } from 'react'
-import { Track, VoiceVox } from 'types'
+import { Track, VoiceVox, Sequencer } from 'types'
 import { Button, Select } from '@fluentui/react-components'
-import zundamon from "/public/images/zzm_zunmon027.png"
 
 interface SingerProps {
     vox: VoiceVox
     tracks: Track[]
     bpm: number
+    audioRef: React.RefObject<HTMLAudioElement>
 }
 
-export const Singer = memo(function Singer({vox, tracks, bpm} :SingerProps)  {
+export const Singer = memo(function Singer({vox, tracks, bpm, audioRef} :SingerProps)  {
 
     // console.log("singer rendered!!")
     const [sample, setSample] = useState<string>("")
@@ -95,9 +95,10 @@ export const Singer = memo(function Singer({vox, tracks, bpm} :SingerProps)  {
 
     {vox.audioData && synthState &&
         <audio
-        controls
-        src={vox.audioData ? window.URL.createObjectURL(vox.audioData) : undefined}>
-        </audio>
+            controls
+            src={vox.audioData ? window.URL.createObjectURL(vox.audioData) : undefined}
+            ref={audioRef}
+        />
     }
 
     {sample && sample !== "" && <audio src={sample} ref={sampleRef}/>}
