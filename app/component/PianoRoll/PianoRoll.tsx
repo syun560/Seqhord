@@ -1,6 +1,6 @@
 import React from 'react'
 import { useMemo } from "react"
-import { Note, Sequencer, Chord } from 'types'
+import { Track, Sequencer, Chord } from 'types'
 import Lib from 'Lib'
 
 import { Conductor } from './Conductor.tsx'
@@ -35,13 +35,18 @@ const st = (note: number) => {
 }
 
 type PianoRollProps = {
-    notes: Note[]
+    tracks: Track[]
+    nowTrack: number
     seq: Sequencer
     chords: Chord[]
     pianoBar: HTMLDivElement|null
 }
 
-export const PianoRoll: React.FC<PianoRollProps> = ({ notes, seq, chords, pianoBar }) => {
+export const PianoRoll: React.FC<PianoRollProps> = ({ tracks, nowTrack: nowTrack, seq, chords, pianoBar }) => {
+    if(tracks[nowTrack] === undefined || tracks[nowTrack].notes === undefined) return <></>
+
+    const notes = tracks[nowTrack].notes
+
     // 最小値と最大値
     const [minNote, maxNote] = useMemo(()=>Lib.getMinMaxNote(notes),[notes])
     // const [minNote, maxNote] = [0, 128]
@@ -64,6 +69,7 @@ export const PianoRoll: React.FC<PianoRollProps> = ({ notes, seq, chords, pianoB
     // ピアノロール生成
     const roll = useMemo(() => pitchs.map((fuga, indexRow) => {        
         const pitch = 127 - indexRow
+        console.log("Pianoroll")
         if (pitch < minNote || pitch > maxNote) return
         else return (
             <tr key={fuga} onClick={seq.playToggle}>

@@ -51,6 +51,8 @@ const handleBeforeUnload = (e: any) => {
     e.returnValue = "ページを離れますか？（変更は保存されません）"
 }
 
+type RightTabType = "Preview"|"Vars"
+
 export default function Main() {
     // State
     const [tracks, setTracks] = useState<Track[]>(default_tracks)
@@ -58,11 +60,11 @@ export default function Main() {
     const [title, setTitle] = useState('none')
     const [chords, setChords] = useState<Chord[]>([])
     const [vars, setVars] = useState<Var2[]>([])
-    const [marks, setMarks] = useState<Mark[]>([{tick:0, name: "Setup"}, {tick:8, name:"Start"}])
+    const [marks, setMarks] = useState<Mark[]>([{tick:0, name: "Setup"}])
     const [scales, setScales] = useState<Scale[]>([{tick:0, scale: 'C'}])
     
-    const [tabnum, setTabnum] = useState(0)
-    const [rightTab, setRightTab] = useState("preview")
+    const [nowTrack, setNowTrack] = useState(0)
+    const [rightTab, setRightTab] = useState<RightTabType>("Preview")
     
     const [layout, setLayout] = useState<"left"|"normal"|"right">('normal')
 
@@ -73,7 +75,7 @@ export default function Main() {
 
     const pianoBar = useRef<HTMLDivElement>(null)
 
-    const tabNames = ["preview", "vars"]
+    const tabNames: RightTabType[] = ["Preview", "Vars"]
 
     // custom hook
     const midi = useMIDI()
@@ -95,9 +97,9 @@ export default function Main() {
     },[tracks, title, bpm])
 
     const saveText = useCallback(() => {
-        const text = tracks[tabnum].texts
+        const text = tracks[nowTrack].texts
         simpleDownload(`${title}.txt`, 'data:text/plain;charset=utf-8,' + encodeURIComponent(text))
-    },[tracks, title, tabnum])
+    },[tracks, title, nowTrack])
 
     const saveAsJson = useCallback(() => {
         simpleDownload(`${title}.smml`, URL.createObjectURL(new Blob([JSON.stringify(tracks)], { type: 'text/json' })))
@@ -112,17 +114,17 @@ export default function Main() {
     },[tracks])
 
     const formatText = useCallback(() => {
-        const formatted = format_text(tracks[tabnum].texts)
+        const formatted = format_text(tracks[nowTrack].texts)
         setTracks(trks=>trks.map((trk, ch)=>{
-            if (ch === tabnum) return {...trk, texts: formatted}
+            if (ch === ch) return {...trk, texts: formatted}
             else return trk
         }))
-    },[tracks, tabnum])
+    },[tracks, nowTrack])
 
     const onTextChange = useCallback((text: string) => {
         // setTexts(texts.map((t, i) => (i === tabnum ? text : t)))
         const tk = [...tracks]
-        tk[tabnum].texts = text
+        tk[nowTrack].texts = text
         setTracks(tk)
         if (autoCompile) {
             if (timer.current) { clearTimeout(timer.current); }
@@ -130,7 +132,7 @@ export default function Main() {
                 onCompile()
             }, 3000)
         }
-    },[tabnum, tracks, autoCompile, timer.current])
+    },[nowTrack, tracks, autoCompile, timer.current])
 
     const setCompile = (tracks: Track[]) => {
         const res = compile(tracks)
@@ -186,12 +188,8 @@ export default function Main() {
         const tmp_tracks = [...tracks]
         tmp_tracks.splice(t, 1)
         setTracks(tmp_tracks)
-        setTabnum(0)
+        setNowTrack(0)
     },[tracks])
-
-    const onTabChange = useCallback((t: number)=>{
-        setTabnum(t)
-    },[])
 
     const nowScale = () => {
         let sc = "C"
@@ -203,11 +201,11 @@ export default function Main() {
     }
 
     const changeProgram = (program: number) => {
-        midi.programChange(program, tabnum)
-        midi.noteOn(60, tabnum, 1000)
+        midi.programChange(program, nowTrack)
+        midi.noteOn(60, tracks[nowTrack].ch, 1000)
 
         setTracks(tracks.map((track, i)=>{
-            if (i === tabnum) {
+            if (i === nowTrack) {
                 return {...track, program}
             }
             else return track
@@ -221,6 +219,7 @@ export default function Main() {
         input.onchange = async () => {
             seq.stop()
             seq.first()
+            setNowTrack(0)
             try {
                 const jsonData = await loadJSON(input.files) as Track[]
                 setCompile(jsonData)
@@ -277,12 +276,16 @@ export default function Main() {
     // LeftPane
     const LeftPane = <div className={"col-md-" + (layout === "left" ? 12 : 6) + " pe-0 pane"} key={"left"}>
 
-        <TrackSelector tracks={tracks} tabnum={tabnum} onAddTrack={onAddTrack} onTabChange={onTabChange} onDeleteTab={onDeleteTab} />
-
+        <ul className="nav nav-tabs">
+            <a className="pointer nav-link active">
+                Code
+            </a>
+        </ul>
+        
         <div style={{ height: "calc(100% - 42px)" }}>
-            {tracks[tabnum] === undefined ? '' :
+            {tracks[nowTrack] === undefined ? '' :
                 // <textarea className="form-control editor m-0 bar" value={tracks[tabnum].texts} rows={32} cols={20} onChange={(e) => onTextChange(e.target.value)} wrap="off" />
-                <SMMLEditor value={tracks[tabnum].texts} doChange={onTextChange} />
+                <SMMLEditor value={tracks[nowTrack].texts} doChange={onTextChange} />
             }
 
             {/* Left Down Pane */}
@@ -293,6 +296,11 @@ export default function Main() {
                 readOnly />
         </div>
     </div>
+
+    const RightTab = {
+        "Preview": <PianoRoll tracks={tracks} nowTrack={nowTrack} seq={seq} chords={chords} pianoBar={pianoBar?.current}/>,
+        "Vars": <Variables vars={vars} />
+    }
 
     const RightPane = <div className={"col-md-" + (layout === "right" ? 12 : 6) + " ps-0 pane"} key="right">
         <ul className="nav nav-tabs">
@@ -309,24 +317,20 @@ export default function Main() {
                 <div className="reverse-wrapper bar" ref={pianoBar}>
                 <div className="reverse-content">
 
-                {rightTab === "preview" ?
-                tracks[tabnum] === undefined || tracks[tabnum].notes === undefined ?
-                    '' :
-                    <PianoRoll notes={tracks[tabnum].notes} seq={seq} chords={chords} pianoBar={pianoBar?.current}/>
-                :
-                <Variables vars={vars} />
-                }
+                {RightTab[rightTab]}
                 </div>
                 </div>
 
 
                 {/* float element */}
                 <div className="fixed-div">               
-                    <Singer vox={vox} tracks={tracks} bpm={bpm} audioRef={audioRef} />
+                {vox.singers_portrait !== "" &&
+                    <img height="88%" src={vox.singers_portrait} alt="singer"/>
+                }
                 </div>
 
                 <div className="fixed-div2">
-                    <PianoBoard sf={sf} midi={midi} ch={tabnum} scale={nowScale()} />
+                    <PianoBoard sf={sf} midi={midi} ch={tracks[nowTrack].ch} scale={nowScale()} />
                 </div>
             </div>
     </div>
@@ -341,8 +345,17 @@ export default function Main() {
         <FluentProvider theme={webDarkTheme}>
         <SSRProvider>
         <div className="container-fluid overflow-hidden p-0" data-bs-theme="dark">
-            <MenuBar f={menuFunc} midi={midi} vox={vox} layout={layout} setLayout={setLayout} track={tracks[tabnum]} changeProgram={changeProgram} />
-            <MenuBar2 seq={seq} scale={nowScale()} bpm={bpm} audioRef={audioRef} marks={marks} />
+    
+            <div className="d-flex align-items-center" style={{background: "#00203b"}}>
+                <MenuBar f={menuFunc} midi={midi} vox={vox} layout={layout} setLayout={setLayout} />
+                <Singer vox={vox} tracks={tracks} bpm={bpm} audioRef={audioRef} />
+            </div>
+
+            <div className="d-flex align-items-center" style={{background: "#10203b"}}>
+                <TrackSelector tracks={tracks} nowTrack={nowTrack} onAddTrack={onAddTrack} onDeleteTab={onDeleteTab} setNowTrack={setNowTrack}/>
+                <MenuBar2 tracks={tracks} seq={seq} scale={nowScale()} bpm={bpm} audioRef={audioRef} marks={marks} tabnum={nowTrack} changeProgram={changeProgram}/>
+            </div>
+    
             <div className="row">
                 {MainPane}
             </div>

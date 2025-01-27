@@ -1,10 +1,10 @@
 import React, { memo } from "react"
-import { Sequencer, Mark } from "@/types";
-import Lib from '../Lib'
+import { Sequencer, Mark, Track } from "@/types";
+import Lib from "@/Lib";
 
 // fluent ui
 import {
-    Button, Label, Tooltip, ToolbarButton, ToolbarDivider,
+    Select, Button, Label, Tooltip, ToolbarButton, ToolbarDivider,
 } from "@fluentui/react-components"
 
 import {
@@ -22,14 +22,24 @@ const FastForwardIcon = bundleIcon(ChevronRightRegular, ChevronRightFilled)
 const PrevIcon = bundleIcon(ChevronLeftRegular, ChevronLeftFilled)
 
 type MenuBarPropsType = {
+    tracks: Track[]
     seq: Sequencer
     scale: string
     bpm: number
     audioRef: React.RefObject<HTMLAudioElement>
     marks: Mark[]
+    tabnum: number
+
+    changeProgram: (program: number) => void
 }
 
-export const MenuBar2 = memo(function MenuBar({ seq, bpm, audioRef, scale, marks }: MenuBarPropsType) {
+const programs = Lib.programName.map((p, i) => <option key={i} value={i}>{String(i).padStart(3, '0')}: {p}</option>)
+const drums = Lib.drumName.map((p, i) => {
+    if (p === "") return
+    return <option key={i} value={i}>{String(i).padStart(3, '0')}: {p}</option>
+})
+
+export const MenuBar2 = memo(function MenuBar({ tracks, seq, bpm, audioRef, scale, marks, tabnum, changeProgram }: MenuBarPropsType) {
 
     const play2 = () => {
         seq.playToggle()
@@ -39,7 +49,7 @@ export const MenuBar2 = memo(function MenuBar({ seq, bpm, audioRef, scale, marks
     }
 
     // コンダクトバー
-    const ConductBar = <div className="m-1 p-1 d-none d-sm-block" style={{background: "#445"}}>
+    const ConductBar = <div className="p-1 d-none d-sm-block">
         <span className="me-2">
             Tick: <Label size="large" style={{ fontFamily: "monospace" }}>
                 {String(Math.floor(seq.nowTick / 8)).padStart(3, '\xa0')}:{String((seq.nowTick % 8).toFixed(1)).padStart(2, '0')}
@@ -76,30 +86,38 @@ export const MenuBar2 = memo(function MenuBar({ seq, bpm, audioRef, scale, marks
     </div>
 
     const MarkBar = <div className="d-none d-sm-block">
-        <button key="defalut" className="btn btn-sm btn-dark" onClick={()=>seq.setNowTick(8)}>Start</button>
 
-        {marks.map((mark,i)=>{
+        {marks.map((mark, i) => {
             let isMark = false
-            if (i < marks.length - 1){
-                if (mark.tick <= seq.nowTick && seq.nowTick < marks[i+1].tick) isMark = true
-            }else{
+            if (i < marks.length - 1) {
+                if (mark.tick <= seq.nowTick && seq.nowTick < marks[i + 1].tick) isMark = true
+            } else {
                 if (mark.tick <= seq.nowTick) isMark = true
             }
-            return <button 
+            return <button
                 className={"btn btn-sm " + (isMark ? "btn-primary" : "btn-dark")}
                 key={mark.tick + mark.name}
-                onClick={()=>seq.setNowTick(mark.tick)}
-                >
+                onClick={() => seq.setNowTick(mark.tick)}
+            >
                 {mark.name}
             </button>
         })}
     </div>
-
-    return <div className="d-flex" style={{background: "#10203b"}}>
-        {ConductBar}
-        <ToolbarDivider className="py-2"/>
-        {SeqBar}
-        <ToolbarDivider className="py-2"/>
-        {MarkBar}        
+    
+    
+    const instBar = <div>
+        <Select value={tracks[tabnum].program} onChange={(e) => changeProgram(Number(e.target.value))} >
+            {tracks[tabnum].type === "drum" ? drums : programs}
+        </Select>
     </div>
+
+    return <>
+        {instBar}
+        <ToolbarDivider className="py-2" />
+        {ConductBar}
+        <ToolbarDivider className="py-2" />
+        {SeqBar}
+        <ToolbarDivider className="py-2" />
+        {MarkBar}
+    </>
 })

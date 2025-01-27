@@ -103,8 +103,5 @@ export const Singer = memo(function Singer({vox, tracks, bpm, audioRef} :SingerP
 
     {sample && sample !== "" && <audio src={sample} ref={sampleRef}/>}
     </div>
-    {vox.singers_portrait !== "" && items.length !== 0 &&
-        <img onClick={sampleVoice} height="88%" src={vox.singers_portrait} alt="singer"/>
-    }
     </>
 })

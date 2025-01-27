@@ -19,6 +19,11 @@ export const Instrument = (props: Props) => {
             <option key={n++} value={value.ID}>{value.name}</option> 
             )
         }
+        else {
+            out_items = [<option key={-1} value={-1}>- No MIDI outputs</option>]
+        }
+    }else {
+        out_items = [<option key={-1} value={-1}>- No MIDI outputs</option>]
     }
 
     return <span className='me-2'>

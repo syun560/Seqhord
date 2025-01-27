@@ -3,7 +3,6 @@ import React,{ memo } from 'react'
 import { Piano, KeyboardShortcuts, MidiNumbers } from 'react-piano'
 import { Sound, MIDI } from '@/types'
 import 'react-piano/dist/styles.css'
-import { channel } from 'diagnostics_channel'
 
 type PianoBoardPropsType = {
     sf: Sound

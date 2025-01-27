@@ -1,35 +1,41 @@
-import React, { memo } from "react"
+import React, { memo, Dispatch, SetStateAction } from "react"
 import { Track } from '../types.ts'
+import Lib from "@/Lib";
+
+// fluent ui
+import {
+    Select, Button, Tooltip, ToolbarButton, 
+} from "@fluentui/react-components"
+
+import {
+    bundleIcon,
+    AddCircleFilled,
+    DismissFilled
+} from "@fluentui/react-icons"
 
 type TrackSelectorProps = {
     tracks: Track[]
-    tabnum: number
-    onTabChange: (param : number) => void
-    onAddTrack: ()=>void
+    nowTrack: number
+    onAddTrack: () => void
     onDeleteTab: (param: number) => void
+    setNowTrack: Dispatch<SetStateAction<number>>
 }
 
-export const TrackSelector = memo(function trackSelector({tracks, tabnum, onTabChange, onAddTrack, onDeleteTab}:TrackSelectorProps) {
+export const TrackSelector = memo(function trackSelector({ tracks, nowTrack, onAddTrack, onDeleteTab, setNowTrack }: TrackSelectorProps) {
 
     // console.log("Trackselector rendered")
 
-    const tabChange = (t: number) => {
-        if (t !== tabnum) {
-            onTabChange(t)
-        }
-    }
+    return <>
+        <Select value={nowTrack} onChange={(e) => setNowTrack(Number(e.target.value))}>
+            {tracks.map((track, i) => <option value={i} key={track.ch + track.name}>{`Ch.${track.ch}: ${track.name} (${Lib.getProgramName(track.program,track.type === "drum")})`}</option>)}
+        </Select>
 
-    return <ul className="nav nav-tabs">
-    {tracks.map((cn, i)=>{
-        return <li className="nav-item" key={i}>
-            <a className={"pointer nav-link" + (i === tabnum ? " active" : "")} onClick={()=>tabChange(i)}>
-                {`${i}: ${cn.name}`}
-                {tabnum===i && i !==0 ?<button type="button" onClick={()=>onDeleteTab(i)} className="btn btn-sm ms-2 me-0 p-0">✕</button>:<></>}
-            </a>
-        </li>
-    })}
-        <li className="nav-item" key={1000}>
-            <a className="pointer nav-link" onClick={onAddTrack}>+</a>
-        </li>
-    </ul>
+        <Tooltip content="トラックを追加" relationship="label" positioning="below-start">
+            <ToolbarButton onClick={onAddTrack} appearance="transparent" icon={<AddCircleFilled />}></ToolbarButton>
+        </Tooltip>
+        
+        <Tooltip content="トラックの削除" relationship="label" positioning="below-start">
+            <ToolbarButton onClick={()=>onDeleteTab(nowTrack)} appearance="transparent" icon={<DismissFilled />} disabled={nowTrack === 0}></ToolbarButton>
+        </Tooltip>
+    </>
 })
