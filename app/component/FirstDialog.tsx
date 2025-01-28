@@ -1,5 +1,4 @@
 import React, { memo, useState, useEffect } from "react"
-import type { CheckboxProps } from "@fluentui/react-components";
 
 import Link from "next/link";
 
@@ -8,7 +7,6 @@ import {
     Button, Checkbox,
     Dialog, DialogTrigger, DialogSurface, DialogTitle, DialogBody, DialogActions, DialogContent,
 } from "@fluentui/react-components"
-
 
 export const FirstDialog = memo(function FirstDialog() {
     const [checked ,setChecked] = useState<boolean>(true)

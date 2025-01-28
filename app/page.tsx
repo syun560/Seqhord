@@ -29,6 +29,7 @@ import { PianoBoard } from "./component/PianoBoard/PianoBoard"
 import { Variables } from "./component/Variables"
 import { MenuBar } from "./component/MenuBar"
 import { MenuBar2 } from "./component/MenuBar2"
+import { Songs } from "./component/Songs"
 
 // script
 import { compile } from './compile/compile'
@@ -39,6 +40,7 @@ import { loadJSON } from './loadJSON'
 import { loadMIDI } from './loadMIDI'
 
 import './styles.css'
+import { savelocal } from "./utils/savelocal"
 
 const simpleDownload = (title: string, url: string) => {
     const a = document.createElement('a')
@@ -51,7 +53,8 @@ const handleBeforeUnload = (e: any) => {
     e.returnValue = "ページを離れますか？（変更は保存されません）"
 }
 
-type RightTabType = "Preview"|"Vars"
+type LeftTabType = "Code" | "Songs"
+type RightTabType = "Preview" | "Vars"
 
 export default function Main() {
     // State
@@ -60,22 +63,23 @@ export default function Main() {
     const [title, setTitle] = useState('none')
     const [chords, setChords] = useState<Chord[]>([])
     const [vars, setVars] = useState<Var2[]>([])
-    const [marks, setMarks] = useState<Mark[]>([{tick:0, name: "Setup"}])
-    const [scales, setScales] = useState<Scale[]>([{tick:0, scale: 'C'}])
-    
+    const [marks, setMarks] = useState<Mark[]>([{ tick: 0, name: "Setup" }])
+    const [scales, setScales] = useState<Scale[]>([{ tick: 0, scale: 'C' }])
+
     const [nowTrack, setNowTrack] = useState(0)
+    const [leftTab, setLeftTab] = useState<LeftTabType>("Code")
     const [rightTab, setRightTab] = useState<RightTabType>("Preview")
-    
-    const [layout, setLayout] = useState<"left"|"normal"|"right">('normal')
+
+    const [layout, setLayout] = useState<"left" | "normal" | "right">('normal')
 
     const [autoCompile, setAutoCompile] = useState(true)
     const [autoFormat, setAutoFormat] = useState(true)
 
     const audioRef = useRef<HTMLAudioElement>(null)
-
     const pianoBar = useRef<HTMLDivElement>(null)
 
-    const tabNames: RightTabType[] = ["Preview", "Vars"]
+    const rightTabNames: RightTabType[] = ["Preview", "Vars"]
+    const leftTabNames: LeftTabType[] = ["Code", "Songs"]
 
     // custom hook
     const midi = useMIDI()
@@ -88,38 +92,38 @@ export default function Main() {
     const saveMIDI = useCallback(() => {
         const uri = generate_midi(tracks, bpm, marks)
         simpleDownload(`${title}.mid`, uri)
-    },[tracks,title,bpm])
+    }, [tracks, title, bpm])
 
     const saveMusicXML = useCallback(() => {
         const xml = generate_musicxml(0, tracks[0].notes, bpm)
         const blob = new Blob([xml], { type: 'text/plain;charset=utf-8' })
         simpleDownload(`${title}.musicxml`, URL.createObjectURL(blob))
-    },[tracks, title, bpm])
+    }, [tracks, title, bpm])
 
     const saveText = useCallback(() => {
         const text = tracks[nowTrack].texts
         simpleDownload(`${title}.txt`, 'data:text/plain;charset=utf-8,' + encodeURIComponent(text))
-    },[tracks, title, nowTrack])
+    }, [tracks, title, nowTrack])
 
     const saveAsJson = useCallback(() => {
         simpleDownload(`${title}.smml`, URL.createObjectURL(new Blob([JSON.stringify(tracks)], { type: 'text/json' })))
-    },[title, tracks])
+    }, [title, tracks])
 
     const onNew = useCallback(() => {
         if (confirm('新規作成しますか？（現在のデータは削除されます）')) {
-            tracks.forEach(track=>track.texts = "")
+            tracks.forEach(track => track.texts = "")
             setTracks([...tracks])
         }
         onCompile()
-    },[tracks])
+    }, [tracks])
 
     const formatText = useCallback(() => {
         const formatted = format_text(tracks[nowTrack].texts)
-        setTracks(trks=>trks.map((trk, ch)=>{
-            if (ch === ch) return {...trk, texts: formatted}
+        setTracks(trks => trks.map((trk, ch) => {
+            if (ch === ch) return { ...trk, texts: formatted }
             else return trk
         }))
-    },[tracks, nowTrack])
+    }, [tracks, nowTrack])
 
     const onTextChange = useCallback((text: string) => {
         // setTexts(texts.map((t, i) => (i === tabnum ? text : t)))
@@ -132,7 +136,7 @@ export default function Main() {
                 onCompile()
             }, 3000)
         }
-    },[nowTrack, tracks, autoCompile, timer.current])
+    }, [nowTrack, tracks, autoCompile, timer.current])
 
     const setCompile = (tracks: Track[]) => {
         const res = compile(tracks)
@@ -162,7 +166,7 @@ export default function Main() {
         setChords(res.chords)
         setMarks(res.marks)
         setScales(res.scales)
-    },[tracks])
+    }, [tracks])
 
     const onAddTrack = useCallback(() => {
         if (tracks.length > 16) return
@@ -180,7 +184,7 @@ export default function Main() {
             reverb: 40
         }
         ])
-    },[tracks])
+    }, [tracks])
 
     const onDeleteTab = useCallback((t: number) => {
         const conf = confirm('トラックを削除しますか？（この操作は取り消しできません）')
@@ -189,11 +193,11 @@ export default function Main() {
         tmp_tracks.splice(t, 1)
         setTracks(tmp_tracks)
         setNowTrack(0)
-    },[tracks])
+    }, [tracks])
 
     const nowScale = () => {
         let sc = "C"
-        const found = scales.filter(s=>s.tick<=seq.nowTick)
+        const found = scales.filter(s => s.tick <= seq.nowTick)
         if (found.length > 0) {
             sc = found[found.length - 1].scale
         }
@@ -204,9 +208,9 @@ export default function Main() {
         midi.programChange(program, nowTrack)
         midi.noteOn(60, tracks[nowTrack].ch, 1000)
 
-        setTracks(tracks.map((track, i)=>{
+        setTracks(tracks.map((track, i) => {
             if (i === nowTrack) {
-                return {...track, program}
+                return { ...track, program }
             }
             else return track
         }))
@@ -224,46 +228,46 @@ export default function Main() {
                 const jsonData = await loadJSON(input.files) as Track[]
                 setCompile(jsonData)
             }
-            catch(error){
+            catch (error) {
                 console.error(error)
             }
         }
         input.click()
-    },[])
+    }, [])
 
     const showMIDIFileDialog = useCallback(() => new Promise(resolve => {
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = '.mid, .midi, .smf'
-        input.onchange = async () => { 
-            resolve((()=>{
+        input.onchange = async () => {
+            resolve((() => {
                 loadMIDI(input.files, setTracks, setBpm)
-            })()) 
+            })())
         }
         input.click()
-    }),[])
+    }), [])
 
     const autoCompose = useCallback(() => {
         log.addLog("auto compose")
-    },[])
+    }, [])
 
     const importMIDI = useCallback(() => {
 
-    },[])
+    }, [])
 
-    const menuFunc:MenuFunc = useMemo(()=>({
+    const menuFunc: MenuFunc = useMemo(() => ({
         onNew,
         saveMIDI,
         saveMusicXML,
         saveText,
-        saveAsJson, 
-        showOpenFileDialog, 
-        showMIDIFileDialog, 
+        saveAsJson,
+        showOpenFileDialog,
+        showMIDIFileDialog,
         importMIDI,
         onCompile,
         formatText,
         autoCompose
-    }),[saveAsJson, showOpenFileDialog, showMIDIFileDialog, importMIDI, onCompile, onNew, formatText, saveMIDI, saveMusicXML, saveText, autoCompose])
+    }), [saveAsJson, showOpenFileDialog, showMIDIFileDialog, importMIDI, onCompile, onNew, formatText, saveMIDI, saveMusicXML, saveText, autoCompose])
 
     useEffect(() => {
         window.addEventListener("beforeunload", handleBeforeUnload)
@@ -273,16 +277,8 @@ export default function Main() {
         }
     }, [])
 
-    // LeftPane
-    const LeftPane = <div className={"col-md-" + (layout === "left" ? 12 : 6) + " pe-0 pane"} key={"left"}>
-
-        <ul className="nav nav-tabs">
-            <a className="pointer nav-link active">
-                Code
-            </a>
-        </ul>
-        
-        <div style={{ height: "calc(100% - 42px)" }}>
+    const LeftTab = {
+        "Code": <div style={{ height: "calc(100% - 42px)" }}>
             {tracks[nowTrack] === undefined ? '' :
                 // <textarea className="form-control editor m-0 bar" value={tracks[tabnum].texts} rows={32} cols={20} onChange={(e) => onTextChange(e.target.value)} wrap="off" />
                 <SMMLEditor value={tracks[nowTrack].texts} doChange={onTextChange} />
@@ -294,45 +290,62 @@ export default function Main() {
                 className="form-control m-0 overflow-auto"
                 value={log.log}
                 readOnly />
-        </div>
+        </div>,
+        "Songs": <Songs tracks={tracks} title={title}/>
+    }
+
+    // LeftPane
+    const LeftPane = <div className={"col-md-" + (layout === "left" ? 12 : 6) + " pe-0 pane"} key={"left"}>
+
+        <ul className="nav nav-tabs">
+            {leftTabNames.map(t => <li className="nav-item" key={t}>
+                <a className={"pointer nav-link" + (t === leftTab ? " active" : "")} onClick={() => setLeftTab(t)}>
+                    {t}
+                </a>
+            </li>
+            )}
+        </ul>
+        
+        {LeftTab[leftTab]}
+
     </div>
 
     const RightTab = {
-        "Preview": <PianoRoll tracks={tracks} nowTrack={nowTrack} seq={seq} chords={chords} pianoBar={pianoBar?.current}/>,
+        "Preview": <PianoRoll tracks={tracks} nowTrack={nowTrack} seq={seq} chords={chords} pianoBar={pianoBar?.current} />,
         "Vars": <Variables vars={vars} />
     }
 
     const RightPane = <div className={"col-md-" + (layout === "right" ? 12 : 6) + " ps-0 pane"} key="right">
         <ul className="nav nav-tabs">
-        {tabNames.map(t=><li className="nav-item" key={t}>
-            <a className={"pointer nav-link" + (t === rightTab ? " active" : "")} onClick={()=>setRightTab(t)}>
-                {t}
-            </a>
+            {rightTabNames.map(t => <li className="nav-item" key={t}>
+                <a className={"pointer nav-link" + (t === rightTab ? " active" : "")} onClick={() => setRightTab(t)}>
+                    {t}
+                </a>
             </li>
-        )}
+            )}
         </ul>
 
         <div>
-                {/* PianoRoll, info, etc... */}
-                <div className="reverse-wrapper bar" ref={pianoBar}>
+            {/* PianoRoll, info, etc... */}
+            <div className="reverse-wrapper bar" ref={pianoBar}>
                 <div className="reverse-content">
 
-                {RightTab[rightTab]}
-                </div>
-                </div>
-
-
-                {/* float element */}
-                <div className="fixed-div">               
-                {vox.singers_portrait !== "" &&
-                    <img height="88%" src={vox.singers_portrait} alt="singer"/>
-                }
-                </div>
-
-                <div className="fixed-div2">
-                    <PianoBoard sf={sf} midi={midi} ch={tracks[nowTrack].ch} scale={nowScale()} />
+                    {RightTab[rightTab]}
                 </div>
             </div>
+
+
+            {/* float element */}
+            <div className="fixed-div">
+                {vox.singers_portrait !== "" &&
+                    <img height="88%" src={vox.singers_portrait} alt="singer" />
+                }
+            </div>
+
+            <div className="fixed-div2">
+                <PianoBoard sf={sf} midi={midi} ch={tracks[nowTrack].ch} scale={nowScale()} />
+            </div>
+        </div>
     </div>
 
     let MainPane = [LeftPane, RightPane]
@@ -343,24 +356,24 @@ export default function Main() {
 
     return (
         <FluentProvider theme={webDarkTheme}>
-        <SSRProvider>
-        <div className="container-fluid overflow-hidden p-0" data-bs-theme="dark">
-    
-            <div className="d-flex align-items-center" style={{background: "#00203b"}}>
-                <MenuBar f={menuFunc} midi={midi} vox={vox} layout={layout} setLayout={setLayout} />
-                <Singer vox={vox} tracks={tracks} bpm={bpm} audioRef={audioRef} />
-            </div>
+            <SSRProvider>
+                <div className="container-fluid overflow-hidden p-0" data-bs-theme="dark">
 
-            <div className="d-flex align-items-center" style={{background: "#10203b"}}>
-                <TrackSelector tracks={tracks} nowTrack={nowTrack} onAddTrack={onAddTrack} onDeleteTab={onDeleteTab} setNowTrack={setNowTrack}/>
-                <MenuBar2 tracks={tracks} seq={seq} scale={nowScale()} bpm={bpm} audioRef={audioRef} marks={marks} tabnum={nowTrack} changeProgram={changeProgram}/>
-            </div>
-    
-            <div className="row">
-                {MainPane}
-            </div>
-        </div>
-        </SSRProvider>
+                    <div className="d-flex align-items-center" style={{ background: "#00203b" }}>
+                        <MenuBar f={menuFunc} tracks={tracks} midi={midi} vox={vox} layout={layout} setLayout={setLayout} />
+                        <Singer vox={vox} tracks={tracks} bpm={bpm} audioRef={audioRef} />
+                    </div>
+
+                    <div className="d-flex align-items-center" style={{ background: "#10203b" }}>
+                        <TrackSelector tracks={tracks} nowTrack={nowTrack} onAddTrack={onAddTrack} onDeleteTab={onDeleteTab} setNowTrack={setNowTrack} />
+                        <MenuBar2 tracks={tracks} seq={seq} scale={nowScale()} bpm={bpm} audioRef={audioRef} marks={marks} tabnum={nowTrack} changeProgram={changeProgram} />
+                    </div>
+
+                    <div className="row">
+                        {MainPane}
+                    </div>
+                </div>
+            </SSRProvider>
         </FluentProvider>
     )
 }

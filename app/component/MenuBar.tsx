@@ -45,12 +45,13 @@ type MenuBarPropsType = {
     f: MenuFunc
     midi: MIDI
     vox: VoiceVox
+    tracks: Track[]
 
     layout: "left" | "normal" | "right"
     setLayout: Dispatch<SetStateAction<"left" | "normal" | "right">>
 }
 
-export const MenuBar = memo(function MenuBar({ f, midi, vox, layout, setLayout }: MenuBarPropsType) {
+export const MenuBar = memo(function MenuBar({ f, tracks, midi, vox, layout, setLayout }: MenuBarPropsType) {
 
     const [screen, setScreen] = useState<'normal'|'maximum'>('normal')
     const maximizeScreen = () => {
@@ -61,6 +62,7 @@ export const MenuBar = memo(function MenuBar({ f, midi, vox, layout, setLayout }
         document.exitFullscreen()
         setScreen('normal')
     }
+    
 
     const id = useId()
     const [sliderValue, setSliderValue] = React.useState(160);
