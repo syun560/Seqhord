@@ -291,7 +291,7 @@ export default function Main() {
                 value={log.log}
                 readOnly />
         </div>,
-        "Songs": <Songs tracks={tracks} title={title}/>
+        "Songs": <Songs tracks={tracks} title={title} />
     }
 
     // LeftPane
@@ -305,14 +305,21 @@ export default function Main() {
             </li>
             )}
         </ul>
-        
+
         {LeftTab[leftTab]}
 
     </div>
 
     const RightTab = {
-        "Preview": <PianoRoll tracks={tracks} nowTrack={nowTrack} seq={seq} chords={chords} pianoBar={pianoBar?.current} />,
-        "Vars": <Variables vars={vars} />
+        "Preview": <div className="reverse-wrapper bar" ref={pianoBar}>
+            <div className="reverse-content">
+                {(tracks[nowTrack] === undefined || tracks[nowTrack].notes === undefined) ? <></> :
+                <PianoRoll tracks={tracks} nowTrack={nowTrack} seq={seq} chords={chords} pianoBar={pianoBar?.current} />}
+            </div>
+        </div>,
+        "Vars": <div className="overflow-scroll">
+            <Variables vars={vars} />
+        </div>
     }
 
     const RightPane = <div className={"col-md-" + (layout === "right" ? 12 : 6) + " ps-0 pane"} key="right">
@@ -326,14 +333,8 @@ export default function Main() {
         </ul>
 
         <div>
-            {/* PianoRoll, info, etc... */}
-            <div className="reverse-wrapper bar" ref={pianoBar}>
-                <div className="reverse-content">
-
-                    {RightTab[rightTab]}
-                </div>
-            </div>
-
+            {/* PianoRoll, Vars, etc... */}
+            {RightTab[rightTab]}
 
             {/* float element */}
             <div className="fixed-div">
@@ -341,10 +342,10 @@ export default function Main() {
                     <img height="88%" src={vox.singers_portrait} alt="singer" />
                 }
             </div>
-
             <div className="fixed-div2">
                 <PianoBoard sf={sf} midi={midi} ch={tracks[nowTrack].ch} scale={nowScale()} />
             </div>
+
         </div>
     </div>
 

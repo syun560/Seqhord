@@ -34,7 +34,7 @@ const formatter = new Intl.DateTimeFormat('ja-JP', {
     // second: '2-digit',
 });
 
-export const Songs = memo(function variables ({title, tracks}:SongsPropsType) {
+export const Songs = memo(function Songs ({title, tracks}:SongsPropsType) {
     const [songs, setSongs] = useState<Song[]>([])
 
     const supabase = createClient()

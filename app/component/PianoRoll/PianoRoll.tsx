@@ -43,8 +43,6 @@ type PianoRollProps = {
 }
 
 export const PianoRoll: React.FC<PianoRollProps> = ({ tracks, nowTrack: nowTrack, seq, chords, pianoBar }) => {
-    if(tracks[nowTrack] === undefined || tracks[nowTrack].notes === undefined) return <></>
-
     const notes = tracks[nowTrack].notes
 
     // 最小値と最大値
