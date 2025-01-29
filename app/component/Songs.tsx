@@ -2,7 +2,7 @@
 
 import React, { memo, useEffect, useState } from "react"
 import { Track } from "@/types";
-import { createClient } from "@/utils/supabase/client"
+import supabase from "@/utils/supabase";
 import { insertData } from "@/utils/insertData";
 import {
     Button
@@ -36,8 +36,6 @@ const formatter = new Intl.DateTimeFormat('ja-JP', {
 
 export const Songs = memo(function Songs ({title, tracks}:SongsPropsType) {
     const [songs, setSongs] = useState<Song[]>([])
-
-    const supabase = createClient()
 
     useEffect(()=>{
         (async() => {
