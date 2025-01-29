@@ -67,7 +67,7 @@ export const PianoRoll: React.FC<PianoRollProps> = ({ tracks, nowTrack: nowTrack
     // ピアノロール生成
     const roll = useMemo(() => pitchs.map((fuga, indexRow) => {        
         const pitch = 127 - indexRow
-        console.log("Pianoroll")
+        // console.log("Pianoroll")
         if (pitch < minNote || pitch > maxNote) return
         else return (
             <tr key={fuga} onClick={seq.playToggle}>
