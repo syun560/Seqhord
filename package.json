@@ -12,6 +12,8 @@
     "@fluentui/react-components": "^9.55.0",
     "@fluentui/react-nav-preview": "^0.10.1",
     "@monaco-editor/react": "^4.6.0",
+    "@supabase/auth-ui-react": "^0.4.7",
+    "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.48.1",
     "@tonejs/midi": "^2.0.28",
