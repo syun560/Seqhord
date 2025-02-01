@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'styles.css'
 
 export const metadata: Metadata = {
+    metadataBase: new URL("https://seqhord.com"),
     title: 'Seqhord',
     description: 'Seqhord（シーコード）はブラウザで動く音楽プログラミング環境です',
     icons: {
