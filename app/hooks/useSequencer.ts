@@ -1,12 +1,15 @@
 import { useRef, useState, useCallback } from 'react'
-import { Sequencer, MIDI, Track } from '@/types'
+import { Sequencer, MIDI, Track, WebAudio } from '@/types'
 
 
-export const useSequencer = (m: MIDI, tracks: Track[], b: number):Sequencer => {
+export const useSequencer = (m: MIDI, tracks: Track[], b: number, audio: WebAudio):Sequencer => {
     const [isPlaying, setIsPlaying] = useState(false)
     const isPlayingRef = useRef(false)
 
     const [midi, setMIDI] = useState<MIDI>(m)
+
+    // audioが何tickから始まるか？
+
     
     const timer = useRef<any>()
     const bpm = useRef(b)
@@ -69,6 +72,8 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number):Sequencer => {
         isPlayingRef.current = false
         midi.allNoteOff()
         clearTimeout(timer.current)
+
+        audio.stop()
     }
     const nextMea = () => {
         let s = nowTickRef.current + 8
@@ -116,12 +121,16 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number):Sequencer => {
     const playToggle = () => {
         if (isPlayingRef.current) {
             stop()
+            audio.stop()
         }
         else {
             setup()
             setIsPlaying(true)
             isPlayingRef.current = true
             timer.current = setTimeout(proceed, delay_time.current)
+
+            // WebAudioの再生も行う
+            audio.play()
         }
     }
 

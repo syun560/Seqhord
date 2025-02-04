@@ -15,10 +15,6 @@ const bef = (monaco: any) => {
     monaco.languages.setMonarchTokensProvider("SMML", {
         tokenizer: {
             root: [
-                // [/\[error.*/, "custom-error"],
-                // [/\[notice.*/, "custom-notice"],
-                // [/\[info.*/, "custom-info"],
-                // [/\[[a-zA-Z 0-9:]+\]/, "custom-date"],
                 [/^[1-9].+/,"tracks"],
                 [/[0-9]+/, "number"],
                 [/@[a-z]+/, "program"],
@@ -29,16 +25,11 @@ const bef = (monaco: any) => {
         },
     });
 
-    // Define a new theme that contains only rules that match this language
     monaco.editor.defineTheme("darkTheme", {
         base: "vs-dark",
         inherit: false,
         rules: [
             { background: "212529" }, // probably decides minimap color...
-            // { token: "custom-info", foreground: "808080" },
-            // { token: "custom-error", foreground: "ff0000", fontStyle: "bold" },
-            // { token: "custom-notice", foreground: "FFA500" },
-            // { token: "custom-date", foreground: "008800" },
             { token: "number", foreground: "#b5b56a" },
             { token: "program", foreground: "#ce916a", fontStyle: "bold" },
             { token: "notes", foreground: "#9cdcf1" },
@@ -54,56 +45,64 @@ const bef = (monaco: any) => {
 
     // Register a completion item provider for the new language
     monaco.languages.registerCompletionItemProvider("SMML", {
+        triggerCharacters: ['@'],
         provideCompletionItems: (model: any, position: any) => {
             const word = model.getWordUntilPosition(position);
-            const range = {
-                startLineNumber: position.lineNumber,
-                endLineNumber: position.lineNumber,
-                startColumn: word.startColumn,
-                endColumn: word.endColumn,
-            };
+            const range = new monaco.Range(
+                position.lineNumber,
+                word.startColumn,
+                position.lineNumber,
+                word.endColumn
+            )
             const suggestions = [
                 {
-                    label: "bpm",
-                    kind: monaco.languages.CompletionItemKind.Text,
+                    label: "@bpm",
+                    kind: monaco.languages.CompletionItemKind.Keyword,
                     insertText: "bpm",
-                    range: range,
+                    range,
+                    documentation: "曲のBPMを指定します"
                 },
                 {
-                    label: "scale",
-                    kind: monaco.languages.CompletionItemKind.Text,
+                    label: "@scale",
+                    kind: monaco.languages.CompletionItemKind.Keyword,
                     insertText: "scale",
-                    range: range,
+                    range,
+                    documentation: "曲のスケールを指定します(C, C#, D, ...etc)"
                 },
                 {
-                    label: "trans",
-                    kind: monaco.languages.CompletionItemKind.Text,
+                    label: "@trans",
+                    kind: monaco.languages.CompletionItemKind.Keyword,
                     insertText: "trans",
-                    range: range,
+                    range,
+                    documentation: "トランスポーズを設定します（1～12）"
                 },
                 {
-                    label: "title",
-                    kind: monaco.languages.CompletionItemKind.Text,
+                    label: "@title",
+                    kind: monaco.languages.CompletionItemKind.Keyword,
                     insertText: "title",
-                    range: range,
+                    range,
+                    documentation: "曲のタイトルを設定します"
                 },
                 {
-                    label: "program",
-                    kind: monaco.languages.CompletionItemKind.Text,
+                    label: "@program",
+                    kind: monaco.languages.CompletionItemKind.Keyword,
                     insertText: "program",
-                    range: range,
+                    range,
+                    documentation: "楽器の種類を設定します（0～128）"
                 },
                 {
-                    label: "mark",
-                    kind: monaco.languages.CompletionItemKind.Text,
+                    label: "@mark",
+                    kind: monaco.languages.CompletionItemKind.Keyword,
                     insertText: "mark",
-                    range: range,
+                    range,
+                    documentation: "指定の位置にマークを追加します"
                 },
                 {
-                    label: "reverb",
-                    kind: monaco.languages.CompletionItemKind.Text,
+                    label: "@reverb",
+                    kind: monaco.languages.CompletionItemKind.Keyword,
                     insertText: "reverb",
-                    range: range,
+                    range,
+                    documentation: "楽器の種類を設定します（0～128）"
                 },
                 // {
                 //     label: "@simpleText",
@@ -140,7 +139,7 @@ const bef = (monaco: any) => {
                 //     range: range,
                 // },
             ]
-            return { suggestions: suggestions }
+            return { suggestions }
         },
     })
 }
@@ -160,7 +159,13 @@ export const SMMLEditor = memo (function smmlEditor({ value, doChange }: EditorC
         fontFamily: "monospace",
         // fontFamily: "var(--MyricaM-M)",
         value: value,
-        scrollBeyondLastLine: false
+        scrollBeyondLastLine: false,
+        quickSuggestions: true,
+        suggest: {
+            preview: true,
+            showDocs: true,
+            localityBonus: true
+        }
     }
 
     return <Editor

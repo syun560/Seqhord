@@ -1,12 +1,14 @@
 import { useState, useRef, useEffect } from "react";
+import { WebAudio } from 'types'
 
-const useAudio = (url: string|null) => {
+export const useAudio = ():WebAudio => {
     const audioContext = useRef<AudioContext | null>(null)
     const source = useRef<AudioBufferSourceNode | null>(null)
     const gainNode = useRef<GainNode | null>(null)
     const isPlay = useRef(false)
     const isStoppedManually = useRef(false)
 
+    const [url, setURL] = useState<string|null>(null)
     const [audioBuffer, setAudioBuffer] = useState<AudioBuffer | null>(null)
     const [isPlaying, setIsPlaying] = useState(false)
     const [currentTime, setCurrentTime] = useState(0) // 現在の再生位置（秒）
@@ -118,7 +120,5 @@ const useAudio = (url: string|null) => {
         }
     }
 
-    return { play, pause, seek, stop, isPlaying, currentTime, audioBuffer, changeVolume, volume }
+    return { play, pause, seek, stop, isPlaying, currentTime, audioBuffer, changeVolume, volume, setURL }
 }
-
-export default useAudio

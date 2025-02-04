@@ -1,33 +1,22 @@
 import React, { memo, useState, useRef, useEffect } from 'react'
-import { Track, VoiceVox, Sequencer } from 'types'
+import { Track, VoiceVox, WebAudio } from 'types'
 import { Button, Select } from '@fluentui/react-components'
-import useAudio from '@/hooks/useAudio'
 
 interface SingerProps {
     vox: VoiceVox
     tracks: Track[]
     bpm: number
-    audioRef: React.RefObject<HTMLAudioElement>
+    audio: WebAudio
 }
 
-export const Singer = memo(function Singer({ vox, tracks, bpm }: SingerProps) {
+export const Singer = memo(function Singer({ vox, tracks, bpm, audio }: SingerProps) {
 
     // console.log("singer rendered!!")
-    const [sample, setSample] = useState<string>("")
-    const [synthState, setSynthState] = useState<boolean>(false)
     const sampleRef = useRef<HTMLAudioElement>(null)
-
-    const [audioURL, setAudioURL] = useState<string | null>(null)
-    const { play, pause, stop, seek, currentTime, isPlaying, audioBuffer, changeVolume, volume } = useAudio(audioURL)
-    const [seekTime, setSeekTime] = useState(0)
-    useEffect(() => {
-        setSeekTime(currentTime)
-    }, [currentTime])
 
     const VoiceSynth = async () => {
         try {
             await vox.synthVoice(tracks[0].notes, bpm)
-            setSynthState(true)
         }
         catch (err) {
             console.error("VoiceSynth Error:", err)
@@ -55,7 +44,6 @@ export const Singer = memo(function Singer({ vox, tracks, bpm }: SingerProps) {
         const found = vox.singers_info.find(singer => singer.styles[0].id === id)
         const speaker_uuid = found?.speaker_uuid
         console.log("speaker_uuid:", speaker_uuid)
-        setSynthState(false)
 
         try {
             const url = `http://localhost:50021/singer_info?speaker_uuid=${speaker_uuid}&resource_format=url`
@@ -63,7 +51,6 @@ export const Singer = memo(function Singer({ vox, tracks, bpm }: SingerProps) {
             const json = await res.json()
             vox.setSingersPortrait(json.portrait)
             console.log(json)
-            setSample(json.style_infos[0].voice_samples[0])
         }
         catch (err) {
             console.error(err)
@@ -74,7 +61,7 @@ export const Singer = memo(function Singer({ vox, tracks, bpm }: SingerProps) {
         vox.setSingersPortrait("http://localhost:50021/_resources/8496e5617ad4d9a3f6a9e6647a91fe90f966243f35d775e8e213e8d9355d5030")
     }, [])
     useEffect(() => {
-        if (vox.audioData) setAudioURL(URL.createObjectURL(vox.audioData))
+        if (vox.audioData) audio.setURL(URL.createObjectURL(vox.audioData))
     }, [vox.audioData])
 
     return <>
@@ -100,33 +87,6 @@ export const Singer = memo(function Singer({ vox, tracks, bpm }: SingerProps) {
         }
 
         <div>
-            <button onClick={isPlaying ? pause : ()=>play()}>{isPlaying ? "一時停止" : "再生"}</button>
-            <br />
-            {audioBuffer && 
-            <input
-                type="range"
-                min="0"
-                max={audioBuffer.duration}
-                step="0.1"
-                value={seekTime}
-                onChange={(e) => {
-                    const newTime = parseFloat(e.target.value);
-                    setSeekTime(newTime);
-                    seek(newTime);
-                }}
-            />
-            }
-            <span> {Math.round(seekTime)}s / {audioBuffer ? Math.round(audioBuffer.duration) : 0}s </span>
-            <br />
-            <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.01"
-                value={volume}
-                onChange={(e) => changeVolume(parseFloat(e.target.value))}
-            />
-            <span> 音量: {Math.round(volume * 100)}% </span>
             {/* {vox.audioData && synthState &&
                 <>
                 <button onClick={playAudio}>再生</button>

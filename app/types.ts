@@ -105,6 +105,7 @@ export type Track = {
     volume: number
     reverb: number
     panpot: number
+    voice?: number // ボイスの開始位置(tick)
 }
 
 export type Scale = {
@@ -145,6 +146,21 @@ export type MIDI = {
     outPorts: any
     changePorts: (port: string)=>void
     masterVolume: MutableRefObject<number>
+}
+
+export type WebAudio = {
+    play: (seekTime?: number)=>void
+    seek: (time: number)=>void
+    pause: ()=>void
+    stop: ()=>void
+    isPlaying: boolean
+    
+    currentTime: number
+    audioBuffer: AudioBuffer|null
+
+    volume: number
+    changeVolume: (value: number)=>void
+    setURL: Dispatch<SetStateAction<string|null>>
 }
 
 export type Sound = {

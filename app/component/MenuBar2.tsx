@@ -26,7 +26,6 @@ type MenuBarPropsType = {
     seq: Sequencer
     scale: string
     bpm: number
-    audioRef: React.RefObject<HTMLAudioElement>
     marks: Mark[]
     tabnum: number
 
@@ -39,14 +38,7 @@ const drums = Lib.drumName.map((p, i) => {
     return <option key={i} value={i}>{String(i).padStart(3, '0')}: {p}</option>
 })
 
-export const MenuBar2 = memo(function MenuBar({ tracks, seq, bpm, audioRef, scale, marks, tabnum, changeProgram }: MenuBarPropsType) {
-
-    const play2 = () => {
-        seq.playToggle()
-        const audio = audioRef.current
-        if (!audio) return
-        audio.paused ? audio.play() : audio.pause()
-    }
+export const MenuBar2 = memo(function MenuBar({ tracks, seq, bpm, scale, marks, tabnum, changeProgram }: MenuBarPropsType) {
 
     // コンダクトバー
     const ConductBar = <div className="p-1 d-none d-sm-block">
@@ -75,7 +67,7 @@ export const MenuBar2 = memo(function MenuBar({ tracks, seq, bpm, audioRef, scal
             <ToolbarButton onClick={seq.prevMea} icon={<PrevIcon />} />
         </Tooltip>
         <Tooltip content={seq.isPlaying ? "一時停止" : "再生"} relationship="label" positioning="below-start">
-            <Button className="mx-2" shape="circular" appearance="primary" onClick={play2} size="large" icon={seq.isPlaying ? <PauseIcon /> : <PlayIcon />} />
+            <Button className="mx-2" shape="circular" appearance="primary" onClick={seq.playToggle} size="large" icon={seq.isPlaying ? <PauseIcon /> : <PlayIcon />} />
         </Tooltip>
         <Tooltip content="一小節先へ" relationship="label" positioning="below-start">
             <ToolbarButton onClick={seq.nextMea} icon={<FastForwardIcon />} />

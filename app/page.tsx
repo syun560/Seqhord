@@ -19,6 +19,8 @@ import { useMIDI } from "./hooks/useMIDI"
 import { useVoiceVox } from "./hooks/useVoicevox"
 import { useConsole } from "./hooks/useConsole"
 import { useSoundFont } from './hooks/useSoundfont'
+import { useAudio } from './hooks/useAudio'
+
 
 // component
 import { PianoRoll } from './component/PianoRoll/PianoRoll'
@@ -84,7 +86,8 @@ export default function Main() {
     // custom hook
     const midi = useMIDI()
     const sf = useSoundFont()
-    const seq = useSequencer(midi, tracks, bpm)
+    const audio = useAudio()
+    const seq = useSequencer(midi, tracks, bpm, audio)
     const vox = useVoiceVox()
     const log = useConsole()
     const timer = useRef<NodeJS.Timeout | null>(null);
@@ -362,12 +365,12 @@ export default function Main() {
 
                     <div className="d-flex align-items-center" style={{ background: "#00203b" }}>
                         <MenuBar f={menuFunc} tracks={tracks} midi={midi} vox={vox} layout={layout} setLayout={setLayout} />
-                        <Singer vox={vox} tracks={tracks} bpm={bpm} audioRef={audioRef} />
+                        <Singer vox={vox} tracks={tracks} bpm={bpm} audio={audio} />
                     </div>
 
                     <div className="d-flex align-items-center" style={{ background: "#10203b" }}>
                         <TrackSelector tracks={tracks} nowTrack={nowTrack} onAddTrack={onAddTrack} onDeleteTab={onDeleteTab} setNowTrack={setNowTrack} />
-                        <MenuBar2 tracks={tracks} seq={seq} scale={nowScale()} bpm={bpm} audioRef={audioRef} marks={marks} tabnum={nowTrack} changeProgram={changeProgram} />
+                        <MenuBar2 tracks={tracks} seq={seq} scale={nowScale()} bpm={bpm} marks={marks} tabnum={nowTrack} changeProgram={changeProgram} />
                     </div>
 
                     <div className="row">
