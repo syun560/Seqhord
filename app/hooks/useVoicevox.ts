@@ -94,17 +94,17 @@ const convertNotes = (notes: Note[], bpm: number): VoiceNote[] => {
     return voiceNotes
 }
 
-export const useVoiceVox = ():VoiceVox => {
+const inputmusic = {
+    notes: [
+        { key: null, frame_length: 15, lyric: "" },
+        { key: 60, frame_length: 45, lyric: "ド" },
+        { key: 62, frame_length: 45, lyric: "レ" },
+        { key: 64, frame_length: 45, lyric: "ミ" },
+        { key: null, frame_length: 15, lyric: "" }
+    ]
+}
 
-    let inputmusic = {
-        notes: [
-            { key: null, frame_length: 15, lyric: "" },
-            { key: 60, frame_length: 45, lyric: "ド" },
-            { key: 62, frame_length: 45, lyric: "レ" },
-            { key: 64, frame_length: 45, lyric: "ミ" },
-            { key: null, frame_length: 15, lyric: "" }
-        ]
-    }
+export const useVoiceVox = ():VoiceVox => {
     const [queryJson, ] = useState<Query>()
     const [audioData, setAudioData] = useState<Blob>()
     const [singer, setSinger] = useState(3001)
@@ -128,7 +128,6 @@ export const useVoiceVox = ():VoiceVox => {
     const synthVoice = useCallback(async (notes: Note[], bpm:number) => {
         const voiceNotes = convertNotes(notes, bpm)
         inputmusic.notes = voiceNotes
-        // console.log(inputmusic)
 
         try {
             const url = "http://localhost:50021/sing_frame_audio_query?speaker=6000"

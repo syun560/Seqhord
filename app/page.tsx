@@ -120,19 +120,6 @@ export default function Main() {
         }))
     }, [tracks, nowTrack])
 
-    const onTextChange = useCallback((text: string) => {
-        // setTexts(texts.map((t, i) => (i === tabnum ? text : t)))
-        const tk = [...tracks]
-        tk[nowTrack].texts = text
-        setTracks(tk)
-        if (autoCompile) {
-            if (timer.current) { clearTimeout(timer.current); }
-            timer.current = setTimeout(() => {
-                onCompile()
-            }, 3000)
-        }
-    }, [nowTrack, tracks, autoCompile, timer.current])
-
     const setCompile = (tracks: Track[]) => {
         const res = compile(tracks)
 
@@ -162,6 +149,19 @@ export default function Main() {
         setMarks(res.marks)
         setScales(res.scales)
     }, [tracks])
+
+    const onTextChange = useCallback((text: string) => {
+        // setTexts(texts.map((t, i) => (i === tabnum ? text : t)))
+        const tk = [...tracks]
+        tk[nowTrack].texts = text
+        setTracks(tk)
+        if (autoCompile) {
+            if (timer.current) { clearTimeout(timer.current); }
+            timer.current = setTimeout(() => {
+                onCompile()
+            }, 3000)
+        }
+    }, [nowTrack, tracks, onCompile, autoCompile, timer.current])
 
     const onNew = useCallback(() => {
         if (confirm('新規作成しますか？（現在のデータは削除されます）')) {
