@@ -50,7 +50,7 @@ export const useMIDI = (): MIDI => {
             access.onstatechange = (event) => {
                 const midiEvent = event as MIDIConnectionEvent
                 if (midiEvent.port?.state === "connected" || midiEvent.port?.state === "disconnected"){
-                    console.log(`MIDI device ${event?.port?.name} is now ${event?.port?.state}`);
+                    console.log(`MIDI device ${midiEvent.port?.name} is now ${midiEvent.port?.state}`);
                     // setMidiInputs(Array.from(access.inputs.values()));
                     setup()
                 }
