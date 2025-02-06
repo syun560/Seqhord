@@ -1,4 +1,4 @@
-import React, { useRef, createRef, useEffect, useCallback } from 'react'
+import React, { useEffect } from 'react'
 import { Sequencer } from '@/types'
 
 type Props = {
@@ -46,7 +46,7 @@ export const Conductor = ({tickLength, seq, pianoBar }: Props) => {
             }
         }
         // scrollToCenter(seq.nowTick + 10)
-    }, [seq.nowTick, seq.isPlaying])
+    }, [pianoBar, tickLength, seq.nowTick, seq.isPlaying])
 
 
     const cells = [...Array(tickLength)].map((_, tick)=><td 

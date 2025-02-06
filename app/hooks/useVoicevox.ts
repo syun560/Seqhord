@@ -109,7 +109,7 @@ export const useVoiceVox = ():VoiceVox => {
     const [queryJson, setQueryJson] = useState<Query>()
     const [audioData, setAudioData] = useState<Blob>()
     const [singer, setSinger] = useState(3001)
-    const [singers_portrait, setSingersPortrait] = useState<string>("")
+    const [singers_portrait, setSingersPortrait] = useState<string>("http://localhost:50021/_resources/8496e5617ad4d9a3f6a9e6647a91fe90f966243f35d775e8e213e8d9355d5030")
     const [creating, setCreating] = useState(false)
     const [singers_info, setSingersInfo] = useState<SingerInfo[]>([])
 

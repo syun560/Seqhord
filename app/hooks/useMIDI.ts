@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { MIDI } from '@/types'
 
 type MIDIOutPort = {
@@ -17,6 +17,7 @@ export const useMIDI = (): MIDI => {
     const output = useRef<MIDIOutput>()
 
     const setup = async () => {
+        console.log("midi setup")
         try {
             // MIDI機器へのアクセス
             let access = midiAccess.current
@@ -46,8 +47,9 @@ export const useMIDI = (): MIDI => {
             output.current = tmpOutputMap.get(tmpOutPorts[0].ID)
 
             // デバイスの接続・切断を監視
-            access.onstatechange = (event: MIDIConnectionEvent) => {
-                if (event.port?.state === "connected" || event.port?.state === "disconnected"){
+            access.onstatechange = (event) => {
+                const midiEvent = event as MIDIConnectionEvent
+                if (midiEvent.port?.state === "connected" || midiEvent.port?.state === "disconnected"){
                     console.log(`MIDI device ${event?.port?.name} is now ${event?.port?.state}`);
                     // setMidiInputs(Array.from(access.inputs.values()));
                     setup()
@@ -70,6 +72,7 @@ export const useMIDI = (): MIDI => {
         }
     }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         // 読み込み時にsetup（不具合があれば、コメントアウト）
         setup()
@@ -79,38 +82,40 @@ export const useMIDI = (): MIDI => {
         }
     },[])
 
-    const programChange = (program: number, ch: number) => {
+    const programChange = useCallback((program: number, ch: number) => {
         output.current?.send([0xC0 + ch, program])
-    }
-    const controlChange = (ch: number, eventNumber: number, val: number) => {
+    },[output.current])
+    const controlChange = useCallback((ch: number, eventNumber: number, val: number) => {
         // console.log(`ch: ${ch} panpot: ${eventNumber} val: ${val}`)
         output.current?.send([0xB0 + ch, eventNumber, val])
-    }
+    },[output.current])
 
-    const setVolume = (val: number, ch: number) => {
+    const setVolume = useCallback((val: number, ch: number) => {
         output.current?.send([0xB0 + ch, 7, val])
-    }
+    },[output.current])
 
-    const noteOn = (pitch: number, ch: number, duration?: number) => {
+    const noteOn = useCallback((pitch: number, ch: number, duration?: number) => {
         const vol = masterVolume.current
         output.current?.send([0x90 + ch, pitch, vol])
         if (duration !== undefined)
             output.current?.send([0x80 + ch, pitch, vol], window.performance.now() + duration - 1)
-    }
-    const noteOff = (pitch: number, ch: number) => {
+    },[output.current, masterVolume.current])
+    const noteOff = useCallback((pitch: number, ch: number) => {
         output.current?.send([0x80 + ch, pitch, 100])
-    }
-    const allNoteOff = () => {
+    },[output.current])
+    const allNoteOff = useCallback(() => {
         output.current?.send([0xB0, 0x7B, 0])
-    }
-    const changePorts = (portNumber: string) => {
+    },[output.current])
+    const changePorts = useCallback((portNumber: string) => {
         setSelectedOutPortID(portNumber)
         output.current = outputMap?.get(portNumber)
-    }
+    },[output.current])
 
-    return {
+    return useMemo(()=>({
         noteOn, noteOff, setup, setVolume, programChange, controlChange,
         allNoteOff, changePorts, outPorts,
         masterVolume
-    }
+    }),[noteOn, noteOff, setup, setVolume, programChange, controlChange,
+        allNoteOff, changePorts, outPorts,
+        masterVolume])
 }

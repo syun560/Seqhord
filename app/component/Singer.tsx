@@ -58,9 +58,6 @@ export const Singer = memo(function Singer({ vox, tracks, bpm, audio }: SingerPr
     }
 
     useEffect(() => {
-        vox.setSingersPortrait("http://localhost:50021/_resources/8496e5617ad4d9a3f6a9e6647a91fe90f966243f35d775e8e213e8d9355d5030")
-    }, [])
-    useEffect(() => {
         if (vox.audioData) audio.setURL(URL.createObjectURL(vox.audioData))
     }, [vox.audioData])
 

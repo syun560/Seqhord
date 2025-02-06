@@ -95,7 +95,7 @@ export default function Main() {
     const saveMIDI = useCallback(() => {
         const uri = generate_midi(tracks, bpm, marks)
         simpleDownload(`${title}.mid`, uri)
-    }, [tracks, title, bpm])
+    }, [tracks, title, bpm, marks])
 
     const saveMusicXML = useCallback(() => {
         const xml = generate_musicxml(0, tracks[0].notes, bpm)
@@ -111,14 +111,6 @@ export default function Main() {
     const saveAsJson = useCallback(() => {
         simpleDownload(`${title}.smml`, URL.createObjectURL(new Blob([JSON.stringify(tracks)], { type: 'text/json' })))
     }, [title, tracks])
-
-    const onNew = useCallback(() => {
-        if (confirm('新規作成しますか？（現在のデータは削除されます）')) {
-            tracks.forEach(track => track.texts = "")
-            setTracks([...tracks])
-        }
-        onCompile()
-    }, [tracks])
 
     const formatText = useCallback(() => {
         const formatted = format_text(tracks[nowTrack].texts)
@@ -170,6 +162,14 @@ export default function Main() {
         setMarks(res.marks)
         setScales(res.scales)
     }, [tracks])
+
+    const onNew = useCallback(() => {
+        if (confirm('新規作成しますか？（現在のデータは削除されます）')) {
+            tracks.forEach(track => track.texts = "")
+            setTracks([...tracks])
+        }
+        onCompile()
+    }, [tracks, onCompile])
 
     const onAddTrack = useCallback(() => {
         if (tracks.length > 16) return
@@ -236,7 +236,7 @@ export default function Main() {
             }
         }
         input.click()
-    }, [])
+    }, [seq, setCompile])
 
     const showMIDIFileDialog = useCallback(() => new Promise(resolve => {
         const input = document.createElement('input');
@@ -252,7 +252,7 @@ export default function Main() {
 
     const autoCompose = useCallback(() => {
         log.addLog("auto compose")
-    }, [])
+    }, [log])
 
     const importMIDI = useCallback(() => {
 
@@ -272,6 +272,7 @@ export default function Main() {
         autoCompose
     }), [saveAsJson, showOpenFileDialog, showMIDIFileDialog, importMIDI, onCompile, onNew, formatText, saveMIDI, saveMusicXML, saveText, autoCompose])
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         window.addEventListener("beforeunload", handleBeforeUnload)
         onCompile()
