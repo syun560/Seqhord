@@ -9,7 +9,6 @@ type VoiceNote = {
 
 // covert notes for VoiceVox
 const convertNotes = (notes: Note[], bpm: number): VoiceNote[] => {
-    const reso = 1
     const frame_rate = 93.75
     
     const quarter = 60 / bpm / 2 // 実現したい8分音符の長さ（秒）
@@ -106,7 +105,7 @@ export const useVoiceVox = ():VoiceVox => {
             { key: null, frame_length: 15, lyric: "" }
         ]
     }
-    const [queryJson, setQueryJson] = useState<Query>()
+    const [queryJson, ] = useState<Query>()
     const [audioData, setAudioData] = useState<Blob>()
     const [singer, setSinger] = useState(3001)
     const [singers_portrait, setSingersPortrait] = useState<string>("http://localhost:50021/_resources/8496e5617ad4d9a3f6a9e6647a91fe90f966243f35d775e8e213e8d9355d5030")

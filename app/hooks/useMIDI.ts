@@ -84,32 +84,32 @@ export const useMIDI = (): MIDI => {
 
     const programChange = useCallback((program: number, ch: number) => {
         output.current?.send([0xC0 + ch, program])
-    },[output.current])
+    },[])
     const controlChange = useCallback((ch: number, eventNumber: number, val: number) => {
         // console.log(`ch: ${ch} panpot: ${eventNumber} val: ${val}`)
         output.current?.send([0xB0 + ch, eventNumber, val])
-    },[output.current])
+    },[])
 
     const setVolume = useCallback((val: number, ch: number) => {
         output.current?.send([0xB0 + ch, 7, val])
-    },[output.current])
+    },[])
 
     const noteOn = useCallback((pitch: number, ch: number, duration?: number) => {
         const vol = masterVolume.current
         output.current?.send([0x90 + ch, pitch, vol])
         if (duration !== undefined)
             output.current?.send([0x80 + ch, pitch, vol], window.performance.now() + duration - 1)
-    },[output.current, masterVolume.current])
+    },[])
     const noteOff = useCallback((pitch: number, ch: number) => {
         output.current?.send([0x80 + ch, pitch, 100])
-    },[output.current])
+    },[])
     const allNoteOff = useCallback(() => {
         output.current?.send([0xB0, 0x7B, 0])
-    },[output.current])
+    },[])
     const changePorts = useCallback((portNumber: string) => {
         setSelectedOutPortID(portNumber)
         output.current = outputMap?.get(portNumber)
-    },[output.current])
+    },[outputMap])
 
     return useMemo(()=>({
         noteOn, noteOff, setup, setVolume, programChange, controlChange,
