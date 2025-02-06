@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, useEffect } from 'react'
 import { Note, SingerInfo, Query, VoiceVox } from 'types'
 
 type VoiceNote = {
@@ -160,6 +160,10 @@ export const useVoiceVox = ():VoiceVox => {
             return
         }
     },[singer])
+
+    useEffect(()=>{
+        getSingers()
+    },[])
 
     return useMemo (()=>({ 
         audioData, queryJson, 

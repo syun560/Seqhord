@@ -46,8 +46,8 @@ export const useMIDI = (): MIDI => {
             output.current = tmpOutputMap.get(tmpOutPorts[0].ID)
 
             // デバイスの接続・切断を監視
-            access.onstatechange = (event) => {
-                if (event?.port?.state === "connected" || event?.port?.state === "disconnected"){
+            access.onstatechange = (event: MIDIConnectionEvent) => {
+                if (event.port?.state === "connected" || event.port?.state === "disconnected"){
                     console.log(`MIDI device ${event?.port?.name} is now ${event?.port?.state}`);
                     // setMidiInputs(Array.from(access.inputs.values()));
                     setup()
