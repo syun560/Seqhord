@@ -65,6 +65,7 @@ export const PianoRoll: React.FC<PianoRollProps> = ({ tracks, nowTrack: nowTrack
     // }
 
     // ピアノロール生成
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const roll = useMemo(() => pitchs.map((fuga, indexRow) => {        
         const pitch = 127 - indexRow
         // console.log("Pianoroll")

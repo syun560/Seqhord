@@ -14,6 +14,7 @@ export const useAudio = ():WebAudio => {
     const [currentTime, setCurrentTime] = useState(0) // 現在の再生位置（秒）
     const [volume, setVolume] = useState(1) // デフォルト音量 100%
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         if (url) {
             const initAudio = async () => {

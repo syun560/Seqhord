@@ -82,6 +82,7 @@ export default function Main({ params }: { params: { slug: string } }) {
         setMarkdown(b)
     }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => { loadArticle() }, [])
 
     return <div>
