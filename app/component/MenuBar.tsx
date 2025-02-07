@@ -7,10 +7,11 @@ import Link from "next/link";
 
 // fluent ui
 import {
-    Tooltip, ToolbarButton,
+    Tooltip, ToolbarButton, Button,
     Menu, MenuTrigger, MenuPopover, MenuList, MenuItem, Slider,
     useId,
-    SliderProps
+    SliderProps,
+    MenuItemLink
 } from "@fluentui/react-components"
 
 import {
@@ -26,6 +27,7 @@ import {
     DocumentOnePageSparkleRegular, DocumentOnePageSparkleFilled,
     LayoutColumnTwoFocusLeftFilled, LayoutColumnTwoFocusRightFilled, LayoutColumnTwoRegular,
     DocumentFilled,
+    PersonVoiceRegular,
 } from "@fluentui/react-icons"
 
 const SaveIcon = bundleIcon(SaveRegular, SaveFilled)
@@ -46,12 +48,13 @@ type MenuBarPropsType = {
     midi: MIDI
     vox: VoiceVox
     tracks: Track[]
+    bpm: number
 
     layout: "left" | "normal" | "right"
     setLayout: Dispatch<SetStateAction<"left" | "normal" | "right">>
 }
 
-export const MenuBar = memo(function MenuBar({ f, tracks, midi, vox, layout, setLayout }: MenuBarPropsType) {
+export const MenuBar = memo(function MenuBar({ f, tracks, midi, vox, layout, bpm, setLayout }: MenuBarPropsType) {
 
     const [screen, setScreen] = useState<'normal'|'maximum'>('normal')
     const maximizeScreen = () => {
@@ -62,10 +65,19 @@ export const MenuBar = memo(function MenuBar({ f, tracks, midi, vox, layout, set
         document.exitFullscreen()
         setScreen('normal')
     }
+
+    const VoiceSynth = async () => {
+        try {
+            await vox.synthVoice(tracks[0].notes, bpm)
+        }
+        catch (err) {
+            console.error("VoiceSynth Error:", err)
+        }
+    }
     
 
     const id = useId()
-    const [sliderValue, setSliderValue] = React.useState(160);
+    const [sliderValue, setSliderValue] = React.useState(80);
     const onSliderChange: SliderProps["onChange"] = (_, data) => {
         setSliderValue(data.value)
         midi.masterVolume.current = data.value
@@ -122,27 +134,48 @@ export const MenuBar = memo(function MenuBar({ f, tracks, midi, vox, layout, set
         <Tooltip content="フォーマットする" relationship="label" positioning="below-start">
             <ToolbarButton onClick={f.formatText} icon={<FormatIcon />} />
         </Tooltip>
-        <Tooltip content="コンパイル" relationship="label" positioning="below-start">
-            {/* <ToolbarButton onClick={f.onCompile} icon={<DocumentOnePageSparkleRegular />}>コンパイル</ToolbarButton> */}
-            <ToolbarButton onClick={f.onCompile} icon={<CompileIcon />} />
-        </Tooltip>
         <Tooltip content="マニュアル（別タブで開きます）" relationship="label" positioning="below-start">
             <Link href="/about/index" target="_blank"><ToolbarButton icon={<ChatHelpIcon />} /></Link>
         </Tooltip>
-        {/* <Tooltip content="ご支援" relationship="label" positioning="below-start">
-            <Link href="https://camp-fire.jp/projects/691016/view?utm_campaign=cp_po_share_c_msg_mypage_projects_show" target="_blank"><ToolbarButton icon={<HandshakeRegular />} /></Link>
-        </Tooltip> */}
         {/* <Tooltip content="Xで共有" relationship="label" positioning="below-start">
             <Link href="https://twitter.com/intent/tweet?text=Sechord%E3%82%92%E4%BD%BF%E3%81%86%EF%BC%81%0Ahttps%3A%2F%2Fsechord.com%0A" target="_blank">
                 <button className="btn btn-sm"><img src='/images/x.png' height="16px" /></button>
             </Link>
         </Tooltip> */}
+        <Menu hasIcons>
+            <MenuTrigger>
+                <Tooltip content="各種設定" relationship="label" positioning="below-start">
+                    <ToolbarButton icon={<SettingIcon />} />
+                </Tooltip>
+            </MenuTrigger>
+
+            <MenuPopover>
+                <MenuList>
+                    <MenuItem icon={<MidiIcon />} onClick={midi.setup}>MIDI機器に接続する</MenuItem>
+                    <MenuItem icon={<PersonVoiceRegular />}onClick={vox.getSingers}>VoiceVoxに接続する</MenuItem>
+                    <MenuItemLink href="http://localhost:50021/setting" target="_blank">VoiceVox設定</MenuItemLink>
+                </MenuList>
+            </MenuPopover>
+        </Menu>
+        <Tooltip content="コンパイル" relationship="label" positioning="below-start">
+            {/* <ToolbarButton onClick={f.onCompile} icon={<DocumentOnePageSparkleRegular />}>コンパイル</ToolbarButton> */}
+            <ToolbarButton onClick={f.onCompile} icon={<CompileIcon />}>コンパイル</ ToolbarButton>
+        </Tooltip>
+        <Tooltip content="歌声合成" relationship="label" positioning="below-start">
+            {/* <ToolbarButton onClick={f.onCompile} icon={<DocumentOnePageSparkleRegular />}>コンパイル</ToolbarButton> */}
+            {vox.creating ?
+                <Button disabledFocusable={true}>
+                    Creating...
+                </Button>
+                :
+                <Button onClick={VoiceSynth}>
+                    歌声合成
+                </Button>
+            }
+        </Tooltip>
     </div>
 
     const InstBar = <div className="px-3 d-none d-lg-block">
-        <Tooltip content="MIDI機器に接続" relationship="label" positioning="below-start">
-            <ToolbarButton appearance={midi.outPorts.length !== 0 ? "primary" : "subtle"} icon={<MidiIcon />} onClick={midi.setup} />
-        </Tooltip>
         <Instrument midi={midi} />
         {/* <Tooltip content="SoundFontに接続" relationship="label" positioning="below-start">
             <ToolbarButton appearance={sound.isLoading !== null ? "primary" : "transparent"} icon={<SoundIcon />} onClick={sound.setup} />
@@ -152,23 +185,20 @@ export const MenuBar = memo(function MenuBar({ f, tracks, midi, vox, layout, set
 
     const SingerBar = <div className="px-3 d-none d-lg-block">
     
-        <Tooltip content="VOICEVOXに接続" relationship="label" positioning="below-start">
-            {/* <ToolbarButton icon={<PersonVoiceRegular />} onClick={vox.getSingers} /> */}
+        {/* <Tooltip content="VOICEVOXに接続" relationship="label" positioning="below-start">
+            <ToolbarButton icon={<PersonVoiceRegular />} onClick={vox.getSingers} />
             <button onClick={vox.getSingers} className="btn btn-sm"><img src='/images/vvIcon.png' height="22px" /></button>
-        </Tooltip>
-        <Tooltip content="VOICEVOX設定" relationship="label" positioning="below-start">
-            <Link href="http://localhost:50021/setting" target="_blank"><ToolbarButton icon={<SettingIcon />} /></Link>
-        </Tooltip>
+        </Tooltip> */}
     </div>
 
     return <>
         <FirstDialog />
         {/* <div className="fs-5 fw-bolder m-2 text-secondary">ver1.0</div> */}
         {LeftBar}
-        {OtherBar}
         {DisplayBar}
+        {OtherBar}
 
         {InstBar}
-        {SingerBar}
+        {/* {SingerBar} */}
     </>
 })

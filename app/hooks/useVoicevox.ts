@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect } from 'react'
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import { Note, SingerInfo, Query, VoiceVox } from 'types'
 
 type VoiceNote = {
@@ -107,7 +107,10 @@ const inputmusic = {
 export const useVoiceVox = ():VoiceVox => {
     const [queryJson, ] = useState<Query>()
     const [audioData, setAudioData] = useState<Blob>()
-    const [singer, setSinger] = useState(3001)
+
+    const [singer, setSingerState] = useState(3001)
+    const voice = useRef(3001)
+    
     const [singers_portrait, setSingersPortrait] = useState<string>("http://localhost:50021/_resources/8496e5617ad4d9a3f6a9e6647a91fe90f966243f35d775e8e213e8d9355d5030")
     const [creating, setCreating] = useState(false)
     const [singers_info, setSingersInfo] = useState<SingerInfo[]>([])
@@ -146,7 +149,7 @@ export const useVoiceVox = ():VoiceVox => {
                 headers: {"Content-Type": 'application/json'},
                 body: JSON.stringify(query),
             }
-            const url2 = `http://localhost:50021/frame_synthesis?speaker=${singer}`
+            const url2 = `http://localhost:50021/frame_synthesis?speaker=${voice.current}`
             const audio = await fetch(url2, params2)
             const blob = await audio.blob()
             setAudioData(blob)
@@ -157,10 +160,15 @@ export const useVoiceVox = ():VoiceVox => {
             setCreating(false)
             return
         }
-    },[singer])
+    },[])
 
     useEffect(()=>{
         getSingers()
+    },[])
+
+    const setSinger = useCallback((val: number) => {
+        setSingerState(val)
+        voice.current = val
     },[])
 
     return useMemo (()=>({ 

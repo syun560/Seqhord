@@ -75,7 +75,7 @@ export const useMIDI = (): MIDI => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         // 読み込み時にsetup（不具合があれば、コメントアウト）
-        setup()
+        // setup()
         return () => {
             // MIDI を開放
             close()

@@ -55,6 +55,9 @@ export const Singer = memo(function Singer({ vox, tracks, bpm, audio }: SingerPr
         catch (err) {
             console.error(err)
         }
+
+        // 音声合成も行う
+        VoiceSynth()
     }
 
     useEffect(() => {
@@ -71,7 +74,7 @@ export const Singer = memo(function Singer({ vox, tracks, bpm, audio }: SingerPr
                     {items}
                 </Select>
 
-                {vox.creating ?
+                {/* {vox.creating ?
                     <Button disabledFocusable={true}>
                         Creating...
                     </Button>
@@ -79,7 +82,7 @@ export const Singer = memo(function Singer({ vox, tracks, bpm, audio }: SingerPr
                     <Button onClick={VoiceSynth}>
                         Synth
                     </Button>
-                }
+                } */}
             </div>
         }
 

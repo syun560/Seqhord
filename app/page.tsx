@@ -5,7 +5,7 @@ import React from "react"
 import { useState, useEffect, useCallback, useRef, useMemo } from "react"
 
 // fluent ui
-import { FluentProvider, webDarkTheme, SSRProvider } from "@fluentui/react-components"
+import { FluentProvider, webDarkTheme, SSRProvider, useId, Slider, SliderProps } from "@fluentui/react-components"
 
 // types
 import { Chord, Scale, Mark, Track, Var2, MenuFunc } from 'types'
@@ -83,6 +83,13 @@ export default function Main() {
     const rightTabNames: RightTabType[] = ["Preview", "Vars"]
     const leftTabNames: LeftTabType[] = ["Code", "Songs"]
 
+    const id = useId()
+    const [sliderValue, setSliderValue] = React.useState(80);
+    const onSliderChange: SliderProps["onChange"] = (_, data) => {
+        setSliderValue(data.value)
+        audio.changeVolume(data.value)
+    }
+
     // custom hook
     const midi = useMIDI()
     const sf = useSoundFont()
@@ -148,13 +155,20 @@ export default function Main() {
         setChords(res.chords)
         setMarks(res.marks)
         setScales(res.scales)
-    }, [tracks])
+
+        // 音声合成
+        if(!vox.creating) {
+            vox.synthVoice(tracks[0].notes, bpm)
+        }
+    }, [tracks, vox.creating, bpm ])
 
     const onTextChange = useCallback((text: string) => {
         // setTexts(texts.map((t, i) => (i === tabnum ? text : t)))
         const tk = [...tracks]
         tk[nowTrack].texts = text
         setTracks(tk)
+
+        // 3秒間編集されなかったら自動でコンパイルする
         if (autoCompile) {
             if (timer.current) { clearTimeout(timer.current); }
             timer.current = setTimeout(() => {
@@ -365,8 +379,9 @@ export default function Main() {
                 <div className="container-fluid overflow-hidden p-0" data-bs-theme="dark">
 
                     <div className="d-flex align-items-center" style={{ background: "#00203b" }}>
-                        <MenuBar f={menuFunc} tracks={tracks} midi={midi} vox={vox} layout={layout} setLayout={setLayout} />
+                        <MenuBar f={menuFunc} tracks={tracks} midi={midi} vox={vox} bpm={bpm} layout={layout} setLayout={setLayout} />
                         <Singer vox={vox} tracks={tracks} bpm={bpm} audio={audio} />
+                        <Slider value={sliderValue} min={0} max={100} onChange={onSliderChange} id={id} />
                     </div>
 
                     <div className="d-flex align-items-center" style={{ background: "#10203b" }}>

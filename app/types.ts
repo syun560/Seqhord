@@ -64,7 +64,7 @@ export type VoiceVox = {
     synthVoice: (notes: Note[], bpm:number)=>void
     creating: boolean
     singer: number
-    setSinger: Dispatch<SetStateAction<number>>
+    setSinger: (val: number)=>void
     singers_info: SingerInfo[]
     getSingers: ()=>void,
     singers_portrait: string
