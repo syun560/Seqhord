@@ -71,7 +71,7 @@ export const PianoRoll: React.FC<PianoRollProps> = ({ tracks, nowTrack: nowTrack
         // console.log("Pianoroll")
         if (pitch < minNote || pitch > maxNote) return
         else return (
-            <tr key={fuga} onClick={seq.playToggle}>
+            <tr key={fuga}>
                 {/* 音階 */}
                 <th style={pitch % 12 ? st(pitch) : th_base}>
                     <div style={note_name_style}>
@@ -100,9 +100,11 @@ export const PianoRoll: React.FC<PianoRollProps> = ({ tracks, nowTrack: nowTrack
 
     return <div>
         <table className="pianotable">
-            <tbody>
+            <thead>
                 <Conductor tickLength={tick_max} seq={seq} pianoBar={pianoBar} />
                 <ChordDisplay tickLength={tick_max} chords={chords}/>
+            </thead>
+            <tbody onClick={seq.playToggle}>
                 {roll}
             </tbody>
         </table>

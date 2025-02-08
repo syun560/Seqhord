@@ -1,10 +1,14 @@
 import { useState, useRef, useEffect } from "react";
 import { WebAudio } from 'types'
 
+const impulse = "/audios/ir_centre_stalls.wav"
+
 export const useAudio = ():WebAudio => {
     const audioContext = useRef<AudioContext | null>(null)
     const source = useRef<AudioBufferSourceNode | null>(null)
-    const gainNode = useRef<GainNode | null>(null)
+    const dryGain = useRef<GainNode | null>(null)
+    const wetGain = useRef<GainNode | null>(null)
+    const convolver = useRef<ConvolverNode | null>(null)
     const isPlay = useRef(false)
     const isStoppedManually = useRef(false)
 
@@ -22,9 +26,22 @@ export const useAudio = ():WebAudio => {
                 audioContext.current = context
 
                 // GainNode（音量調整ノード）を作成
-                const gain = context.createGain()
-                gain.gain.value = volume
-                gainNode.current = gain
+                const drygain = context.createGain()
+                drygain.gain.value = volume * 0.7
+                dryGain.current = drygain
+
+                const wetgain = context.createGain()
+                wetgain.gain.value = volume * 0.3
+                wetGain.current = wetgain
+
+                // ConvolverNode（リバーブノード）を作成
+                convolver.current = context.createConvolver()
+
+                // インパルス応答データをロード
+                const res = await fetch(impulse);
+                const arrayBuff = await res.arrayBuffer();
+                const impulseBuffer = await audioContext.current.decodeAudioData(arrayBuff);
+                convolver.current.buffer = impulseBuffer;
 
                 // 音声データをロード
                 const response = await fetch(url)
@@ -43,7 +60,7 @@ export const useAudio = ():WebAudio => {
 
     // 再生
     const play = (seekTime: number = currentTime) => {
-        if (!audioContext.current || !audioBuffer || !gainNode.current) return
+        if (!audioContext.current || !audioBuffer || !dryGain.current || !wetGain.current || !convolver.current ) return
 
         // 一時停止していた場合は再開
         if (source.current && !isPlay.current) {
@@ -56,8 +73,15 @@ export const useAudio = ():WebAudio => {
         // 新しいSourceを作成する
         const newSource = audioContext.current.createBufferSource()
         newSource.buffer = audioBuffer
-        newSource.connect(gainNode.current)
-        gainNode.current.connect(audioContext.current.destination)
+
+        // ドライ信号: source -> dryGain -> destination
+        newSource.connect(dryGain.current)
+        dryGain.current.connect(audioContext.current.destination)
+
+        // ウェット信号: source -> convolver -> wetGain -> destination
+        newSource.connect(convolver.current)
+        convolver.current.connect(wetGain.current)
+        wetGain.current.connect(audioContext.current.destination)
 
         // 再生
         newSource.start(0, seekTime)
@@ -115,8 +139,12 @@ export const useAudio = ():WebAudio => {
 
     // 音量調整
     const changeVolume = (value: number) => {
-        if (gainNode.current) {
-            gainNode.current.gain.value = value
+        if (dryGain.current) {
+            dryGain.current.gain.value = value * 0.7
+            setVolume(value)
+        }
+        if (wetGain.current) {
+            wetGain.current.gain.value = value * 0.3
             setVolume(value)
         }
     }

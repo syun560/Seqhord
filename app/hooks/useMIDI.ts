@@ -94,11 +94,11 @@ export const useMIDI = (): MIDI => {
         output.current?.send([0xB0 + ch, 7, val])
     },[])
 
-    const noteOn = useCallback((pitch: number, ch: number, duration?: number) => {
+    const noteOn = useCallback((pitch: number, ch: number, duration: number, offset: number=0) => {
         const vol = masterVolume.current
-        output.current?.send([0x90 + ch, pitch, vol])
-        if (duration !== undefined)
-            output.current?.send([0x80 + ch, pitch, vol], window.performance.now() + duration - 1)
+        output.current?.send([0x90 + ch, pitch, vol], window.performance.now() + offset)
+        if (duration > 0)
+            output.current?.send([0x80 + ch, pitch, vol], window.performance.now() + offset + duration - 1)
     },[])
     const noteOff = useCallback((pitch: number, ch: number) => {
         output.current?.send([0x80 + ch, pitch, 100])

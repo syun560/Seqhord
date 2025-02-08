@@ -137,7 +137,7 @@ export type Var2 = {
 
 export type MIDI = {
     setup: ()=>void
-    noteOn: (pitch :number, ch:number, duration?: number)=>void
+    noteOn: (pitch :number, ch:number, duration: number, offset?:number)=>void
     noteOff: (pitch :number, ch:number )=>void
     programChange: (program: number, ch:number)=>void
     controlChange: (ch: number, eventNumber: number, val:number)=>void
@@ -179,7 +179,7 @@ export type Sequencer = {
     nextMea: ()=>void
     prevMea: ()=>void
     playToggle: ()=>void
-    setNowTick: Dispatch<SetStateAction<number>>
+    setNowTick: (tick: number) => void
     setMIDI: Dispatch<SetStateAction<MIDI>>
     nowTick: number
     isPlaying: boolean

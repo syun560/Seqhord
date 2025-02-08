@@ -87,7 +87,7 @@ export default function Main() {
     const [sliderValue, setSliderValue] = React.useState(80);
     const onSliderChange: SliderProps["onChange"] = (_, data) => {
         setSliderValue(data.value)
-        audio.changeVolume(data.value)
+        audio.changeVolume(data.value/100)
     }
 
     // custom hook

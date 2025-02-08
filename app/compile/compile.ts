@@ -137,6 +137,10 @@ export const compile = (tracks: Track[]) => {
             }
         }
     })
+
+    // 音声の始まるtick
+    if (res.tracks[0].notes.length > 0)
+        res.tracks[0].voice = res.tracks[0].notes[0].tick
  
     // 実行時間を計測
     const end_time = performance.now()
