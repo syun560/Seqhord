@@ -1,6 +1,5 @@
 import { useRef, useState, useCallback } from 'react'
 import { Sequencer, MIDI, Track, WebAudio } from '@/types'
-import { start } from 'repl'
 
 export const useSequencer = (m: MIDI, tracks: Track[], b: number, audio: WebAudio):Sequencer => {
     // 再生しているかどうか
@@ -48,6 +47,9 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number, audio: WebAudi
                 const offset = (nowTickRef.current - tracks[0].voice) * 60  / (bpm.current * 2) + 0.171
                 audio.seek(offset)
             }
+            else {
+                audio.stop()
+            }
         }
     }
 
@@ -65,9 +67,6 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number, audio: WebAudi
             first()
         }else{
             play()
-            if (!audio.isPlaying && tracks[0].voice && nowTickRef.current === tracks[0].voice) {
-                audio.play(0.2)
-            }
         }
     }
 
@@ -80,6 +79,7 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number, audio: WebAudi
 
         // トラックごとにイテレーション
         tracks.forEach(track=>{
+            // Midi
             const notes = track.notes.filter(n=>
                 played_tick.current <= n.tick &&
                 n.tick < scheduled_tick
@@ -88,6 +88,13 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number, audio: WebAudi
                 const offset = (n.tick - nowTickRef.current) * tick_time
                 midi.noteOn(n.pitch, track.ch, n.duration * tick_time, offset)
             })
+
+            // Voice
+            const voice = tracks[0].voice
+            if (!audio.isPlay.current && voice && played_tick.current <= voice && voice < scheduled_tick) {
+                const offset = 0.171 - (voice - nowTickRef.current) * 60  / (bpm.current * 2) 
+                audio.play(offset > 0 ? offset : 0)
+            }
         })
 
         // 演奏されたTickを保存する

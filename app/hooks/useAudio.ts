@@ -16,7 +16,7 @@ export const useAudio = ():WebAudio => {
     const [audioBuffer, setAudioBuffer] = useState<AudioBuffer | null>(null)
     const [isPlaying, setIsPlaying] = useState(false)
     const [currentTime, setCurrentTime] = useState(0) // 現在の再生位置（秒）
-    const [volume, setVolume] = useState(1) // デフォルト音量 100%
+    const [volume, setVolume] = useState(0.8) // デフォルト音量 80%
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
@@ -149,5 +149,5 @@ export const useAudio = ():WebAudio => {
         }
     }
 
-    return { play, pause, seek, stop, isPlaying, currentTime, audioBuffer, changeVolume, volume, setURL }
+    return { play, pause, seek, stop, isPlay, isPlaying, currentTime, audioBuffer, changeVolume, volume, setURL }
 }

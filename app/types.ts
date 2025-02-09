@@ -11,7 +11,7 @@ export type MenuFunc = {
     showOpenFileDialog: () => void
     showMIDIFileDialog: () => Promise<unknown>
     formatText: () => void
-    onCompile: () => void
+    setCompile: (tracks: Track[]) => void
     autoCompose: () => void
 }
 
@@ -153,6 +153,7 @@ export type WebAudio = {
     seek: (time: number)=>void
     pause: ()=>void
     stop: ()=>void
+    isPlay: RefObject<boolean>
     isPlaying: boolean
     
     currentTime: number

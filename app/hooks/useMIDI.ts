@@ -11,7 +11,7 @@ export const useMIDI = (): MIDI => {
     const [, setSelectedOutPortID] = useState('')
     const [outPorts, setOutPorts] = useState<MIDIOutPort[]>([])
     const [outputMap, setOutputMap] = useState<MIDIOutputMap>()
-    const masterVolume = useRef(100)
+    const masterVolume = useRef(80)
     
     const midiAccess = useRef<MIDIAccess | null>(null)
     const output = useRef<MIDIOutput>()
