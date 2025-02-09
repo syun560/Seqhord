@@ -159,7 +159,7 @@ export const MenuBar = memo(function MenuBar({ f, tracks, midi, vox, layout, bpm
         </Menu>
         <Tooltip content="コンパイル" relationship="label" positioning="below-start">
             {/* <ToolbarButton onClick={f.onCompile} icon={<DocumentOnePageSparkleRegular />}>コンパイル</ToolbarButton> */}
-            <ToolbarButton onClick={f.onCompile} icon={<CompileIcon />}>コンパイル</ ToolbarButton>
+            <ToolbarButton onClick={()=>f.setCompile(tracks)} icon={<CompileIcon />}>コンパイル</ ToolbarButton>
         </Tooltip>
         <Tooltip content="歌声合成" relationship="label" positioning="below-start">
             {/* <ToolbarButton onClick={f.onCompile} icon={<DocumentOnePageSparkleRegular />}>コンパイル</ToolbarButton> */}
