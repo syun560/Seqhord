@@ -11,6 +11,29 @@ body {
     /* animation: flash 5.3s linear infinite; */
 }
 
+.knob {
+    /* ノブのサイズ・背景などを円形に */
+    border-radius: 50%;
+    background: radial-gradient(circle, #888 0%, #555 60%, #111 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    cursor: ns-resize;
+    margin: auto;
+    position: relative;
+  }
+  .knob::before {
+    /* ノブ中央から伸びる「つまみ」を擬似要素で作る */
+    content: "";
+    position: absolute;
+    left: 45%;
+    top: 3%;
+    width: 4px;
+    height: 18px;
+    background: #ccc;
+  }
+
 @keyframes flash {
 	0%,
 	100% {

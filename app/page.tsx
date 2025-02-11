@@ -29,6 +29,7 @@ import { SMMLEditor } from './component/SMMLEditor'
 import { Singer } from "./component/Singer"
 import { PianoBoard } from "./component/PianoBoard/PianoBoard"
 import { Variables } from "./component/Variables"
+import { Mixer } from "./component/Mixer"
 import { MenuBar } from "./component/MenuBar"
 import { MenuBar2 } from "./component/MenuBar2"
 import { Songs } from "./component/Songs"
@@ -55,7 +56,7 @@ const handleBeforeUnload = (e: any) => {
     e.returnValue = "ページを離れますか？（変更は保存されません）"
 }
 
-type LeftTabType = "Code" | "Songs"
+type LeftTabType = "Code" | "Songs" | "Tracks"
 type RightTabType = "Preview" | "Vars"
 
 export default function Main() {
@@ -81,7 +82,7 @@ export default function Main() {
     const pianoBar = useRef<HTMLDivElement>(null)
 
     const rightTabNames: RightTabType[] = ["Preview", "Vars"]
-    const leftTabNames: LeftTabType[] = ["Code", "Songs"]
+    const leftTabNames: LeftTabType[] = ["Code", "Songs", "Tracks"]
 
     const id = useId()
     const [sliderValue, setSliderValue] = React.useState(80);
@@ -294,7 +295,8 @@ export default function Main() {
                 value={log.log}
                 readOnly />
         </div>,
-        "Songs": <Songs tracks={tracks} title={title} />
+        "Songs": <Songs tracks={tracks} title={title} />,
+        "Tracks": <Mixer tracks={tracks} setTracks={setTracks} nowTrack={nowTrack} setNowTrack={setNowTrack} midi={midi}/>
     }
 
     // LeftPane
@@ -370,7 +372,7 @@ export default function Main() {
                     </div>
 
                     <div className="d-flex align-items-center" style={{ background: "#10203b" }}>
-                        <TrackSelector tracks={tracks} nowTrack={nowTrack} onAddTrack={onAddTrack} onDeleteTab={onDeleteTab} setNowTrack={setNowTrack} />
+                        <TrackSelector tracks={tracks} nowTrack={nowTrack} setNowTrack={setNowTrack} />
                         <MenuBar2 tracks={tracks} seq={seq} scale={nowScale()} bpm={bpm} marks={marks} tabnum={nowTrack} changeProgram={changeProgram} />
                     </div>
 
