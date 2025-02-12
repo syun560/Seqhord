@@ -4,7 +4,7 @@ import Lib from "@/Lib";
 
 // fluent ui
 import {
-    Select, Button, Label, Tooltip, ToolbarButton, ToolbarDivider,
+    Button, Label, Tooltip, ToolbarButton, ToolbarDivider,
 } from "@fluentui/react-components"
 
 import {
@@ -41,20 +41,20 @@ const drums = Lib.drumName.map((p, i) => {
 export const MenuBar2 = memo(function MenuBar({ tracks, seq, bpm, scale, marks, tabnum, changeProgram }: MenuBarPropsType) {
 
     // コンダクトバー
-    const ConductBar = <div className="p-1 d-none d-sm-block">
+    const ConductBar = <div className="fs-6 d-none d-sm-block">
         <span className="me-2">
-            Tick: <Label size="large" style={{ fontFamily: "monospace" }}>
+            Tick: <span style={{ fontFamily: "monospace" }}>
                 {String(Math.floor(seq.nowTick / 8)).padStart(3, '\xa0')}:{String((seq.nowTick % 8).toFixed(1)).padStart(2, '0')}
-            </Label>
+            </span>
         </span>
         <span className="me-2">
-            Beat: <Label size="large" style={{ fontFamily: "monospace" }}>4/4</Label>
+            Beat: <span style={{ fontFamily: "monospace" }}>4/4</span>
         </span>
         <span className="me-2">
-            Tempo: <Label size="large" style={{ fontFamily: "monospace" }}>{bpm}</Label>
+            Tempo: <span style={{ fontFamily: "monospace" }}>{bpm}</span>
         </span>
         <span>
-            Key: <Label size="large" style={{ fontFamily: "monospace" }}>{scale}</Label>
+            Key: <span style={{ fontFamily: "monospace" }}>{scale}</span>
         </span>
     </div>
 
@@ -87,7 +87,7 @@ export const MenuBar2 = memo(function MenuBar({ tracks, seq, bpm, scale, marks, 
                 if (mark.tick <= seq.nowTick) isMark = true
             }
             return <button
-                className={"btn btn-sm " + (isMark ? "btn-primary" : "btn-dark")}
+                className={"btn " + (isMark ? "btn-primary" : "btn-dark")}
                 key={mark.tick + mark.name}
                 onClick={() => seq.setNowTick(mark.tick)}
             >
@@ -98,9 +98,9 @@ export const MenuBar2 = memo(function MenuBar({ tracks, seq, bpm, scale, marks, 
     
     
     const instBar = <div>
-        <Select value={tracks[tabnum].program} onChange={(e) => changeProgram(Number(e.target.value))} >
+        <select className="form-select" value={tracks[tabnum].program} onChange={(e) => changeProgram(Number(e.target.value))} >
             {tracks[tabnum].type === "drum" ? drums : programs}
-        </Select>
+        </select>
     </div>
 
     return <>

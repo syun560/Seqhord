@@ -1,6 +1,6 @@
-import React, { memo, useState, useRef, useEffect } from 'react'
+import React, { memo, useEffect } from 'react'
 import { Track, VoiceVox, WebAudio } from 'types'
-import { Button, Select } from '@fluentui/react-components'
+import { RotaryKnob } from "./RotaryKnob";
 
 interface SingerProps {
     vox: VoiceVox
@@ -11,8 +11,9 @@ interface SingerProps {
 
 export const Singer = memo(function Singer({ vox, tracks, bpm, audio }: SingerProps) {
 
-    // console.log("singer rendered!!")
-    const sampleRef = useRef<HTMLAudioElement>(null)
+    const VoiceVolumeChange = (val: number):void => {
+        audio.changeVolume(val/100)
+    }
 
     const VoiceSynth = async () => {
         try {
@@ -24,18 +25,15 @@ export const Singer = memo(function Singer({ vox, tracks, bpm, audio }: SingerPr
     }
 
     // セレクトタグの内容を作る
-    let items = null
-    items = vox.singers_info.map(singer =>
-        <option key={singer.speaker_uuid} value={singer.styles[0].id}>
+    let items = [<option key="no" value={0}>VOICEVOX未接続</option>]
+    const singers = vox.singers_info
+    if (singers.length > 0) {
+        items = singers.map(singer =>
+            <option key={singer.speaker_uuid} value={singer.styles[0].id}>
             {singer.name}
         </option>
     )
-
-    const sampleVoice = () => {
-        const audio = sampleRef.current
-        if (!audio) return
-        audio.paused ? audio.play() : audio.pause()
-    }
+}
 
     const onChangeSinger = async (id: number) => {
         console.log("set singer: ", id)
@@ -64,37 +62,13 @@ export const Singer = memo(function Singer({ vox, tracks, bpm, audio }: SingerPr
         if (vox.audioData) audio.setURL(URL.createObjectURL(vox.audioData))
     }, [vox.audioData])
 
-    return <>
-
-        {items.length === 0 ?
-            <></>
-            :
-            <div>
-                <Select className="d-inline ms-2" onChange={(e) => onChangeSinger(Number(e.target.value))} value={vox.singer}>
-                    {items}
-                </Select>
-
-                {/* {vox.creating ?
-                    <Button disabledFocusable={true}>
-                        Creating...
-                    </Button>
-                    :
-                    <Button onClick={VoiceSynth}>
-                        Synth
-                    </Button>
-                } */}
-            </div>
-        }
-
-        <div>
-            {/* {vox.audioData && synthState &&
-                <>
-                <button onClick={playAudio}>再生</button>
-                <button onClick={stopAudio}>停止</button>
-                </>
-            } */}
-
-            {/* {sample && sample !== "" && <audio src={sample} ref={sampleRef} />} */}
+    return <div className='d-flex'>
+        <div className='mx-2'>
+            <select className="form-select" onChange={(e) => onChangeSinger(Number(e.target.value))} value={vox.singer}>
+                {items}
+            </select>
         </div>
-    </>
+        <RotaryKnob value={audio.volume} onChange={VoiceVolumeChange} min={0} max={100}  />
+    </div>
+    
 })

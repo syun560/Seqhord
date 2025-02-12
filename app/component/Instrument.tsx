@@ -1,6 +1,5 @@
 import React  from 'react'
 import { MIDI } from '@/types'
-import { Select } from '@fluentui/react-components'
 
 interface Props {
     midi: MIDI
@@ -26,10 +25,10 @@ export const Instrument = (props: Props) => {
         out_items = [<option key={-1} value={-1}>- No MIDI outputs</option>]
     }
 
-    return <span className='me-2'>
+    return <div className='me-2'>
         {/* <tr><td>Input: </td><td><select>{ in_items }</select></td></tr> */}
-        <Select className="d-inline" onChange={(e)=>midi.changePorts(e.target.value)} defaultValue="-1">
+        <select className="form-select d-inline" onChange={(e)=>midi.changePorts(e.target.value)} defaultValue="-1">
             { out_items }
-        </Select>
-    </span>
+        </select>
+    </div>
 }

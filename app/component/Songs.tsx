@@ -65,14 +65,14 @@ export const Songs = memo(function Songs ({title, tracks}:SongsPropsType) {
         <Button onClick={()=>insertData(title, tracks)}>Upload</Button>
         
 
-        <table className="table">
+        <table className="table table-hover">
             <thead>
                 <tr>
-                    <th>song_id</th>
-                    <th>state</th>
-                    <th>title</th>
-                    <th>author</th>
-                    <th>date</th>
+                    <th>ID</th>
+                    <th>State</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Date</th>
                 </tr>
             </thead>
                 

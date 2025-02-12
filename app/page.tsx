@@ -5,7 +5,7 @@ import React from "react"
 import { useState, useEffect, useCallback, useRef, useMemo } from "react"
 
 // fluent ui
-import { FluentProvider, webDarkTheme, SSRProvider, useId, Slider, SliderProps } from "@fluentui/react-components"
+import { FluentProvider, webDarkTheme, SSRProvider } from "@fluentui/react-components"
 
 // types
 import { Chord, Scale, Mark, Track, Var2, MenuFunc } from 'types'
@@ -83,13 +83,6 @@ export default function Main() {
 
     const rightTabNames: RightTabType[] = ["Preview", "Vars"]
     const leftTabNames: LeftTabType[] = ["Code", "Songs", "Tracks"]
-
-    const id = useId()
-    const [sliderValue, setSliderValue] = React.useState(80);
-    const onSliderChange: SliderProps["onChange"] = (_, data) => {
-        setSliderValue(data.value)
-        audio.changeVolume(data.value/100)
-    }
 
     // custom hook
     const midi = useMIDI()
@@ -169,33 +162,6 @@ export default function Main() {
             setTracks([...tracks])
         }
         setCompile(tracks)
-    }, [tracks])
-
-    const onAddTrack = useCallback(() => {
-        if (tracks.length > 16) return
-        setTracks([...tracks,
-        {
-            name: 'new_track',
-            program: 0,
-            ch: 0,
-            trans: 5,
-            type: 'bass',
-            notes: [],
-            texts: '',
-            volume: 100,
-            panpot: 64,
-            reverb: 40
-        }
-        ])
-    }, [tracks])
-
-    const onDeleteTab = useCallback((t: number) => {
-        const conf = confirm('トラックを削除しますか？（この操作は取り消しできません）')
-        if (!conf) return
-        const tmp_tracks = [...tracks]
-        tmp_tracks.splice(t, 1)
-        setTracks(tmp_tracks)
-        setNowTrack(0)
     }, [tracks])
 
     const nowScale = () => {
@@ -358,8 +324,6 @@ export default function Main() {
     if (layout === 'left') MainPane = [LeftPane]
     if (layout === 'right') MainPane = [RightPane]
 
-    // console.log("page rendered!!!")
-
     return (
         <FluentProvider theme={webDarkTheme}>
             <SSRProvider>
@@ -368,7 +332,6 @@ export default function Main() {
                     <div className="d-flex align-items-center" style={{ background: "#00203b" }}>
                         <MenuBar f={menuFunc} tracks={tracks} midi={midi} vox={vox} bpm={bpm} layout={layout} setLayout={setLayout} />
                         <Singer vox={vox} tracks={tracks} bpm={bpm} audio={audio} />
-                        <Slider value={sliderValue} min={0} max={100} onChange={onSliderChange} id={id} />
                     </div>
 
                     <div className="d-flex align-items-center" style={{ background: "#10203b" }}>
