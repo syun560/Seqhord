@@ -61,7 +61,7 @@ export type Query = {
 export type VoiceVox = {
     audioData: Blob | undefined
     queryJson: Query | undefined
-    synthVoice: (notes: Note[], bpm:number)=>void
+    synthVoice: (notes: Note[], bpm:number)=>Promise<string>
     creating: boolean
     singer: number
     setSinger: (val: number)=>void

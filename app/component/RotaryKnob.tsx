@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect, MouseEvent } from 'react';
 type RotaryKnobProps = {
     value: number
     onChange: (value: number) => void
+    color?: string
     min?: number
     max?: number
     size?: number                  // ノブの表示サイズ(px)
@@ -12,9 +13,10 @@ type RotaryKnobProps = {
 export const RotaryKnob: React.FC<RotaryKnobProps> = ({
     value,
     onChange,
+    color = "radial-gradient(circle, #666 0%, #555 60%, #444 100%)",
     min = 0,
     max = 100,
-    size = 40,
+    size = 38,
     sensitivity = 0.5,
 }) => {
         
@@ -99,6 +101,7 @@ export const RotaryKnob: React.FC<RotaryKnobProps> = ({
                 width: size,
                 height: size,
                 transform: `rotate(${angle}deg)`,
+                background: color
             }}
         >
             {/* {Math.round(value)} */}

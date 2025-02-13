@@ -9,12 +9,12 @@ body {
 .pane{
     height: calc(100vh - 88px);
     /* animation: flash 5.3s linear infinite; */
+    background-color: #212529;
 }
 
 .knob {
     /* ノブのサイズ・背景などを円形に */
     border-radius: 50%;
-    background: radial-gradient(circle, #888 0%, #555 60%, #111 100%);
     display: flex;
     align-items: center;
     justify-content: center;

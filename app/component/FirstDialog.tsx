@@ -36,7 +36,7 @@ export const FirstDialog = memo(function FirstDialog() {
         </DialogTrigger>
         <DialogSurface>
             <DialogBody>
-                <DialogTitle>Sechordへようこそ</DialogTitle>
+                <DialogTitle>Seqhordへようこそ</DialogTitle>
             </DialogBody>
             <DialogContent>
                 <br />

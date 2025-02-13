@@ -128,7 +128,7 @@ export const useVoiceVox = ():VoiceVox => {
         }
     },[])
 
-    const synthVoice = useCallback(async (notes: Note[], bpm:number) => {
+    const synthVoice = useCallback(async (notes: Note[], bpm:number):Promise<string> => {
         const voiceNotes = convertNotes(notes, bpm)
         inputmusic.notes = voiceNotes
 
@@ -154,11 +154,12 @@ export const useVoiceVox = ():VoiceVox => {
             const blob = await audio.blob()
             setAudioData(blob)
             setCreating(false)
+            return "Synthesis complete!"
         }
         catch (err) {
             console.error("Synthesis Error:", err)
             setCreating(false)
-            return
+            return "Synthesis Error"
         }
     },[])
 

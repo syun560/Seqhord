@@ -68,7 +68,9 @@ export const Singer = memo(function Singer({ vox, tracks, bpm, audio }: SingerPr
                 {items}
             </select>
         </div>
-        <RotaryKnob value={audio.volume} onChange={VoiceVolumeChange} min={0} max={100}  />
+        <RotaryKnob 
+        color="radial-gradient(circle, #7B7 0%, #696 60%, #575 100%)" 
+        value={audio.volume*100} onChange={VoiceVolumeChange} min={0} max={100}  />
     </div>
     
 })

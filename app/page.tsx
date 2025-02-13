@@ -121,7 +121,7 @@ export default function Main() {
         }))
     }, [tracks, nowTrack])
 
-    const setCompile = (tracks: Track[]) => {
+    const setCompile = async (tracks: Track[]) => {
         const res = compile(tracks)
 
         // 値のセット
@@ -137,7 +137,9 @@ export default function Main() {
 
         // 音声合成
         if(!vox.creating) {
-            vox.synthVoice(res.tracks[0].notes, bpm)
+            log.addLog("voice synth start...")
+            const msg = await vox.synthVoice(res.tracks[0].notes, res.bpm)
+            log.addLog(msg)
         }
     }
 
@@ -173,9 +175,13 @@ export default function Main() {
         return sc
     }
 
+    // 楽器を変えた時にプレビューで音を鳴らす（再生していないときのみ）
     const changeProgram = (program: number) => {
         midi.programChange(program, nowTrack)
-        midi.noteOn(60, tracks[nowTrack].ch, 1000)
+
+        if (!seq.isPlaying) {
+            midi.noteOn(60, tracks[nowTrack].ch, 1000)
+        }
 
         setTracks(tracks.map((track, i) => {
             if (i === nowTrack) {
@@ -336,7 +342,7 @@ export default function Main() {
 
                     <div className="d-flex align-items-center" style={{ background: "#10203b" }}>
                         <TrackSelector tracks={tracks} nowTrack={nowTrack} setNowTrack={setNowTrack} />
-                        <MenuBar2 tracks={tracks} seq={seq} scale={nowScale()} bpm={bpm} marks={marks} tabnum={nowTrack} changeProgram={changeProgram} />
+                        <MenuBar2 tracks={tracks} setTracks={setTracks} midi={midi} seq={seq} scale={nowScale()} bpm={bpm} marks={marks} nowTrack={nowTrack} changeProgram={changeProgram} />
                     </div>
 
                     <div className="row">

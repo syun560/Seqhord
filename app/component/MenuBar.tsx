@@ -2,10 +2,9 @@ import React, { memo, useState, Dispatch, SetStateAction } from "react"
 import { MIDI, VoiceVox, MenuFunc, Track } from "@/types";
 import { FirstDialog } from "./FirstDialog"
 import { Instrument } from "./Instrument"
-import { RotaryKnob } from "./RotaryKnob";
+import { RotaryKnob } from "./RotaryKnob"
 
 import Link from "next/link";
-
 
 // fluent ui
 import {
@@ -157,11 +156,11 @@ export const MenuBar = memo(function MenuBar({ f, tracks, midi, vox, layout, bpm
         </Tooltip> */}
         <Tooltip content="Synth" relationship="label" positioning="below-start">
             {vox.creating ?
-                <button className="ms-4 btn btn-primary" disabled>
+                <button className="ms-4 btn btn-secondary" disabled>
                     Creating...
                 </button>
                 :
-                <button className="ms-4 btn btn-primary" onClick={VoiceSynth}>
+                <button className="ms-4 btn btn-secondary" onClick={VoiceSynth}>
                     Synth
                 </button>
             }
@@ -170,7 +169,9 @@ export const MenuBar = memo(function MenuBar({ f, tracks, midi, vox, layout, bpm
 
     const InstBar = <div className="px-3 d-none d-lg-flex">
         <Instrument midi={midi} />
-        <RotaryKnob value={midi.masterVolume.current} onChange={midiVolumeChange} min={0} max={100} />
+        <RotaryKnob 
+        color="radial-gradient(circle, #B66 0%, #955 60%, #744 100%)" 
+        value={midi.masterVolume.current} onChange={midiVolumeChange} min={0} max={100} />
     </div>
 
     return <>

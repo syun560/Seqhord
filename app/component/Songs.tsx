@@ -4,9 +4,6 @@ import React, { memo, useEffect, useState } from "react"
 import { Track } from "@/types";
 import supabase from "@/utils/supabase";
 import { insertData } from "@/utils/insertData";
-import {
-    Button
-} from "@fluentui/react-components"
 
 type Song = {
     id: number
@@ -62,7 +59,7 @@ export const Songs = memo(function Songs ({title, tracks}:SongsPropsType) {
     
 
     return <div>
-        <Button onClick={()=>insertData(title, tracks)}>Upload</Button>
+        <button className="btn btn-secondary m-2" onClick={()=>insertData(title, tracks)}>Upload</button>
         
 
         <table className="table table-hover">

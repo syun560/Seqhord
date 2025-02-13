@@ -2,9 +2,6 @@ import React, { memo, Dispatch, SetStateAction } from "react"
 import { Track, MIDI } from 'types'
 import { RotaryKnob } from "./RotaryKnob"
 import Lib from "@/Lib";
-import {
-    Button
-} from "@fluentui/react-components"
 
 type VariablesPropsType = {
     tracks: Track[]
@@ -68,8 +65,8 @@ export const Mixer = memo(function Mixer ({tracks, setTracks, nowTrack, setNowTr
     }
 
     return <div>
-        <Button onClick={AddTrack}>AddTrack</Button>
-        <Button onClick={()=>DeleteTrack(nowTrack)} disabledFocusable={nowTrack===0}>DeleteTrack</Button>
+        <button className="btn btn-primary m-2" onClick={AddTrack}>Add</button>
+        <button className="btn btn-secondary" onClick={()=>DeleteTrack(nowTrack)} disabled={nowTrack===0}>Del</button>
         <table className="table table-hover align-middle text-center">
             <thead>
                 <tr>
@@ -77,6 +74,7 @@ export const Mixer = memo(function Mixer ({tracks, setTracks, nowTrack, setNowTr
                     <th>NAME</th>
                     {/* <th>TYPE</th> */}
                     <th>PROGRAM</th>
+                    {/* <th>MUTE</th> */}
                     <th>VOL</th>
                     <th>PAN</th>
                     <th>REV</th>
@@ -88,6 +86,7 @@ export const Mixer = memo(function Mixer ({tracks, setTracks, nowTrack, setNowTr
                     <td onClick={()=>setNowTrack(i)}>{track.name}</td>
                     {/* <td>{track.type}</td> */}
                     <td onClick={()=>setNowTrack(i)}>{Lib.getProgramName(track.program,track.type === "drum")}</td>
+                    {/* <td><input type="checkbox" className="form-check-input" /></td> */}
                     <td><RotaryKnob onChange={(val: number)=>setVolume(val, i)} value={track.volume} min={0} max={127} /></td>
                     <td><RotaryKnob onChange={(val: number)=>setPanpot(val, i)} value={track.panpot} min={0} max={127} /></td>
                     <td><RotaryKnob onChange={(val: number)=>setReverb(val, i)} value={track.reverb} min={0} max={127} /></td>

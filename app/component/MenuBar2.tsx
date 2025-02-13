@@ -1,10 +1,11 @@
-import React, { memo } from "react"
-import { Sequencer, Mark, Track } from "@/types";
+import React, { memo, Dispatch, SetStateAction } from "react"
+import { Sequencer, Mark, Track, MIDI } from "@/types";
 import Lib from "@/Lib";
+import { RotaryKnob } from "./RotaryKnob";
 
 // fluent ui
 import {
-    Button, Label, Tooltip, ToolbarButton, ToolbarDivider,
+    Button, Tooltip, ToolbarButton, ToolbarDivider,
 } from "@fluentui/react-components"
 
 import {
@@ -23,11 +24,13 @@ const PrevIcon = bundleIcon(ChevronLeftRegular, ChevronLeftFilled)
 
 type MenuBarPropsType = {
     tracks: Track[]
+    midi: MIDI
     seq: Sequencer
     scale: string
     bpm: number
     marks: Mark[]
-    tabnum: number
+    nowTrack: number
+    setTracks: Dispatch<SetStateAction<Track[]>>
 
     changeProgram: (program: number) => void
 }
@@ -38,7 +41,7 @@ const drums = Lib.drumName.map((p, i) => {
     return <option key={i} value={i}>{String(i).padStart(3, '0')}: {p}</option>
 })
 
-export const MenuBar2 = memo(function MenuBar({ tracks, seq, bpm, scale, marks, tabnum, changeProgram }: MenuBarPropsType) {
+export const MenuBar2 = memo(function MenuBar({ tracks, setTracks, midi, seq, bpm, scale, marks, nowTrack, changeProgram }: MenuBarPropsType) {
 
     // コンダクトバー
     const ConductBar = <div className="fs-6 d-none d-sm-block">
@@ -61,19 +64,19 @@ export const MenuBar2 = memo(function MenuBar({ tracks, seq, bpm, scale, marks, 
     // OperationBar
     const SeqBar = <div>
         <Tooltip content="先頭へ" relationship="label" positioning="below-start">
-            <ToolbarButton onClick={seq.first} icon={<RewindIcon />} />
+            <Button size="large" appearance="transparent" onClick={seq.first} icon={<RewindIcon />} />
         </Tooltip>
         <Tooltip content="一小節前へ" relationship="label" positioning="below-start">
-            <ToolbarButton onClick={seq.prevMea} icon={<PrevIcon />} />
+            <Button size="large" appearance="transparent" onClick={seq.prevMea} icon={<PrevIcon />} />
         </Tooltip>
         <Tooltip content={seq.isPlaying ? "一時停止" : "再生"} relationship="label" positioning="below-start">
             <Button className="mx-2" shape="circular" appearance="primary" onClick={seq.playToggle} size="large" icon={seq.isPlaying ? <PauseIcon /> : <PlayIcon />} />
         </Tooltip>
         <Tooltip content="一小節先へ" relationship="label" positioning="below-start">
-            <ToolbarButton onClick={seq.nextMea} icon={<FastForwardIcon />} />
+            <Button size="large" appearance="transparent" onClick={seq.nextMea} icon={<FastForwardIcon />} />
         </Tooltip>
         <Tooltip content="最後尾へ" relationship="label" positioning="below-start">
-            <ToolbarButton onClick={seq.last} icon={<LastIcon />} />
+            <Button size="large" appearance="transparent" onClick={seq.last} icon={<LastIcon />} />
         </Tooltip>
     </div>
 
@@ -87,7 +90,7 @@ export const MenuBar2 = memo(function MenuBar({ tracks, seq, bpm, scale, marks, 
                 if (mark.tick <= seq.nowTick) isMark = true
             }
             return <button
-                className={"btn " + (isMark ? "btn-primary" : "btn-dark")}
+                className={"btn " + (isMark ? "btn-secondary" : "btn-dark")}
                 key={mark.tick + mark.name}
                 onClick={() => seq.setNowTick(mark.tick)}
             >
@@ -96,11 +99,22 @@ export const MenuBar2 = memo(function MenuBar({ tracks, seq, bpm, scale, marks, 
         })}
     </div>
     
-    
-    const instBar = <div>
-        <select className="form-select" value={tracks[tabnum].program} onChange={(e) => changeProgram(Number(e.target.value))} >
-            {tracks[tabnum].type === "drum" ? drums : programs}
-        </select>
+    // ミキサーのところと重複しているので一つにしたい
+    const setVolume = (value: number, ch: number) => {
+        const res = [...tracks]
+        res[ch].volume = value
+        setTracks(res)
+
+        midi.setVolume(value, tracks[ch].ch)
+    }
+
+    const instBar = <div className="d-flex">
+        <div className="mx-2">
+            <select className="form-select" value={tracks[nowTrack].program} onChange={(e) => changeProgram(Number(e.target.value))} >
+                {tracks[nowTrack].type === "drum" ? drums : programs}
+            </select>
+        </div>
+        <RotaryKnob value={tracks[nowTrack].volume} onChange={(val:number)=>setVolume(val, nowTrack)} min={0} max={127} />              
     </div>
 
     return <>
