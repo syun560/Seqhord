@@ -29,10 +29,14 @@ const formatter = new Intl.DateTimeFormat('ja-JP', {
     hour: '2-digit',
     minute: '2-digit',
     // second: '2-digit',
-});
+})
 
 export const Songs = memo(function Songs ({title, tracks}:SongsPropsType) {
     const [songs, setSongs] = useState<Song[]>([])
+
+    const open = () => {
+        alert("openだコラ")
+    }
 
     useEffect(()=>{
         (async() => {
@@ -74,7 +78,7 @@ export const Songs = memo(function Songs ({title, tracks}:SongsPropsType) {
             </thead>
                 
             <tbody>
-                {songs.map(song=><tr key={song.id}>
+                {songs.map(song=><tr key={song.id} onClick={open}>
                     <td>{song.id}</td>
                     <td><span className="badge text-bg-secondary">public</span></td>
                     <td>{song.title}</td>

@@ -25,7 +25,7 @@ export const Singer = memo(function Singer({ vox, tracks, bpm, audio }: SingerPr
     }
 
     // セレクトタグの内容を作る
-    let items = [<option key="no" value={0}>VOICEVOX未接続</option>]
+    let items = [<option key="no" value={0}>- No VOICEVOX</option>]
     const singers = vox.singers_info
     if (singers.length > 0) {
         items = singers.map(singer =>

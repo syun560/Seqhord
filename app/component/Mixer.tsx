@@ -13,28 +13,50 @@ type VariablesPropsType = {
 }
 
 export const Mixer = memo(function Mixer ({tracks, setTracks, nowTrack, setNowTrack, midi}:VariablesPropsType) {
-    const setVolume = (value: number, ch: number) => {
-        const res = [...tracks]
-        res[ch].volume = value
-        setTracks(res)
+    const setVolume = (volume: number, ch: number) => {
 
-        midi.setVolume(value, tracks[ch].ch)
+        setTracks(tracks => tracks.map((track, i) => {
+            if (i === ch) {
+                const texts = track.texts.split('\n').map(line=>{
+                    if (line.includes("@volume")) return `@volume = ${Math.floor(volume)}`
+                    else return line
+                }).join('\n')
+                return { ...track, volume, texts }
+            }
+            else return track
+        }))
+
+        midi.setVolume(volume, tracks[ch].ch)
     }
 
-    const setPanpot = (value: number, ch: number) => {
-        const res = [...tracks]
-        res[ch].panpot = value
-        setTracks(res)
+    const setPanpot = (panpot: number, ch: number) => {
+        setTracks(tracks => tracks.map((track, i) => {
+            if (i === ch) {
+                const texts = track.texts.split('\n').map(line=>{
+                    if (line.includes("@panpot")) return `@panpot = ${Math.floor(panpot)}`
+                    else return line
+                }).join('\n')
+                return { ...track, panpot, texts }
+            }
+            else return track
+        }))
 
-        midi.controlChange(tracks[ch].ch, 10, value) //
+        midi.controlChange(tracks[ch].ch, 10, panpot) //
     }
 
-    const setReverb = (value: number, ch: number) => {
-        const res = [...tracks]
-        res[ch].reverb = value
-        setTracks(res)
+    const setReverb = (reverb: number, ch: number) => {
+        setTracks(tracks => tracks.map((track, i) => {
+            if (i === ch) {
+                const texts = track.texts.split('\n').map(line=>{
+                    if (line.includes("@reverb")) return `@reverb = ${Math.floor(reverb)}`
+                    else return line
+                }).join('\n')
+                return { ...track, reverb, texts }
+            }
+            else return track
+        }))
 
-        midi.controlChange(tracks[ch].ch, 91, value) //
+        midi.controlChange(tracks[ch].ch, 91, reverb) //
     }
 
     const AddTrack = () => {

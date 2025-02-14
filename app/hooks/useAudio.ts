@@ -5,17 +5,17 @@ const impulse = "/audios/ir_centre_stalls.wav"
 
 export const useAudio = ():WebAudio => {
     const audioContext = useRef<AudioContext | null>(null)
+    const audioBuffer = useRef<AudioBuffer | null>(null)
     const source = useRef<AudioBufferSourceNode | null>(null)
     const dryGain = useRef<GainNode | null>(null)
     const wetGain = useRef<GainNode | null>(null)
     const convolver = useRef<ConvolverNode | null>(null)
     const isPlay = useRef(false)
     const isStoppedManually = useRef(false)
+    const startTime = useRef(0) // 再生開始位置を保存する
 
     const [url, setURL] = useState<string|null>(null)
-    const [audioBuffer, setAudioBuffer] = useState<AudioBuffer | null>(null)
     const [isPlaying, setIsPlaying] = useState(false)
-    const [currentTime, setCurrentTime] = useState(0) // 現在の再生位置（秒）
     const [volume, setVolume] = useState(0.8) // デフォルト音量 80%
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -23,6 +23,7 @@ export const useAudio = ():WebAudio => {
         if (url) {
             const initAudio = async () => {
                 const context = new window.AudioContext()
+                const oldContext = audioContext.current // 前再生していた情報を取得するため。
                 audioContext.current = context
 
                 // GainNode（音量調整ノード）を作成
@@ -47,7 +48,15 @@ export const useAudio = ():WebAudio => {
                 const response = await fetch(url)
                 const arrayBuffer = await response.arrayBuffer()
                 const decodedBuffer = await context.decodeAudioData(arrayBuffer)
-                setAudioBuffer(decodedBuffer)
+                audioBuffer.current = decodedBuffer
+
+                // もし再生中ならnewSourceを前の位置からシークして再生する
+                if (isPlay.current && oldContext) {
+                    console.log("再生中なのでPlay！！！")
+                    console.log(oldContext.currentTime - startTime.current)
+                    // isPlay.current = false
+                    play(oldContext.currentTime - startTime.current + 0.071)
+                }
             }
 
             initAudio()
@@ -59,20 +68,23 @@ export const useAudio = ():WebAudio => {
     }, [url]) // URLが変わるたびに新しい音声をロード
 
     // 再生
-    const play = (seekTime: number = currentTime) => {
-        if (!audioContext.current || !audioBuffer || !dryGain.current || !wetGain.current || !convolver.current ) return
+    const play = (seekTime: number = startTime.current) => {
+        if (!audioContext.current || !audioBuffer.current || !dryGain.current || !wetGain.current || !convolver.current ) return
 
         // 一時停止していた場合は再開
         if (source.current && !isPlay.current) {
+            console.log("再開！！！")
             audioContext.current.resume()
             isPlay.current = true
             setIsPlaying(true)
             return
         }
 
+        console.log("new Source!!!")
+
         // 新しいSourceを作成する
         const newSource = audioContext.current.createBufferSource()
-        newSource.buffer = audioBuffer
+        newSource.buffer = audioBuffer.current
 
         // ドライ信号: source -> dryGain -> destination
         newSource.connect(dryGain.current)
@@ -88,13 +100,13 @@ export const useAudio = ():WebAudio => {
         source.current = newSource
         isPlay.current = true
         setIsPlaying(true)
+        startTime.current = audioContext.current.currentTime - seekTime
 
         // 再生終了時の処理
         newSource.onended = () => {
             if (!isStoppedManually.current) {
                 isPlay.current = false
                 setIsPlaying(false)
-                setCurrentTime(0)
                 source.current = null
             }
             isStoppedManually.current = false
@@ -102,11 +114,11 @@ export const useAudio = ():WebAudio => {
     }
 
     const seek = (time: number) => {
-        if (audioBuffer) {
+        if (audioContext.current && audioBuffer.current) {
             if (time < 0) time = 0
-            if (time > audioBuffer.duration) time = audioBuffer.duration
+            if (time > audioBuffer.current.duration) time = audioBuffer.current.duration
 
-            setCurrentTime(time)
+            // startTime.current = audioContext.current.currentTime - time
 
             // 再生中の場合、一旦停止してSourceを破棄しシーク位置から新しく再生する
             if (isPlay.current) {
@@ -149,5 +161,5 @@ export const useAudio = ():WebAudio => {
         }
     }
 
-    return { play, pause, seek, stop, isPlay, isPlaying, currentTime, audioBuffer, changeVolume, volume, setURL }
+    return { play, pause, seek, stop, isPlay, isPlaying, startTime, audioBuffer, changeVolume, volume, setURL }
 }

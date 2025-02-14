@@ -54,22 +54,22 @@ body {
 
 .fixed-div{
     position: fixed;
-    bottom: 25px;
-    right: 30px;
+    bottom: 10px;
+    right: 10px;
     width: 20vw;
     height: 70vh;
     
     display: flex;
     align-items: center;
     flex-direction: column-reverse;
-
-
-    /* background-color: orange; */
-    transition: filter 0.2s ease;
-    filter: opacity(0.2);
+   
 }
-.fixed-div:hover {
-    filter: opacity(1.0); /* 明るくする */
+.opa{
+    transition: filter 0.2s ease;
+    filter: opacity(0.4);
+}
+.opa_disabled {
+    filter: opacity(0.1); /* 暗くする */
 }
 
 .fixed-div2{

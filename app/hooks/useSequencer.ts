@@ -26,7 +26,7 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number, audio: WebAudi
     const endTick = useRef(128)
     
     // ループを回す時間（ms）
-    const proceed_time = 50
+    const loop_time = 50
 
     // シークが起きた場合
     const setNowTick = (tick: number) => {
@@ -34,12 +34,13 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number, audio: WebAudi
         nowTickRef.current = tick
         
         if (isPlayingRef.current) {
+            console.log("setNowtick!!!")
 
             start_time.current = performance.now()
             start_tick.current = nowTickRef.current
             played_tick.current = nowTickRef.current
             clearTimeout(timer.current)
-            timer.current = setTimeout(proceed, proceed_time)
+            timer.current = setTimeout(loop, loop_time)
             midi.allNoteOff()
             
             // Audioの再生
@@ -54,13 +55,13 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number, audio: WebAudi
     }
 
     // ループして実行される関数
-    const proceed = () => {
+    const loop = () => {
         // 現在のtickをスタートしてからの時間で計算する
         const tick = start_tick.current + (performance.now() - start_time.current) / (60 * 1000 / (bpm.current * 2))
 
         setNowTickState(Math.round(tick))
         nowTickRef.current = tick
-        timer.current = setTimeout(proceed, proceed_time)
+        timer.current = setTimeout(loop, loop_time)
         
         if (nowTickRef.current > endTick.current){
             stop()
@@ -74,8 +75,8 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number, audio: WebAudi
         // 1ティックの時間（ms）
         const tick_time = 60 * 1000 / (bpm.current * 2)
         
-        // 演奏予定のTick（proceed_timeの三倍とる）
-        const scheduled_tick = nowTickRef.current + proceed_time * 3 / tick_time
+        // 演奏予定のTick（loop_timeの三倍とる）
+        const scheduled_tick = nowTickRef.current + loop_time * 3 / tick_time
 
         // トラックごとにイテレーション
         tracks.forEach(track=>{
@@ -126,9 +127,9 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number, audio: WebAudi
         setNowTick(s)
     }
 
-    const first = useCallback(() => {
+    const first = () => {
         setNowTick(0)
-    },[])
+    }
     const last = () => {
         setNowTick(endTick.current)
     }
@@ -159,7 +160,7 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number, audio: WebAudi
         played_tick.current = nowTickRef.current
         
         // ループの開始
-        timer.current = setTimeout(proceed, proceed_time)
+        timer.current = setTimeout(loop, loop_time)
 
         // WebAudio（Voice）の再生も行う
         if (tracks[0].voice && nowTickRef.current >= tracks[0].voice) {

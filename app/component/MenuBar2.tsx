@@ -100,12 +100,19 @@ export const MenuBar2 = memo(function MenuBar({ tracks, setTracks, midi, seq, bp
     </div>
     
     // ミキサーのところと重複しているので一つにしたい
-    const setVolume = (value: number, ch: number) => {
-        const res = [...tracks]
-        res[ch].volume = value
-        setTracks(res)
+    const setVolume = (volume: number, ch: number) => {
+        setTracks(tracks => tracks.map((track, i) => {
+            if (i === ch) {
+                const texts = track.texts.split('\n').map(line=>{
+                    if (line.includes("@volume")) return `@volume = ${Math.floor(volume)}`
+                    else return line
+                }).join('\n')
+                return { ...track, volume, texts }
+            }
+            else return track
+        }))
 
-        midi.setVolume(value, tracks[ch].ch)
+        midi.setVolume(volume, tracks[ch].ch)
     }
 
     const instBar = <div className="d-flex">

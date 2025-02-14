@@ -106,6 +106,7 @@ export type Track = {
     reverb: number
     panpot: number
     voice?: number // ボイスの開始位置(tick)
+    last_compiled?: number // 最後にコンパイルされた時間（最新のものかどうか確認のため）
 }
 
 export type Scale = {
@@ -156,8 +157,8 @@ export type WebAudio = {
     isPlay: RefObject<boolean>
     isPlaying: boolean
     
-    currentTime: number
-    audioBuffer: AudioBuffer|null
+    startTime: RefObject<number>
+    audioBuffer: RefObject<AudioBuffer|null>
 
     volume: number
     changeVolume: (value: number)=>void

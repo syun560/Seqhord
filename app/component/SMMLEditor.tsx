@@ -129,7 +129,6 @@ export const SMMLEditor = memo (function smmlEditor({ value, doChange }: EditorC
         quickSuggestions: true,
         suggest: {
             preview: true,
-            localityBonus: true
         }
     }
 

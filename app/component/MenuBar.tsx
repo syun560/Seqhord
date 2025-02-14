@@ -109,10 +109,10 @@ export const MenuBar = memo(function MenuBar({ f, tracks, midi, vox, layout, bpm
     </div>
 
     const DisplayBar = <div className="py-1 d-none d-lg-block">
-        <Tooltip content="Toggle Editor" relationship="label" positioning="below-start">
+        <Tooltip content="Toggle LeftPane" relationship="label" positioning="below-start">
             <Button size="large" appearance="transparent"  onClick={() => setLayout(layout === "right" ? "normal" : "right")} icon={layout === "right" ? <LayoutColumnTwoRegular /> : <LayoutColumnTwoFocusLeftFilled />} />
         </Tooltip>
-        <Tooltip content="Toggle Preview" relationship="label" positioning="below-start">
+        <Tooltip content="Toggle RightPane" relationship="label" positioning="below-start">
             <Button size="large" appearance="transparent"  onClick={() => setLayout(layout === "left" ? "normal" : "left")} icon={layout === "left" ? <LayoutColumnTwoRegular /> : <LayoutColumnTwoFocusRightFilled />} />
         </Tooltip>
         {screen === 'normal' ? <Tooltip content="画面を最大化(F11)" relationship="label" positioning="below-start">

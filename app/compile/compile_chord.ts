@@ -59,7 +59,7 @@ export const compile_chord = (line: string, i: number, res: Res, c: number) => {
         }
         else if (c === '7'){
             res.chords[res.chords.length - 1].chord_name += '7'
-            res.chords[res.chords.length - 1].seventh = 'minor'
+            if(res.chords[res.chords.length - 1].seventh !== 'major') res.chords[res.chords.length - 1].seventh = 'minor'
         }
         else if (c === '|'){
             if(m_state === 0) tick += 8

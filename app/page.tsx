@@ -39,8 +39,8 @@ import { compile } from './compile/compile'
 import { format_text } from "./compile/format_text"
 import { generate_midi } from './generate/generate_midi'
 import { generate_musicxml } from './generate/generate_musicxml'
-import { loadJSON } from './loadJSON'
-import { loadMIDI } from './loadMIDI'
+import { loadJSON } from './utils/loadJSON'
+import { loadMIDI } from './utils/loadMIDI'
 
 import './styles.css'
 import { savelocal } from "./utils/savelocal"
@@ -175,7 +175,9 @@ export default function Main() {
         return sc
     }
 
-    // 楽器を変えた時にプレビューで音を鳴らす（再生していないときのみ）
+    // 楽器を変えた時
+    // + プレビューで音を鳴らす（再生していないときのみ）
+    // + Codeの記述も変える
     const changeProgram = (program: number) => {
         midi.programChange(program, nowTrack)
 
@@ -183,9 +185,13 @@ export default function Main() {
             midi.noteOn(60, tracks[nowTrack].ch, 1000)
         }
 
-        setTracks(tracks.map((track, i) => {
+        setTracks(tracks => tracks.map((track, i) => {
             if (i === nowTrack) {
-                return { ...track, program }
+                const texts = track.texts.split('\n').map(line=>{
+                    if (line.includes("@program")) return `@program = ${program}`
+                    else return line
+                }).join('\n')
+                return { ...track, program, texts }
             }
             else return track
         }))
@@ -314,7 +320,7 @@ export default function Main() {
             {RightTab[rightTab]}
 
             {/* float element */}
-            <div className="fixed-div">
+            <div className={vox.creating ? "fixed-div opa_disabled" : "fixed-div opa" }>
                 {vox.singers_portrait !== "" &&
                     <img height="88%" src={vox.singers_portrait} alt="singer" />
                 }

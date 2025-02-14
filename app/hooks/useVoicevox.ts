@@ -108,8 +108,8 @@ export const useVoiceVox = ():VoiceVox => {
     const [queryJson, ] = useState<Query>()
     const [audioData, setAudioData] = useState<Blob>()
 
-    const [singer, setSingerState] = useState(3001)
-    const voice = useRef(3001)
+    const [singer, setSingerState] = useState(3002)
+    const voice = useRef(3002)
     
     const [singers_portrait, setSingersPortrait] = useState<string>("http://localhost:50021/_resources/8496e5617ad4d9a3f6a9e6647a91fe90f966243f35d775e8e213e8d9355d5030")
     const [creating, setCreating] = useState(false)
@@ -131,6 +131,10 @@ export const useVoiceVox = ():VoiceVox => {
     const synthVoice = useCallback(async (notes: Note[], bpm:number):Promise<string> => {
         const voiceNotes = convertNotes(notes, bpm)
         inputmusic.notes = voiceNotes
+
+        console.log("synthVoice:")
+        console.log(singer)
+        console.log(voice.current)
 
         try {
             const url = "http://localhost:50021/sing_frame_audio_query?speaker=6000"

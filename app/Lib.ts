@@ -39,11 +39,11 @@ class Lib {
 
     // 色
     static colorAvoidPianoKey = "#191919"
-    static colorPianoKey = "#393939"
+    static colorPianoKey = "#1C1D1E"
     
     static colorNote = "skyblue"
-    static colorAvoidNote = "#393939"
-    static colorNormalNote = "#494949"
+    static colorAvoidNote = "#1C1D1E"
+    static colorNormalNote = "#262728"
 
     static programName = [
         "Piano 1",
