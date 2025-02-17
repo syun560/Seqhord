@@ -1,35 +1,19 @@
-import React, { memo } from "react"
+import React, { memo, Dispatch, SetStateAction } from "react"
 import { Track } from '../types.ts'
+import Lib from "@/Lib";
 
 type TrackSelectorProps = {
     tracks: Track[]
-    tabnum: number
-    onTabChange: (param : number) => void
-    onAddTrack: ()=>void
-    onDeleteTab: (param: number) => void
+    nowTrack: number
+    setNowTrack: Dispatch<SetStateAction<number>>
 }
 
-export const TrackSelector = memo(function trackSelector({tracks, tabnum, onTabChange, onAddTrack, onDeleteTab}:TrackSelectorProps) {
+export const TrackSelector = memo(function trackSelector({ tracks, nowTrack, setNowTrack }: TrackSelectorProps) {
 
-    // console.log("Trackselector rendered")
-
-    const tabChange = (t: number) => {
-        if (t !== tabnum) {
-            onTabChange(t)
-        }
-    }
-
-    return <ul className="nav nav-tabs">
-    {tracks.map((cn, i)=>{
-        return <li className="nav-item" key={i}>
-            <a className={"pointer nav-link" + (i === tabnum ? " active" : "")} onClick={()=>tabChange(i)}>
-                {`${i}: ${cn.name}`}
-                {tabnum===i && i !==0 ?<button type="button" onClick={()=>onDeleteTab(i)} className="btn btn-sm ms-2 me-0 p-0">✕</button>:<></>}
-            </a>
-        </li>
-    })}
-        <li className="nav-item" key={1000}>
-            <a className="pointer nav-link" onClick={onAddTrack}>+</a>
-        </li>
-    </ul>
+    return <div>
+        <select className="form-select" value={nowTrack} onChange={(e) => setNowTrack(Number(e.target.value))}>
+            {tracks.map((track, i) => <option value={i} key={track.ch + track.name}>{`Ch.${track.ch}: ${track.name} (${Lib.getProgramName(track.program,track.type === "drum")})`}</option>)}
+        </select>
+    </div>
+    
 })

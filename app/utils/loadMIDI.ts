@@ -1,5 +1,4 @@
 import { Track } from 'types'
-import { compile } from './compile/compile'
 // https://github.com/Tonejs/Midi
 import { Midi } from '@tonejs/midi'
 

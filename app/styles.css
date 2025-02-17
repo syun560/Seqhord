@@ -7,9 +7,32 @@ body {
     padding: 0;
 }
 .pane{
-    height: calc(100vh - 85px);
+    height: calc(100vh - 88px);
     /* animation: flash 5.3s linear infinite; */
+    background-color: #212529;
 }
+
+.knob {
+    /* ノブのサイズ・背景などを円形に */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    cursor: ns-resize;
+    margin: auto;
+    position: relative;
+  }
+  .knob::before {
+    /* ノブ中央から伸びる「つまみ」を擬似要素で作る */
+    content: "";
+    position: absolute;
+    left: 45%;
+    top: 3%;
+    width: 4px;
+    height: 18px;
+    background: #ccc;
+  }
 
 @keyframes flash {
 	0%,
@@ -31,22 +54,22 @@ body {
 
 .fixed-div{
     position: fixed;
-    bottom: 25px;
-    right: 30px;
+    bottom: 10px;
+    right: 10px;
     width: 20vw;
     height: 70vh;
     
     display: flex;
     align-items: center;
     flex-direction: column-reverse;
-
-
-    /* background-color: orange; */
-    transition: filter 0.2s ease;
-    filter: opacity(0.2);
+   
 }
-.fixed-div:hover {
-    filter: opacity(1.0); /* 明るくする */
+.opa{
+    transition: filter 0.2s ease;
+    filter: opacity(0.4);
+}
+.opa_disabled {
+    filter: opacity(0.1); /* 暗くする */
 }
 
 .fixed-div2{

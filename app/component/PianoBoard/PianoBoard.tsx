@@ -3,7 +3,6 @@ import React,{ memo } from 'react'
 import { Piano, KeyboardShortcuts, MidiNumbers } from 'react-piano'
 import { Sound, MIDI } from '@/types'
 import 'react-piano/dist/styles.css'
-import { channel } from 'diagnostics_channel'
 
 type PianoBoardPropsType = {
     sf: Sound
@@ -32,7 +31,7 @@ export const PianoBoard = memo(function PianoBoard({sf, midi, ch, scale}:PianoBo
     const keyboardShortcuts = makeKeyboardShortcuts(keyFirst)
 
     const playNote = (midiNumber :string) => {
-        midi.noteOn(Number(midiNumber), ch)
+        midi.noteOn(Number(midiNumber), ch, 0)
     }
     const stopNote = (midiNumber :string) => {
         midi.noteOff(Number(midiNumber), ch)

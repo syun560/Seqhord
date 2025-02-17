@@ -33,7 +33,7 @@ export const useSoundFont = ():Sound => {
         catch(err){
             console.error("loadInstrument error: ", err)
         }
-    },[audioContext,instrumentName])
+    },[audioContext])
 
     const playNote = useCallback((midiNumber:string) => {
         if (!audioContext || !instrument) return

@@ -6,12 +6,11 @@ export type MenuFunc = {
     saveMIDI: () => void
     saveMusicXML: () => void
     saveText: () => void
-    saveAsJson: () => void
     importMIDI: () => void
     showOpenFileDialog: () => void
     showMIDIFileDialog: () => Promise<unknown>
     formatText: () => void
-    onCompile: () => void
+    setCompile: (texts: string[]) => void
     autoCompose: () => void
 }
 
@@ -61,10 +60,10 @@ export type Query = {
 export type VoiceVox = {
     audioData: Blob | undefined
     queryJson: Query | undefined
-    synthVoice: (notes: Note[], bpm:number)=>void
+    synthVoice: (notes: Note[], bpm:number)=>Promise<string>
     creating: boolean
     singer: number
-    setSinger: Dispatch<SetStateAction<number>>
+    setSinger: (val: number)=>void
     singers_info: SingerInfo[]
     getSingers: ()=>void,
     singers_portrait: string
@@ -105,6 +104,8 @@ export type Track = {
     volume: number
     reverb: number
     panpot: number
+    voice?: number // ボイスの開始位置(tick)
+    last_compiled?: number // 最後にコンパイルされた時間（最新のものかどうか確認のため）
 }
 
 export type Scale = {
@@ -136,7 +137,7 @@ export type Var2 = {
 
 export type MIDI = {
     setup: ()=>void
-    noteOn: (pitch :number, ch:number, duration?: number)=>void
+    noteOn: (pitch :number, ch:number, duration: number, offset?:number)=>void
     noteOff: (pitch :number, ch:number )=>void
     programChange: (program: number, ch:number)=>void
     controlChange: (ch: number, eventNumber: number, val:number)=>void
@@ -145,6 +146,22 @@ export type MIDI = {
     outPorts: any
     changePorts: (port: string)=>void
     masterVolume: MutableRefObject<number>
+}
+
+export type WebAudio = {
+    play: (seekTime?: number)=>void
+    seek: (time: number)=>void
+    pause: ()=>void
+    stop: ()=>void
+    isPlay: RefObject<boolean>
+    isPlaying: boolean
+    
+    startTime: RefObject<number>
+    audioBuffer: RefObject<AudioBuffer|null>
+
+    volume: number
+    changeVolume: (value: number)=>void
+    setURL: Dispatch<SetStateAction<string|null>>
 }
 
 export type Sound = {
@@ -163,7 +180,7 @@ export type Sequencer = {
     nextMea: ()=>void
     prevMea: ()=>void
     playToggle: ()=>void
-    setNowTick: Dispatch<SetStateAction<number>>
+    setNowTick: (tick: number) => void
     setMIDI: Dispatch<SetStateAction<MIDI>>
     nowTick: number
     isPlaying: boolean

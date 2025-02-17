@@ -1,16 +1,15 @@
 import React, { memo, useState, Dispatch, SetStateAction } from "react"
 import { MIDI, VoiceVox, MenuFunc, Track } from "@/types";
-import { Instrument } from "./Instrument"
 import { FirstDialog } from "./FirstDialog"
-import Lib from '../Lib'
+import { Instrument } from "./Instrument"
+import { RotaryKnob } from "./RotaryKnob"
+
 import Link from "next/link";
 
 // fluent ui
 import {
-    Select, Tooltip, ToolbarButton, ToolbarDivider,
-    Menu, MenuTrigger, MenuPopover, MenuList, MenuItem, Slider,
-    useId,
-    SliderProps
+    Tooltip, Button,
+    Menu, MenuTrigger, MenuPopover, MenuList, MenuItem, MenuItemLink
 } from "@fluentui/react-components"
 
 import {
@@ -26,8 +25,8 @@ import {
     DocumentOnePageSparkleRegular, DocumentOnePageSparkleFilled,
     LayoutColumnTwoFocusLeftFilled, LayoutColumnTwoFocusRightFilled, LayoutColumnTwoRegular,
     DocumentFilled,
+    PersonVoiceRegular,
 } from "@fluentui/react-icons"
-import { setRequestMeta } from "next/dist/server/request-meta";
 
 const SaveIcon = bundleIcon(SaveRegular, SaveFilled)
 const MidiIcon = bundleIcon(MidiRegular, MidiFilled)
@@ -46,16 +45,14 @@ type MenuBarPropsType = {
     f: MenuFunc
     midi: MIDI
     vox: VoiceVox
-    track: Track
-    changeProgram: (program: number) => void
+    tracks: Track[]
+    bpm: number
 
     layout: "left" | "normal" | "right"
     setLayout: Dispatch<SetStateAction<"left" | "normal" | "right">>
 }
 
-const programs = Lib.programName.map((p, i)=><option key={i} value={i}>{String(i).padStart(3, '0')}: {p}</option>)
-
-export const MenuBar = memo(function MenuBar({ f, midi, vox, track, changeProgram, layout, setLayout }: MenuBarPropsType) {
+export const MenuBar = memo(function MenuBar({ f, tracks, midi, vox, layout, bpm, setLayout }: MenuBarPropsType) {
 
     const [screen, setScreen] = useState<'normal'|'maximum'>('normal')
     const maximizeScreen = () => {
@@ -67,31 +64,37 @@ export const MenuBar = memo(function MenuBar({ f, midi, vox, track, changeProgra
         setScreen('normal')
     }
 
-    const id = useId()
-    const [sliderValue, setSliderValue] = React.useState(160);
-    const onSliderChange: SliderProps["onChange"] = (_, data) => {
-        setSliderValue(data.value)
-        midi.masterVolume.current = data.value
+    const VoiceSynth = async () => {
+        try {
+            await vox.synthVoice(tracks[0].notes, bpm)
+        }
+        catch (err) {
+            console.error("VoiceSynth Error:", err)
+        }
+    }
+
+    const midiVolumeChange = (val: number):void => {
+        midi.masterVolume.current = val
     }
 
     // ファイル操作
     const LeftBar = <div className="py-1">
         <Tooltip content="新規" relationship="label" positioning="below-start">
-            <ToolbarButton onClick={f.onNew} icon={<NewIcon />} />
+            <Button size="large" appearance="transparent" onClick={f.onNew} icon={<NewIcon />} />
         </Tooltip>
         <Tooltip content="開く" relationship="label" positioning="below-start">
-            <ToolbarButton onClick={f.showOpenFileDialog} icon={<FolderOpenIcon />} />
+            <Button size="large" appearance="transparent" onClick={f.showOpenFileDialog} icon={<FolderOpenIcon />} />
         </Tooltip>
         <Tooltip content="保存する" relationship="label" positioning="below-start">
-            <ToolbarButton onClick={f.saveAsJson} icon={<SaveIcon />} />
+            <Button size="large" appearance="transparent" onClick={f.saveText} icon={<SaveIcon />} />
         </Tooltip>
-        <Tooltip content="MIDIをインポート" relationship="label" positioning="below-start">
-            <ToolbarButton onClick={f.saveAsJson} icon={<UploadIcon />} />
-        </Tooltip>
+        {/* <Tooltip content="MIDIをインポート" relationship="label" positioning="below-start">
+            <Button size="large" appearance="transparent" onClick={f.saveAsJson} icon={<UploadIcon />} />
+        </Tooltip> */}
         <Menu>
             <MenuTrigger>
                 <Tooltip content="エクスポート" relationship="label" positioning="below-start">
-                    <ToolbarButton icon={<DownloadIcon />} />
+                    <Button size="large" appearance="transparent" icon={<DownloadIcon />} />
                 </Tooltip>
             </MenuTrigger>
 
@@ -99,85 +102,83 @@ export const MenuBar = memo(function MenuBar({ f, midi, vox, track, changeProgra
                 <MenuList>
                     <MenuItem onClick={f.saveMIDI}>MIDIで書き出す</MenuItem>
                     <MenuItem onClick={f.saveMusicXML}>musicXMLで書き出す</MenuItem>
-                    <MenuItem onClick={f.saveText}>テキストを書き出す</MenuItem>
                 </MenuList>
             </MenuPopover>
         </Menu>
     </div>
 
-    const OperationBar = <div className="py-1 d-none d-lg-block">
-        <Tooltip content="MIDI機器に接続" relationship="label" positioning="below-start">
-            <ToolbarButton appearance={midi.outPorts.length !== 0 ? "primary" : "subtle"} icon={<MidiIcon />} onClick={midi.setup} />
-        </Tooltip>
-        {/* <Tooltip content="SoundFontに接続" relationship="label" positioning="below-start">
-            <ToolbarButton appearance={sound.isLoading !== null ? "primary" : "transparent"} icon={<SoundIcon />} onClick={sound.setup} />
-        </Tooltip> */}
-        <Tooltip content="VOICEVOXに接続" relationship="label" positioning="below-start">
-            {/* <ToolbarButton icon={<PersonVoiceRegular />} onClick={vox.getSingers} /> */}
-            <button onClick={vox.getSingers} className="btn btn-sm"><img src='/images/vvIcon.png' height="22px" /></button>
-        </Tooltip>
-        <Tooltip content="VOICEVOX設定" relationship="label" positioning="below-start">
-            <Link href="http://localhost:50021/setting" target="_blank"><ToolbarButton icon={<SettingIcon />} /></Link>
-        </Tooltip>
-    </div>
-
     const DisplayBar = <div className="py-1 d-none d-lg-block">
-        <Tooltip content="Toggle Editor" relationship="label" positioning="below-start">
-            <ToolbarButton onClick={() => setLayout(layout === "right" ? "normal" : "right")} appearance="subtle" icon={layout === "right" ? <LayoutColumnTwoRegular /> : <LayoutColumnTwoFocusLeftFilled />} />
+        <Tooltip content="Toggle LeftPane" relationship="label" positioning="below-start">
+            <Button size="large" appearance="transparent"  onClick={() => setLayout(layout === "right" ? "normal" : "right")} icon={layout === "right" ? <LayoutColumnTwoRegular /> : <LayoutColumnTwoFocusLeftFilled />} />
         </Tooltip>
-        <Tooltip content="Toggle Preview" relationship="label" positioning="below-start">
-            <ToolbarButton onClick={() => setLayout(layout === "left" ? "normal" : "left")} appearance="subtle" icon={layout === "left" ? <LayoutColumnTwoRegular /> : <LayoutColumnTwoFocusRightFilled />} />
+        <Tooltip content="Toggle RightPane" relationship="label" positioning="below-start">
+            <Button size="large" appearance="transparent"  onClick={() => setLayout(layout === "left" ? "normal" : "left")} icon={layout === "left" ? <LayoutColumnTwoRegular /> : <LayoutColumnTwoFocusRightFilled />} />
         </Tooltip>
         {screen === 'normal' ? <Tooltip content="画面を最大化(F11)" relationship="label" positioning="below-start">
-            <ToolbarButton onClick={maximizeScreen} icon={<MaximizeIcon />} />
+            <Button size="large" appearance="transparent"  onClick={maximizeScreen} icon={<MaximizeIcon />} />
         </Tooltip>
         :<Tooltip content="全画面表示を終了" relationship="label" positioning="below-start">
-            <ToolbarButton onClick={minimizeScreen} icon={<MinimizeIcon />} />
+            <Button size="large" appearance="transparent"  onClick={minimizeScreen} icon={<MinimizeIcon />} />
         </Tooltip>}
         
     </div>
 
     const OtherBar = <div className="py-1 d-none d-lg-block">
-        <Tooltip content="フォーマットする" relationship="label" positioning="below-start">
-            <ToolbarButton onClick={f.formatText} icon={<FormatIcon />} />
-        </Tooltip>
-        <Tooltip content="コンパイル" relationship="label" positioning="below-start">
-            {/* <ToolbarButton onClick={f.onCompile} icon={<DocumentOnePageSparkleRegular />}>コンパイル</ToolbarButton> */}
-            <ToolbarButton onClick={f.onCompile} icon={<CompileIcon />} />
+        <Tooltip content="コードを整形する" relationship="label" positioning="below-start">
+            <Button appearance="transparent" size="large" onClick={f.formatText} icon={<FormatIcon />} />
         </Tooltip>
         <Tooltip content="マニュアル（別タブで開きます）" relationship="label" positioning="below-start">
-            <Link href="/about/index" target="_blank"><ToolbarButton icon={<ChatHelpIcon />} /></Link>
+            <Link href="/about/index" target="_blank"><Button size="large" appearance="transparent" icon={<ChatHelpIcon />} /></Link>
         </Tooltip>
-        {/* <Tooltip content="ご支援" relationship="label" positioning="below-start">
-            <Link href="https://camp-fire.jp/projects/691016/view?utm_campaign=cp_po_share_c_msg_mypage_projects_show" target="_blank"><ToolbarButton icon={<HandshakeRegular />} /></Link>
-        </Tooltip> */}
         {/* <Tooltip content="Xで共有" relationship="label" positioning="below-start">
             <Link href="https://twitter.com/intent/tweet?text=Sechord%E3%82%92%E4%BD%BF%E3%81%86%EF%BC%81%0Ahttps%3A%2F%2Fsechord.com%0A" target="_blank">
                 <button className="btn btn-sm"><img src='/images/x.png' height="16px" /></button>
             </Link>
         </Tooltip> */}
+        <Menu hasIcons>
+            <MenuTrigger>
+                <Tooltip content="各種設定" relationship="label" positioning="below-start">
+                    <Button appearance="transparent" size="large" icon={<SettingIcon />} />
+                </Tooltip>
+            </MenuTrigger>
+
+            <MenuPopover>
+                <MenuList>
+                    <MenuItem icon={<MidiIcon />} onClick={midi.setup}>MIDI機器に接続する</MenuItem>
+                    <MenuItem icon={<PersonVoiceRegular />}onClick={vox.getSingers}>VoiceVoxに接続する</MenuItem>
+                    <MenuItemLink href="http://localhost:50021/setting" target="_blank">VoiceVox設定</MenuItemLink>
+                </MenuList>
+            </MenuPopover>
+        </Menu>
+        {/* <Tooltip content="コンパイル" relationship="label" positioning="below-start">
+            <ToolbarButton onClick={()=>f.setCompile(tracks)} icon={<CompileIcon />}>コンパイル</ ToolbarButton>
+        </Tooltip> */}
+        <Tooltip content="Synth" relationship="label" positioning="below-start">
+            {vox.creating ?
+                <button className="ms-4 btn btn-secondary" disabled>
+                    Creating...
+                </button>
+                :
+                <button className="ms-4 btn btn-secondary" onClick={VoiceSynth}>
+                    Synth
+                </button>
+            }
+        </Tooltip>
     </div>
 
-    // console.log("menubar rendered!!!")
-
-
-    const instBar = <div className="py-1 d-none d-sm-block">
-    {midi.outPorts.length !== 0 && <Instrument midi={midi} />}
-    <Select appearance="filled-darker" className="d-inline" value={track.program} onChange={(e)=>changeProgram(Number(e.target.value))} >
-        {programs}
-    </Select>
+    const InstBar = <div className="px-3 d-none d-lg-flex">
+        <Instrument midi={midi} />
+        <RotaryKnob 
+        color="radial-gradient(circle, #B66 0%, #955 60%, #744 100%)" 
+        value={midi.masterVolume.current} onChange={midiVolumeChange} min={0} max={100} />
     </div>
 
-    return <div className="d-flex" style={{background: "#00203b"}}>
+    return <>
         <FirstDialog />
-        {/* <div className="fs-5 fw-bolder m-2 text-secondary">ver1.0</div> */}
         {LeftBar}
-        {OtherBar}
         {DisplayBar}
-        {OperationBar}
-        {instBar}
-        <div className="py-1 d-none d-sm-block">
-            <Slider value={sliderValue} min={0} max={100} onChange={onSliderChange} id={id} />
-        </div>
-    </div>
+        {OtherBar}
+
+        {InstBar}
+    </>
 })

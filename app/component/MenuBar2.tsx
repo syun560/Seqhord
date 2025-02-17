@@ -1,10 +1,11 @@
-import React, { memo } from "react"
-import { Sequencer, Mark } from "@/types";
-import Lib from '../Lib'
+import React, { memo, Dispatch, SetStateAction } from "react"
+import { Sequencer, Mark, Track, MIDI } from "@/types";
+import Lib from "@/Lib";
+import { RotaryKnob } from "./RotaryKnob";
 
 // fluent ui
 import {
-    Button, Label, Tooltip, ToolbarButton, ToolbarDivider,
+    Button, Tooltip, ToolbarButton, ToolbarDivider,
 } from "@fluentui/react-components"
 
 import {
@@ -22,84 +23,114 @@ const FastForwardIcon = bundleIcon(ChevronRightRegular, ChevronRightFilled)
 const PrevIcon = bundleIcon(ChevronLeftRegular, ChevronLeftFilled)
 
 type MenuBarPropsType = {
+    tracks: Track[]
+    midi: MIDI
     seq: Sequencer
     scale: string
     bpm: number
-    audioRef: React.RefObject<HTMLAudioElement>
     marks: Mark[]
+    nowTrack: number
+    setTracks: Dispatch<SetStateAction<Track[]>>
+
+    changeProgram: (program: number) => void
 }
 
-export const MenuBar2 = memo(function MenuBar({ seq, bpm, audioRef, scale, marks }: MenuBarPropsType) {
+const programs = Lib.programName.map((p, i) => <option key={i} value={i}>{String(i).padStart(3, '0')}: {p}</option>)
+const drums = Lib.drumName.map((p, i) => {
+    if (p === "") return
+    return <option key={i} value={i}>{String(i).padStart(3, '0')}: {p}</option>
+})
 
-    const play2 = () => {
-        seq.playToggle()
-        const audio = audioRef.current
-        if (!audio) return
-        audio.paused ? audio.play() : audio.pause()
-    }
+export const MenuBar2 = memo(function MenuBar({ tracks, setTracks, midi, seq, bpm, scale, marks, nowTrack, changeProgram }: MenuBarPropsType) {
 
     // コンダクトバー
-    const ConductBar = <div className="m-1 p-1 d-none d-sm-block" style={{background: "#445"}}>
+    const ConductBar = <div className="fs-6 d-none d-sm-block">
         <span className="me-2">
-            Tick: <Label size="large" style={{ fontFamily: "monospace" }}>
+            Tick: <span style={{ fontFamily: "monospace" }}>
                 {String(Math.floor(seq.nowTick / 8)).padStart(3, '\xa0')}:{String((seq.nowTick % 8).toFixed(1)).padStart(2, '0')}
-            </Label>
+            </span>
         </span>
         <span className="me-2">
-            Beat: <Label size="large" style={{ fontFamily: "monospace" }}>4/4</Label>
+            Beat: <span style={{ fontFamily: "monospace" }}>4/4</span>
         </span>
         <span className="me-2">
-            Tempo: <Label size="large" style={{ fontFamily: "monospace" }}>{bpm}</Label>
+            Tempo: <span style={{ fontFamily: "monospace" }}>{bpm}</span>
         </span>
         <span>
-            Key: <Label size="large" style={{ fontFamily: "monospace" }}>{scale}</Label>
+            Key: <span style={{ fontFamily: "monospace" }}>{scale}</span>
         </span>
     </div>
 
     // OperationBar
     const SeqBar = <div>
         <Tooltip content="先頭へ" relationship="label" positioning="below-start">
-            <ToolbarButton onClick={seq.first} icon={<RewindIcon />} />
+            <Button size="large" appearance="transparent" onClick={seq.first} icon={<RewindIcon />} />
         </Tooltip>
         <Tooltip content="一小節前へ" relationship="label" positioning="below-start">
-            <ToolbarButton onClick={seq.prevMea} icon={<PrevIcon />} />
+            <Button size="large" appearance="transparent" onClick={seq.prevMea} icon={<PrevIcon />} />
         </Tooltip>
         <Tooltip content={seq.isPlaying ? "一時停止" : "再生"} relationship="label" positioning="below-start">
-            <Button className="mx-2" shape="circular" appearance="primary" onClick={play2} size="large" icon={seq.isPlaying ? <PauseIcon /> : <PlayIcon />} />
+            <Button className="mx-2" shape="circular" appearance="primary" onClick={seq.playToggle} size="large" icon={seq.isPlaying ? <PauseIcon /> : <PlayIcon />} />
         </Tooltip>
         <Tooltip content="一小節先へ" relationship="label" positioning="below-start">
-            <ToolbarButton onClick={seq.nextMea} icon={<FastForwardIcon />} />
+            <Button size="large" appearance="transparent" onClick={seq.nextMea} icon={<FastForwardIcon />} />
         </Tooltip>
         <Tooltip content="最後尾へ" relationship="label" positioning="below-start">
-            <ToolbarButton onClick={seq.last} icon={<LastIcon />} />
+            <Button size="large" appearance="transparent" onClick={seq.last} icon={<LastIcon />} />
         </Tooltip>
     </div>
 
     const MarkBar = <div className="d-none d-sm-block">
-        <button key="defalut" className="btn btn-sm btn-dark" onClick={()=>seq.setNowTick(8)}>Start</button>
 
-        {marks.map((mark,i)=>{
+        {marks.map((mark, i) => {
             let isMark = false
-            if (i < marks.length - 1){
-                if (mark.tick <= seq.nowTick && seq.nowTick < marks[i+1].tick) isMark = true
-            }else{
+            if (i < marks.length - 1) {
+                if (mark.tick <= seq.nowTick && seq.nowTick < marks[i + 1].tick) isMark = true
+            } else {
                 if (mark.tick <= seq.nowTick) isMark = true
             }
-            return <button 
-                className={"btn btn-sm " + (isMark ? "btn-primary" : "btn-dark")}
+            return <button
+                className={"btn " + (isMark ? "btn-secondary" : "btn-dark")}
                 key={mark.tick + mark.name}
-                onClick={()=>seq.setNowTick(mark.tick)}
-                >
+                onClick={() => seq.setNowTick(mark.tick)}
+            >
                 {mark.name}
             </button>
         })}
     </div>
+    
+    // ミキサーのところと重複しているので一つにしたい
+    const setVolume = (volume: number, ch: number) => {
+        setTracks(tracks => tracks.map((track, i) => {
+            if (i === ch) {
+                const texts = track.texts.split('\n').map(line=>{
+                    if (line.includes("@volume")) return `@volume = ${Math.floor(volume)}`
+                    else return line
+                }).join('\n')
+                return { ...track, volume, texts }
+            }
+            else return track
+        }))
 
-    return <div className="d-flex" style={{background: "#10203b"}}>
-        {ConductBar}
-        <ToolbarDivider className="py-2"/>
-        {SeqBar}
-        <ToolbarDivider className="py-2"/>
-        {MarkBar}        
+        midi.setVolume(volume, tracks[ch].ch)
+    }
+
+    const instBar = <div className="d-flex">
+        <div className="mx-2">
+            <select className="form-select" value={tracks[nowTrack].program} onChange={(e) => changeProgram(Number(e.target.value))} >
+                {tracks[nowTrack].type === "drum" ? drums : programs}
+            </select>
+        </div>
+        <RotaryKnob value={tracks[nowTrack].volume} onChange={(val:number)=>setVolume(val, nowTrack)} min={0} max={127} />              
     </div>
+
+    return <>
+        {instBar}
+        <ToolbarDivider className="py-2" />
+        {ConductBar}
+        <ToolbarDivider className="py-2" />
+        {SeqBar}
+        <ToolbarDivider className="py-2" />
+        {MarkBar}
+    </>
 })

@@ -1,49 +1,67 @@
 import { useRef, useState, useCallback } from 'react'
-import { Sequencer, MIDI, Track } from '@/types'
+import { Sequencer, MIDI, Track, WebAudio } from '@/types'
 
-
-export const useSequencer = (m: MIDI, tracks: Track[], b: number):Sequencer => {
+export const useSequencer = (m: MIDI, tracks: Track[], b: number, audio: WebAudio):Sequencer => {
+    // 再生しているかどうか
     const [isPlaying, setIsPlaying] = useState(false)
     const isPlayingRef = useRef(false)
 
+    // WEB MIDI API
     const [midi, setMIDI] = useState<MIDI>(m)
-    
+
+    // setTimeoutのタイマーの識別子を保存しておくRef
     const timer = useRef<any>()
     const bpm = useRef(b)
 
-    const now = useRef(performance.now())
-
-    // nowTickはなぜRefが必要なのか？
-    const [nowTick, setNowTick] = useState(0)
-    const nowTickRef = useRef(nowTick)
-    nowTickRef.current = nowTick
-
+    // 再生開始した時間
+    const start_time = useRef(performance.now())
+    const start_tick = useRef(0)
+    
+    // tick
+    const [nowTick, setNowTickState] = useState(0)
+    const nowTickRef = useRef(0)
+    const played_tick = useRef(0) // 再生予約済のティック
+    
     // 現在のトラックの最後のTickの値
     const endTick = useRef(128)
     
-    // 現在のBPMから何ms待つか決定する
-    const delay_time = useRef(60 * 1000 / (bpm.current * 4))
+    // ループを回す時間（ms）
+    const loop_time = 50
 
-    // tickが進むごとに実行される関数
-    const proceed = () => {
-        setNowTick(n=>n+0.5)
-
-        // 現在のBPMから何ms待つか決定する
-        const ideal = 60 * 1000 / (bpm.current * 4)
-        const diff = performance.now() - now.current
-        const delay = diff > ideal ? diff - ideal : 0
-        delay_time.current = ideal - delay
-
-
-        if (delay_time.current < 4) delay_time.current = 4
+    // シークが起きた場合
+    const setNowTick = (tick: number) => {
+        setNowTickState(tick)
+        nowTickRef.current = tick
         
-        // console.log("ideal_delay: ", ideal)
-        // console.log("real_delay: ", delay)
+        if (isPlayingRef.current) {
+            console.log("setNowtick!!!")
 
-        now.current = performance.now()
+            start_time.current = performance.now()
+            start_tick.current = nowTickRef.current
+            played_tick.current = nowTickRef.current
+            clearTimeout(timer.current)
+            timer.current = setTimeout(loop, loop_time)
+            midi.allNoteOff()
+            
+            // Audioの再生
+            if (tracks[0].voice && nowTickRef.current >= tracks[0].voice) {
+                const offset = (nowTickRef.current - tracks[0].voice) * 60  / (bpm.current * 2) + 0.171
+                audio.seek(offset)
+            }
+            else {
+                audio.stop()
+            }
+        }
+    }
 
-        // この関数をdelayTime後に再度実行する
-        timer.current = setTimeout(proceed, delay_time.current)
+    // ループして実行される関数
+    const loop = () => {
+        // 現在のtickをスタートしてからの時間で計算する
+        const tick = start_tick.current + (performance.now() - start_time.current) / (60 * 1000 / (bpm.current * 2))
+
+        setNowTickState(Math.round(tick))
+        nowTickRef.current = tick
+        timer.current = setTimeout(loop, loop_time)
         
         if (nowTickRef.current > endTick.current){
             stop()
@@ -54,21 +72,42 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number):Sequencer => {
     }
 
     const play = () => {
-        // console.log(nowTickRef.current)
+        // 1ティックの時間（ms）
+        const tick_time = 60 * 1000 / (bpm.current * 2)
+        
+        // 演奏予定のTick（loop_timeの三倍とる）
+        const scheduled_tick = nowTickRef.current + loop_time * 3 / tick_time
 
         // トラックごとにイテレーション
         tracks.forEach(track=>{
-            const notes = track.notes.filter(n=>n.tick === nowTickRef.current)
+            // Midi
+            const notes = track.notes.filter(n=>
+                played_tick.current <= n.tick &&
+                n.tick < scheduled_tick
+            )
             notes.forEach(n=>{
-                midi.noteOn(n.pitch, track.ch, n.duration * delay_time.current * 2)
+                const offset = (n.tick - nowTickRef.current) * tick_time
+                midi.noteOn(n.pitch, track.ch, n.duration * tick_time, offset)
             })
+
+            // Voice
+            const voice = tracks[0].voice
+            if (!audio.isPlay.current && voice && played_tick.current <= voice && voice < scheduled_tick) {
+                const offset = 0.171 - (voice - nowTickRef.current) * 60  / (bpm.current * 2) 
+                audio.play(offset > 0 ? offset : 0)
+            }
         })
+
+        // 演奏されたTickを保存する
+        played_tick.current = scheduled_tick
     }
     const stop = () => {
         setIsPlaying(false)
         isPlayingRef.current = false
         midi.allNoteOff()
         clearTimeout(timer.current)
+
+        audio.stop()
     }
     const nextMea = () => {
         let s = nowTickRef.current + 8
@@ -88,9 +127,9 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number):Sequencer => {
         setNowTick(s)
     }
 
-    const first = useCallback(() => {
+    const first = () => {
         setNowTick(0)
-    },[])
+    }
     const last = () => {
         setNowTick(endTick.current)
     }
@@ -98,7 +137,6 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number):Sequencer => {
     const setup = () => {
         bpm.current = b
         endTick.current = 1
-        now.current = performance.now()
         tracks.forEach(track=>{
             midi.programChange(track.program, track.ch)
             midi.controlChange(track.ch, 10, track.panpot) // パンの設定
@@ -112,16 +150,31 @@ export const useSequencer = (m: MIDI, tracks: Track[], b: number):Sequencer => {
                 if(et > endTick.current) endTick.current = et
             }
         })
+
+        setIsPlaying(true)
+        isPlayingRef.current = true
+        
+        // 各種タイマーのセットアップ
+        start_time.current = performance.now()
+        start_tick.current = nowTickRef.current
+        played_tick.current = nowTickRef.current
+        
+        // ループの開始
+        timer.current = setTimeout(loop, loop_time)
+
+        // WebAudio（Voice）の再生も行う
+        if (tracks[0].voice && nowTickRef.current >= tracks[0].voice) {
+            const offset = (nowTickRef.current - tracks[0].voice) * 60  / (bpm.current * 2) + 0.171
+            audio.play(offset)
+        }
     }
     const playToggle = () => {
         if (isPlayingRef.current) {
             stop()
+            audio.stop()
         }
         else {
             setup()
-            setIsPlaying(true)
-            isPlayingRef.current = true
-            timer.current = setTimeout(proceed, delay_time.current)
         }
     }
 

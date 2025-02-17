@@ -22,13 +22,28 @@ class Lib {
         return [minNote, maxNote]
     }
 
+    // プログラムナンバーから楽器名を得る
+    static getProgramName(val: number, isDrum = false) {
+        let res = ""
+        if (isDrum) {
+            if (val < 0 || val >= this.drumName.length) res = "No Program"
+            else res = this.drumName[val]
+        }else{
+            if (val < 0 || val >= this.programName.length) res = "No Program"
+            else res = this.programName[val]
+        }
+
+
+        return res
+    }
+
     // 色
     static colorAvoidPianoKey = "#191919"
-    static colorPianoKey = "#393939"
+    static colorPianoKey = "#1C1D1E"
     
     static colorNote = "skyblue"
-    static colorAvoidNote = "#393939"
-    static colorNormalNote = "#494949"
+    static colorAvoidNote = "#1C1D1E"
+    static colorNormalNote = "#262728"
 
     static programName = [
         "Piano 1",
@@ -159,6 +174,73 @@ class Lib {
         "Helicopter",
         "Applause",
         "Gun Shot",
+    ]
+    static drumName = [
+        "STANDARD 1",
+        "STANDARD 2",
+        "STANDARD 3",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "ROOM",
+        "HIP HOP",
+        "JUNGLE",
+        "TECHNO",
+        "",
+        "HOUSE",
+        "POWER",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "ELECTRONIC",
+        "TR-808",
+        "DANCE",
+        "CR-78",
+        "",
+        "TR-707",
+        "TR-909",
+        "",
+        "JAZZ",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "BRUSH",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "ORCHESTRA",
+        "ETHNIC",
+        "KICK & SNARE",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "SFX",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "--SGM drum kits--"
     ]
 }
 

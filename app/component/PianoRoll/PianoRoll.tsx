@@ -1,6 +1,6 @@
 import React from 'react'
 import { useMemo } from "react"
-import { Note, Sequencer, Chord } from 'types'
+import { Track, Sequencer, Chord } from 'types'
 import Lib from 'Lib'
 
 import { Conductor } from './Conductor.tsx'
@@ -35,20 +35,30 @@ const st = (note: number) => {
 }
 
 type PianoRollProps = {
-    notes: Note[]
+    tracks: Track[]
+    nowTrack: number
     seq: Sequencer
     chords: Chord[]
     pianoBar: HTMLDivElement|null
 }
 
-export const PianoRoll: React.FC<PianoRollProps> = ({ notes, seq, chords, pianoBar }) => {
-    // 最小値と最大値
-    const [minNote, maxNote] = useMemo(()=>Lib.getMinMaxNote(notes),[notes])
-    // const [minNote, maxNote] = [0, 128]
+// あらかじめ作っておく
+const pre_roll = () => {
+
+}
+
+export const PianoRoll: React.FC<PianoRollProps> = ({ tracks, nowTrack, seq, chords, pianoBar }) => {
 
     // tickの最大値
-    let tick_max = notes.length > 0 ? notes[notes.length - 1].tick + notes[notes.length - 1].duration : 0
+    let tick_max = 32
+    tracks.forEach(track=>{
+        if (track.notes.length > 1) {
+            const et = track.notes[track.notes.length - 1].tick + track.notes[track.notes.length - 1].duration
+            if(et > tick_max) tick_max = et
+        }
+    })
     tick_max = Math.floor(tick_max)
+
 
     // ダミーの数値（Reactのkeyのため）
     const pitchs: number[] = []
@@ -56,49 +66,55 @@ export const PianoRoll: React.FC<PianoRollProps> = ({ notes, seq, chords, pianoB
     const ticks: number[] = []
     for (let i = 0; i <= tick_max; i++) ticks.push(i)
 
-    // ピアノロールに表示するデータの設定
-    // const cleanData = (n: Note, pitch: number, tick: number): boolean => {
-    //     return n.pitch === pitch && n.tick === tick * reso
-    // }
-
     // ピアノロール生成
-    const roll = useMemo(() => pitchs.map((fuga, indexRow) => {        
-        const pitch = 127 - indexRow
-        if (pitch < minNote || pitch > maxNote) return
-        else return (
-            <tr key={fuga} onClick={seq.playToggle}>
-                {/* 音階 */}
-                <th style={pitch % 12 ? st(pitch) : th_base}>
-                    <div style={note_name_style}>
-                        {pitch % 12 === 0 || pitch === minNote || pitch === maxNote ? Lib.noteNumberToNoteName(pitch) : ''}
-                    </div>
-                </th>
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const rolls = useMemo(()=>{
+        console.log("roll") 
+        return tracks.map(t => {
+            
+            return pitchs.map((fuga, indexRow) => {        
+            const pitch = 127 - indexRow
+            // 最小値と最大値
+            const [minNote, maxNote] = Lib.getMinMaxNote(t.notes)
+            if (pitch < minNote || pitch > maxNote) return
+            else return (
+                <tr key={fuga}>
+                    {/* 音階 */}
+                    <th style={pitch % 12 ? st(pitch) : th_base}>
+                        <div style={note_name_style}>
+                            {pitch % 12 === 0 || pitch === minNote || pitch === maxNote ? Lib.noteNumberToNoteName(pitch) : ''}
+                        </div>
+                    </th>
 
-                {ticks.map(tick => {
-                    const found = notes.find((n) => n.pitch === pitch && n.tick === tick * reso)
-                    const selected = found === undefined ? false : true
-                    const lyric = found === undefined ? '' : found.lyric
-                    const duration = found === undefined ? 1 : found.duration
-                    
-                    return <PianoRollCell
-                        key={tick}
-                        note={pitch}
-                        tick={tick}
-                        selected={selected}
-                        lyric={lyric === undefined ? '' : lyric}
-                        duration={duration}
-                    />
-                })}
-            </tr>
-        )
-    }),[notes])
+                    {ticks.map(tick => {
+                        const found = t.notes.find((n) => n.pitch === pitch && n.tick === tick * reso)
+                        const selected = found === undefined ? false : true
+                        const lyric = found === undefined ? '' : found.lyric
+                        const duration = found === undefined ? 1 : found.duration
+                        
+                        return <PianoRollCell
+                            key={tick}
+                            note={pitch}
+                            tick={tick}
+                            selected={selected}
+                            lyric={lyric === undefined ? '' : lyric}
+                            duration={duration}
+                        />
+                    })}
+                </tr>
+            )
+        })
+    })}, [tracks[0].last_compiled])
+
 
     return <div>
         <table className="pianotable">
-            <tbody>
+            <thead>
                 <Conductor tickLength={tick_max} seq={seq} pianoBar={pianoBar} />
                 <ChordDisplay tickLength={tick_max} chords={chords}/>
-                {roll}
+            </thead>
+            <tbody onClick={seq.playToggle}>
+                {rolls[nowTrack]}
             </tbody>
         </table>
     </div>

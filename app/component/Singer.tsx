@@ -1,26 +1,23 @@
-import React, { memo, useState, useRef, useEffect } from 'react'
-import { Track, VoiceVox, Sequencer } from 'types'
-import { Button, Select } from '@fluentui/react-components'
+import React, { memo, useEffect } from 'react'
+import { Track, VoiceVox, WebAudio } from 'types'
+import { RotaryKnob } from "./RotaryKnob";
 
 interface SingerProps {
     vox: VoiceVox
     tracks: Track[]
     bpm: number
-    audioRef: React.RefObject<HTMLAudioElement>
+    audio: WebAudio
 }
 
-export const Singer = memo(function Singer({vox, tracks, bpm, audioRef} :SingerProps)  {
+export const Singer = memo(function Singer({ vox, tracks, bpm, audio }: SingerProps) {
 
-    // console.log("singer rendered!!")
-    const [sample, setSample] = useState<string>("")
-    const [synthState, setSynthState] = useState<boolean>(false)
-
-    const sampleRef = useRef<HTMLAudioElement>(null)
+    const VoiceVolumeChange = (val: number):void => {
+        audio.changeVolume(val/100)
+    }
 
     const VoiceSynth = async () => {
         try {
             await vox.synthVoice(tracks[0].notes, bpm)
-            setSynthState(true)
         }
         catch (err) {
             console.error("VoiceSynth Error:", err)
@@ -28,27 +25,23 @@ export const Singer = memo(function Singer({vox, tracks, bpm, audioRef} :SingerP
     }
 
     // セレクトタグの内容を作る
-    let items = null
-    items = vox.singers_info.map(singer =>
-        <option key={singer.speaker_uuid} value={singer.styles[0].id}>
+    let items = [<option key="no" value={0}>- No VOICEVOX</option>]
+    const singers = vox.singers_info
+    if (singers.length > 0) {
+        items = singers.map(singer =>
+            <option key={singer.speaker_uuid} value={singer.styles[0].id}>
             {singer.name}
         </option>
     )
-
-    const sampleVoice = () => {
-        const audio = sampleRef.current
-        if (!audio) return
-        audio.paused ? audio.play() : audio.pause()
-    }
+}
 
     const onChangeSinger = async (id: number) => {
-        console.log("set singer: ",id)
+        console.log("set singer: ", id)
         vox.setSinger(id)
 
-        const found = vox.singers_info.find(singer=>singer.styles[0].id === id)
+        const found = vox.singers_info.find(singer => singer.styles[0].id === id)
         const speaker_uuid = found?.speaker_uuid
         console.log("speaker_uuid:", speaker_uuid)
-        setSynthState(false)
 
         try {
             const url = `http://localhost:50021/singer_info?speaker_uuid=${speaker_uuid}&resource_format=url`
@@ -56,55 +49,28 @@ export const Singer = memo(function Singer({vox, tracks, bpm, audioRef} :SingerP
             const json = await res.json()
             vox.setSingersPortrait(json.portrait)
             console.log(json)
-            setSample(json.style_infos[0].voice_samples[0])
         }
-        catch(err) {
+        catch (err) {
             console.error(err)
         }
+
+        // 音声合成も行う
+        VoiceSynth()
     }
 
-    useEffect(()=>{
-        vox.setSingersPortrait("http://localhost:50021/_resources/8496e5617ad4d9a3f6a9e6647a91fe90f966243f35d775e8e213e8d9355d5030")
-    },[vox.singers_info])
+    useEffect(() => {
+        if (vox.audioData) audio.setURL(URL.createObjectURL(vox.audioData))
+    }, [vox.audioData])
 
-    // console.log(sample)
-
-    return <>
-
-    {items.length === 0 ? 
-        <></>
-        :
-        <div>
-        <Select className="d-inline ms-2" onChange={(e)=>onChangeSinger(Number(e.target.value))} value={vox.singer}>
-            { items }
-        </Select>
-        
-        {vox.creating ?
-        <Button disabledFocusable={true}>
-            Creating...
-        </Button>
-        :
-        <Button onClick={VoiceSynth}>
-            Synth
-        </Button>
-        }
+    return <div className='d-flex'>
+        <div className='mx-2'>
+            <select className="form-select" onChange={(e) => onChangeSinger(Number(e.target.value))} value={vox.singer}>
+                {items}
+            </select>
         </div>
-    }
-
-    <div>
-
-    {vox.audioData && synthState &&
-        <audio
-            controls
-            src={vox.audioData ? window.URL.createObjectURL(vox.audioData) : undefined}
-            ref={audioRef}
-        />
-    }
-
-    {sample && sample !== "" && <audio src={sample} ref={sampleRef}/>}
+        <RotaryKnob 
+        color="radial-gradient(circle, #7B7 0%, #696 60%, #575 100%)" 
+        value={audio.volume*100} onChange={VoiceVolumeChange} min={0} max={100}  />
     </div>
-    {vox.singers_portrait !== "" && items.length !== 0 &&
-        <img onClick={sampleVoice} height="88%" src={vox.singers_portrait} alt="singer"/>
-    }
-    </>
+    
 })

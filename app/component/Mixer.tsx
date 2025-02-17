@@ -1,0 +1,119 @@
+import React, { memo, Dispatch, SetStateAction } from "react"
+import { Track, MIDI } from 'types'
+import { RotaryKnob } from "./RotaryKnob"
+import Lib from "@/Lib";
+
+type VariablesPropsType = {
+    tracks: Track[]
+    midi: MIDI
+    nowTrack: number
+
+    setTracks: Dispatch<SetStateAction<Track[]>>
+    setNowTrack: Dispatch<SetStateAction<number>>
+}
+
+export const Mixer = memo(function Mixer ({tracks, setTracks, nowTrack, setNowTrack, midi}:VariablesPropsType) {
+    const setVolume = (volume: number, ch: number) => {
+
+        setTracks(tracks => tracks.map((track, i) => {
+            if (i === ch) {
+                const texts = track.texts.split('\n').map(line=>{
+                    if (line.includes("@volume")) return `@volume = ${Math.floor(volume)}`
+                    else return line
+                }).join('\n')
+                return { ...track, volume, texts }
+            }
+            else return track
+        }))
+
+        midi.setVolume(volume, tracks[ch].ch)
+    }
+
+    const setPanpot = (panpot: number, ch: number) => {
+        setTracks(tracks => tracks.map((track, i) => {
+            if (i === ch) {
+                const texts = track.texts.split('\n').map(line=>{
+                    if (line.includes("@panpot")) return `@panpot = ${Math.floor(panpot)}`
+                    else return line
+                }).join('\n')
+                return { ...track, panpot, texts }
+            }
+            else return track
+        }))
+
+        midi.controlChange(tracks[ch].ch, 10, panpot) //
+    }
+
+    const setReverb = (reverb: number, ch: number) => {
+        setTracks(tracks => tracks.map((track, i) => {
+            if (i === ch) {
+                const texts = track.texts.split('\n').map(line=>{
+                    if (line.includes("@reverb")) return `@reverb = ${Math.floor(reverb)}`
+                    else return line
+                }).join('\n')
+                return { ...track, reverb, texts }
+            }
+            else return track
+        }))
+
+        midi.controlChange(tracks[ch].ch, 91, reverb) //
+    }
+
+    const AddTrack = () => {
+        if (tracks.length > 16) return
+        setTracks([...tracks,
+        {
+            name: 'new_track',
+            program: 0,
+            ch: 0,
+            trans: 5,
+            type: 'bass',
+            notes: [],
+            texts: '',
+            volume: 100,
+            panpot: 64,
+            reverb: 40
+        }
+        ])
+    }
+    
+    const DeleteTrack = (t: number) => {
+        const conf = confirm('トラックを削除しますか？（この操作は元に戻せません）')
+        if (!conf) return
+        const tmp_tracks = [...tracks]
+        tmp_tracks.splice(t, 1)
+        setTracks(tmp_tracks)
+        setNowTrack(0)
+    }
+
+    return <div>
+        <button className="btn btn-primary m-2" onClick={AddTrack}>Add</button>
+        <button className="btn btn-secondary" onClick={()=>DeleteTrack(nowTrack)} disabled={nowTrack===0}>Del</button>
+        <table className="table table-hover align-middle text-center">
+            <thead>
+                <tr>
+                    <th>CH</th>
+                    <th>NAME</th>
+                    {/* <th>TYPE</th> */}
+                    <th>PROGRAM</th>
+                    {/* <th>MUTE</th> */}
+                    <th>VOL</th>
+                    <th>PAN</th>
+                    <th>REV</th>
+                </tr>
+            </thead>
+            <tbody>
+                {tracks.map((track, i)=><tr className={i === nowTrack ? "table-active" : ""} key={track.name + track.ch}>
+                    <td onClick={()=>setNowTrack(i)}>{track.ch}</td>
+                    <td onClick={()=>setNowTrack(i)}>{track.name}</td>
+                    {/* <td>{track.type}</td> */}
+                    <td onClick={()=>setNowTrack(i)}>{Lib.getProgramName(track.program,track.type === "drum")}</td>
+                    {/* <td><input type="checkbox" className="form-check-input" /></td> */}
+                    <td><RotaryKnob onChange={(val: number)=>setVolume(val, i)} value={track.volume} min={0} max={127} /></td>
+                    <td><RotaryKnob onChange={(val: number)=>setPanpot(val, i)} value={track.panpot} min={0} max={127} /></td>
+                    <td><RotaryKnob onChange={(val: number)=>setReverb(val, i)} value={track.reverb} min={0} max={127} /></td>
+                </tr>)}
+            </tbody>
+        </table> 
+    </div>
+})

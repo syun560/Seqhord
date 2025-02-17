@@ -40,7 +40,7 @@ export default function PianoRollCell(props: Props) {
         margin: '-1px',
         lineHeight: '1.3',
         padding: '0 0 0 0.15em',
-        border: '1px #555 solid',
+        border: '1px #111 solid',
     }
 
     // アボイドノートは色を変える
@@ -50,14 +50,14 @@ export default function PianoRollCell(props: Props) {
 
     // ノートに色を付ける
     if (props.selected) pianodiv = { ...pianodiv, background: Lib.colorNote }   // Noteの色
-    if (props.note % 12 === 0) td = {...td, borderBottom: '1px solid #DDD'}     // オクターブごとの線
+    if (props.note % 12 === 0) td = {...td, borderBottom: '1px solid #777'}     // オクターブごとの線
 
     // tick4つごとに区切り線を追加
     // 拍子はa/bで表される
     let a = 4
 
-    if (props.tick % 2 === 0) td = { ...td, borderLeft: '1px solid #999999' } // 1拍ごとの線
-    if (props.tick % (a * 2) === 0) td = { ...td, borderLeft: '1px solid #DDD' } // 1小節ごとの線
+    if (props.tick % 2 === 0) td = { ...td, borderLeft: '1px solid #777' } // 1拍ごとの線
+    if (props.tick % (a * 2) === 0) td = { ...td, borderLeft: '1px solid #AAA' } // 1小節ごとの線
 
     // console.log("pianocell")
 

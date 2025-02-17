@@ -62,6 +62,14 @@ const setVar2Note = (vars2: Var2[], name: string, repeat: number, nowTick: numbe
                 if (type !== 'melody' && (b.pitch % 12) === 4 && found_chord.third === 'minor') {
                     pitch -= 1
                 }
+
+                // コードがセブンスの場合
+                if (type !== 'melody' && (b.pitch % 12) === 11) {
+                    if (found_chord.seventh) {
+                        if (found_chord.seventh === 'minor') pitch -=1
+                    }
+                    else pitch += 1
+                }
             }
 
             return {
@@ -100,6 +108,14 @@ const setVar2Note = (vars2: Var2[], name: string, repeat: number, nowTick: numbe
                     if (type !== 'melody' && (bn.notes[j].pitch % 12) === 4 && found_chord.third === 'minor') {
                         pitch -= 1
                     }
+
+                    // コードがセブンスの場合
+                    if (type !== 'melody' && (bn.notes[j].pitch % 12) === 11) {
+                        if (found_chord.seventh) {
+                            if (found_chord.seventh === 'minor') pitch -= 1
+                        }
+                    else pitch += 1
+                }
                 }
                 return {
                     pitch: type !== 'drum' ? pitch : p.pitch,
