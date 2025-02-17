@@ -6,7 +6,7 @@ import { compile_chord } from './compile_chord.ts'
 import { compile_var } from './compile_var.ts'
 
 // compile SMML
-export const compile = (tracks: Track[]) => {
+export const compile = (texts: string[]) => {
     const start_time = performance.now()
 
     let res :Res = {
@@ -22,7 +22,7 @@ export const compile = (tracks: Track[]) => {
     }
     
     // init 2d array
-    for (let i = 0; i < tracks.length; i++) {
+    for (let i = 0; i < texts.length; i++) {
         res.tracks.push({
             name: `Track${i}`,
             program: 0,
@@ -30,7 +30,7 @@ export const compile = (tracks: Track[]) => {
             type: 'conductor',
             trans: 5,
             notes: [],
-            texts: tracks[i].texts,
+            texts: texts[i],
             volume: 100,
             panpot: 64,
             reverb: 40
@@ -38,12 +38,12 @@ export const compile = (tracks: Track[]) => {
     }
     
     // 変数のコンパイルを行う
-    compile_var(tracks, res)
+    compile_var(texts, res)
     res.tracks[0].name = 'main'
     res.tracks[0].type = 'conductor'
 
     // 文字列を改行ごとに分割して配列に入れる
-    const lines = tracks[0].texts.split('\n')
+    const lines = texts[0].split('\n')
     // console.log(lines)
     let next_tick = res.tick
 
@@ -130,7 +130,7 @@ export const compile = (tracks: Track[]) => {
             // 数値の場合は別のトラック
             else if (!isNaN(Number(line[0]))) {
                 const t = Number(line[0])
-                if (t < tracks.length) {
+                if (t < texts.length) {
                     const n = expand_vars(line, res, t)
                     if (n > next_tick) next_tick = n
                 }

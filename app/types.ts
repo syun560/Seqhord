@@ -6,12 +6,11 @@ export type MenuFunc = {
     saveMIDI: () => void
     saveMusicXML: () => void
     saveText: () => void
-    saveAsJson: () => void
     importMIDI: () => void
     showOpenFileDialog: () => void
     showMIDIFileDialog: () => Promise<unknown>
     formatText: () => void
-    setCompile: (tracks: Track[]) => void
+    setCompile: (texts: string[]) => void
     autoCompose: () => void
 }
 

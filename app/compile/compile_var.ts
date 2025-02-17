@@ -1,5 +1,6 @@
 import { Track, Note, Res } from '../types.ts'
 import Lib from '../Lib.ts'
+import { text } from 'stream/consumers'
 
 const MajorScale = [0, 0, 2, 4, 5, 7, 9, 11, 12]
 
@@ -8,14 +9,15 @@ interface DrumProgram {  [key: string]: number }
 const program: DrumProgram = { k: 35, s: 38, h: 42, c: 49 }
 
 // 変数を認識し、コンパイルする
-export const compile_var = (tracks: Track[], res: Res) => {
+export const compile_var = (texts: string[], res: Res) => {
+    console.log(texts)
     
     // すべてのトラックのテキストをイテレート
-    tracks.forEach((track, t) => {
+    texts.forEach((text, t) => {
         if (t === 0) return
 
         // 文字列を改行ごとに分割して配列に入れる
-        const lines = track.texts.split('\n')
+        const lines = text.split('\n')
 
         let reso = 0.5
         let octarve = 0
@@ -30,6 +32,15 @@ export const compile_var = (tracks: Track[], res: Res) => {
             // 空白文字の削除
             const line = l.replace(/\s+/g, "")
             let tick = 0
+
+            // 空行の場合は変数定義を終了する
+            if (line === "" && tmp_notes.length > 0 && res.vars.length > 0) {
+                res.vars[res.vars.length - 1].notes = [...tmp_notes]
+                res.vars[res.vars.length - 1].len = max_tick
+                tmp_notes = []
+
+                return
+            }
 
             // @キーワード
             if (line.indexOf('@') !== -1) {
@@ -68,15 +79,20 @@ export const compile_var = (tracks: Track[], res: Res) => {
                     })
                     tick = 0
                 }
+                // 変数定義終了（使わなくなった記法）
                 if (line[1] === 'e') {
-                    res.vars[res.vars.length - 1].notes = [...tmp_notes]
-                    res.vars[res.vars.length - 1].len = max_tick
-                    tmp_notes = []
+                    // res.vars[res.vars.length - 1].notes = [...tmp_notes]
+                    // res.vars[res.vars.length - 1].len = max_tick
+                    // tmp_notes = []
                 }
             }
             else {
                 // コメント
                 if (line[0] === '#') { }
+                // 改行
+                else if (line[0] === '\n') {
+                    console.log("改行ですよ！")
+                }
                 // ノート
                 else if (line[0] === 'n') {
                     tick = 0
@@ -179,7 +195,14 @@ export const compile_var = (tracks: Track[], res: Res) => {
             max_tick = tick
         })
 
-        // 変数を認識する
-        //vars.push()
+        // 改行がない場合でも最後まで行ったら変数定義終了する
+        if (tmp_notes.length > 0 && res.vars.length > 0) {
+            res.vars[res.vars.length - 1].notes = [...tmp_notes]
+            res.vars[res.vars.length - 1].len = max_tick
+            tmp_notes = []
+
+            return
+        }
     })
+    
 }

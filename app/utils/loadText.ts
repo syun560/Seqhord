@@ -1,4 +1,3 @@
-import { Track } from 'types'
 
 export const loadText = async (files: any) => {
     return new Promise((resolve, reject) => {
@@ -14,10 +13,12 @@ export const loadText = async (files: any) => {
         reader.onload = event => {
             const content = event.target?.result
             try {
-                const jsonData = JSON.parse(content as string) as Track[]
-                resolve(jsonData)
+                if (typeof content === 'string'){
+                    resolve(content)
+                }
+                else throw "ファイルがテキストファイルではありません"
             } catch (error) {
-                console.error('SMMLファイルを解析できませんでした。', error)
+                console.error('テキストを解析できませんでした。', error)
                 reject()
             }
         }

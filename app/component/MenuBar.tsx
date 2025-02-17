@@ -86,11 +86,11 @@ export const MenuBar = memo(function MenuBar({ f, tracks, midi, vox, layout, bpm
             <Button size="large" appearance="transparent" onClick={f.showOpenFileDialog} icon={<FolderOpenIcon />} />
         </Tooltip>
         <Tooltip content="保存する" relationship="label" positioning="below-start">
-            <Button size="large" appearance="transparent" onClick={f.saveAsJson} icon={<SaveIcon />} />
+            <Button size="large" appearance="transparent" onClick={f.saveText} icon={<SaveIcon />} />
         </Tooltip>
-        <Tooltip content="MIDIをインポート" relationship="label" positioning="below-start">
+        {/* <Tooltip content="MIDIをインポート" relationship="label" positioning="below-start">
             <Button size="large" appearance="transparent" onClick={f.saveAsJson} icon={<UploadIcon />} />
-        </Tooltip>
+        </Tooltip> */}
         <Menu>
             <MenuTrigger>
                 <Tooltip content="エクスポート" relationship="label" positioning="below-start">
@@ -102,7 +102,6 @@ export const MenuBar = memo(function MenuBar({ f, tracks, midi, vox, layout, bpm
                 <MenuList>
                     <MenuItem onClick={f.saveMIDI}>MIDIで書き出す</MenuItem>
                     <MenuItem onClick={f.saveMusicXML}>musicXMLで書き出す</MenuItem>
-                    <MenuItem onClick={f.saveText}>テキストを書き出す</MenuItem>
                 </MenuList>
             </MenuPopover>
         </Menu>

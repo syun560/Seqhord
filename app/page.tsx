@@ -39,7 +39,7 @@ import { compile } from './compile/compile'
 import { format_text } from "./compile/format_text"
 import { generate_midi } from './generate/generate_midi'
 import { generate_musicxml } from './generate/generate_musicxml'
-import { loadJSON } from './utils/loadJSON'
+import { loadText } from './utils/loadText'
 import { loadMIDI } from './utils/loadMIDI'
 
 import './styles.css'
@@ -56,7 +56,7 @@ const handleBeforeUnload = (e: any) => {
     e.returnValue = "ページを離れますか？（変更は保存されません）"
 }
 
-type LeftTabType = "Code" | "Songs" | "Tracks"
+type LeftTabType = "Code" | "Tracks"
 type RightTabType = "Preview" | "Vars"
 
 export default function Main() {
@@ -82,7 +82,7 @@ export default function Main() {
     const pianoBar = useRef<HTMLDivElement>(null)
 
     const rightTabNames: RightTabType[] = ["Preview", "Vars"]
-    const leftTabNames: LeftTabType[] = ["Code", "Songs", "Tracks"]
+    const leftTabNames: LeftTabType[] = ["Code", "Tracks"]
 
     // custom hook
     const midi = useMIDI()
@@ -105,13 +105,10 @@ export default function Main() {
     }, [tracks, title, bpm])
 
     const saveText = useCallback(() => {
-        const text = tracks[nowTrack].texts
+        // 複数トラックのテキストを一つのテキストにする。
+        const text = tracks.map(t => t.texts).join("\n@end\n")
         simpleDownload(`${title}.txt`, 'data:text/plain;charset=utf-8,' + encodeURIComponent(text))
     }, [tracks, title, nowTrack])
-
-    const saveAsJson = useCallback(() => {
-        simpleDownload(`${title}.smml`, URL.createObjectURL(new Blob([JSON.stringify(tracks)], { type: 'text/json' })))
-    }, [title, tracks])
 
     const formatText = useCallback(() => {
         const formatted = format_text(tracks[nowTrack].texts)
@@ -121,8 +118,8 @@ export default function Main() {
         }))
     }, [tracks, nowTrack])
 
-    const setCompile = async (tracks: Track[]) => {
-        const res = compile(tracks)
+    const setCompile = async (texts: string[]) => {
+        const res = compile(texts)
 
         // 値のセット
         // setNotes([...res.notes])
@@ -153,7 +150,7 @@ export default function Main() {
         if (autoCompile) {
             if (timer.current) { clearTimeout(timer.current); }
             timer.current = setTimeout(() => {
-                setCompile(tracks)
+                setCompile(tracks.map(t=>t.texts))
             }, 3000)
         }
     }, [nowTrack, tracks, autoCompile, timer.current])
@@ -163,7 +160,7 @@ export default function Main() {
             tracks.forEach(track => track.texts = "")
             setTracks([...tracks])
         }
-        setCompile(tracks)
+        setCompile(tracks.map(t=>t.texts))
     }, [tracks])
 
     const nowScale = () => {
@@ -197,17 +194,18 @@ export default function Main() {
         }))
     }
 
+    // テキストファイルを読み込む
     const showOpenFileDialog = useCallback(() => {
         const input = document.createElement('input');
         input.type = 'file';
-        input.accept = '.json, .smml'
+        input.accept = '.txt'
         input.onchange = async () => {
             seq.stop()
             seq.first()
             setNowTrack(0)
             try {
-                const jsonData = await loadJSON(input.files) as Track[]
-                setCompile(jsonData)
+                const texts = await loadText(input.files) as string
+                setCompile(texts.split(/\r?\n@end\r?\n/)) // LFとCRLFの両方の改行コードに対応
             }
             catch (error) {
                 console.error(error)
@@ -241,19 +239,18 @@ export default function Main() {
         saveMIDI,
         saveMusicXML,
         saveText,
-        saveAsJson,
         showOpenFileDialog,
         showMIDIFileDialog,
         importMIDI,
         setCompile,
         formatText,
         autoCompose
-    }), [saveAsJson, showOpenFileDialog, showMIDIFileDialog, importMIDI, setCompile, onNew, formatText, saveMIDI, saveMusicXML, saveText, autoCompose])
+    }), [showOpenFileDialog, showMIDIFileDialog, importMIDI, setCompile, onNew, formatText, saveMIDI, saveMusicXML, saveText, autoCompose])
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         window.addEventListener("beforeunload", handleBeforeUnload)
-        setCompile(tracks)
+        setCompile(tracks.map(t=>t.texts))
         return () => {
             window.removeEventListener("beforeunload", handleBeforeUnload)
         }
@@ -273,7 +270,7 @@ export default function Main() {
                 value={log.log}
                 readOnly />
         </div>,
-        "Songs": <Songs tracks={tracks} title={title} />,
+        // "Songs": <Songs tracks={tracks} title={title} />,
         "Tracks": <Mixer tracks={tracks} setTracks={setTracks} nowTrack={nowTrack} setNowTrack={setNowTrack} midi={midi}/>
     }
 
