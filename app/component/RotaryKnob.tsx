@@ -82,7 +82,7 @@ export const RotaryKnob: React.FC<RotaryKnobProps> = ({
             window.removeEventListener('mousemove', handleMouseMove)
             window.removeEventListener('mouseup', handleMouseUp)
         };
-    }, [isDragging, startY, startValue, onChange, sensitivity, value, min, max])
+    }, [isDragging, startY, startValue, valueToAngle, onChange, sensitivity, value, min, max])
 
 
     // 初期レンダリング時や value が変わったとき

@@ -108,7 +108,7 @@ export default function Main() {
         // 複数トラックのテキストを一つのテキストにする。
         const text = tracks.map(t => t.texts).join("\n@end\n")
         simpleDownload(`${title}.txt`, 'data:text/plain;charset=utf-8,' + encodeURIComponent(text))
-    }, [tracks, title, nowTrack])
+    }, [tracks, title])
 
     const formatText = useCallback(() => {
         const formatted = format_text(tracks[nowTrack].texts)
