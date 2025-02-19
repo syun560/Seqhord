@@ -151,7 +151,7 @@ export default function Main() {
             if (timer.current) { clearTimeout(timer.current); }
             timer.current = setTimeout(() => {
                 setCompile(tracks.map(t=>t.texts))
-            }, 3000)
+            }, 5000)
         }
     }, [nowTrack, tracks, autoCompile, timer.current])
 
