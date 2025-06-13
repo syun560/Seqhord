@@ -151,7 +151,7 @@ export default function Main() {
             if (timer.current) { clearTimeout(timer.current); }
             timer.current = setTimeout(() => {
                 setCompile(tracks.map(t=>t.texts))
-            }, 3000)
+            }, 5000)
         }
     }, [nowTrack, tracks, autoCompile, timer.current])
 
@@ -321,6 +321,7 @@ export default function Main() {
                 {vox.singers_portrait !== "" &&
                     <img height="88%" src={vox.singers_portrait} alt="singer" />
                 }
+                {vox.singers_portrait}
             </div>
             <div className="fixed-div2">
                 <PianoBoard sf={sf} midi={midi} ch={tracks[nowTrack].ch} scale={nowScale()} />

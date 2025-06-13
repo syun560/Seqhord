@@ -31,9 +31,8 @@ SMMLは、MML（Music Macro Language）で使用されていたABC記法を簡�
 各音声ライブラリの利用規約をよくご確認の上、ご利用ください。
 
 ## お問い合わせ
-作者X: [@keymon561](https://x.com/keymon561)
-
-感想や機能要望、バグ報告など、お気軽にお問い合わせください。
+感想やバグ報告、作者へのお問い合わせについては、X: [@keymon561](https://x.com/keymon561)までお願いします。
+機能要望、開発への参加・雑談などに関しては、[Seqhord Discordサーバー](https://discord.gg/tGcjVgECvp)を作成しましたので、お気軽にご参加ください。
 
 ## 支援者
 - NBCG/檀エディ 様

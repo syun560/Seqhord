@@ -1,11 +1,10 @@
-import { Track, Note, Res } from '../types.ts'
+import { Note, Res } from '../types.ts'
 import Lib from '../Lib.ts'
-import { text } from 'stream/consumers'
 
 const MajorScale = [0, 0, 2, 4, 5, 7, 9, 11, 12]
 
 // 連想配列のインタフェース
-interface DrumProgram {  [key: string]: number }
+interface DrumProgram { [key: string]: number }
 const program: DrumProgram = { k: 35, s: 38, h: 42, c: 49 }
 
 // 変数を認識し、コンパイルする
@@ -19,7 +18,7 @@ export const compile_var = (texts: string[], res: Res) => {
         // 文字列を改行ごとに分割して配列に入れる
         const lines = text.split('\n')
 
-        let reso = 0.5
+        let reso = 1
         let octarve = 0
         let dur_cnt = 0 // 1小節をカウントする
 
@@ -79,20 +78,12 @@ export const compile_var = (texts: string[], res: Res) => {
                     })
                     tick = 0
                 }
-                // 変数定義終了（使わなくなった記法）
-                if (line[1] === 'e') {
-                    // res.vars[res.vars.length - 1].notes = [...tmp_notes]
-                    // res.vars[res.vars.length - 1].len = max_tick
-                    // tmp_notes = []
-                }
             }
             else {
                 // コメント
                 if (line[0] === '#') { }
                 // 改行
-                else if (line[0] === '\n') {
-                    console.log("改行ですよ！")
-                }
+                else if (line[0] === '\n') { }
                 // ノート
                 else if (line[0] === 'n') {
                     tick = 0
@@ -138,12 +129,12 @@ export const compile_var = (texts: string[], res: Res) => {
                             const pitch_name = Lib.noteNumberToNoteName(pitch)
 
                             tmp_notes.push({
-                                pitch: pitch,
-                                pitch_name: pitch_name,
+                                pitch,
+                                pitch_name,
                                 duration: reso,
                                 channel: 2,
                                 velocity: 100,
-                                tick: tick
+                                tick
                             })
                             tick += reso
                             octarve = 0
