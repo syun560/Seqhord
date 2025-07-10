@@ -1,22 +1,16 @@
-## SMML Pad - simple music markup language
-- SMML PadはMML, ABC記法等の音楽記述言語や、Sonic PI等の音楽プログラミング言語から発想を得た
-自作の音楽記述言語（SMML）のコンパイル環境です。
+## Seqhord
+- Seqhordは自作のサウンドプログラミング環境です。
+- 音を再生することができます。
+- VOICEVOXと連携しプレビューとして歌声を生成します。
 
 ## できること - Features
 - 記述された譜面からSMF（標準MIDIファイル）、MusicXML（NEUTRINO用）等のファイルを生成します。
 - creates MIDI, MusicSML(for NEUTRINO) file
 
-## SMMLの記法について - How to notate
-Now printing...
-
-### 基本的な記法
-```
-```
-
 ### 変数の使用
 
-## Demo
-[demo](https://mugic-mu.vercel.app/) (in preparation)
+## デモ
+- https://seqhord.com/
 
 ## Environment
 | dependencies   | version |
