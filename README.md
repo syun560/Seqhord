@@ -1,25 +1,13 @@
 ## Seqhord
-- Seqhordは自作のサウンドプログラミング環境です。
-- 音を再生することができます。
-- VOICEVOXと連携しプレビューとして歌声を生成します。
+- Seqhordはブラウザで動作するサウンドプログラミング環境です。
+- WEB MIDI APIを経由して音を再生することができます。
+- VOICEVOXと連携し歌声を生成します。
 
 ## できること - Features
-- 記述された譜面からSMF（標準MIDIファイル）、MusicXML（NEUTRINO用）等のファイルを生成します。
-- creates MIDI, MusicSML(for NEUTRINO) file
-
-### 変数の使用
+- 記述された譜面からSMF（標準MIDIファイル）、MusicXML（メロディのみ）等のファイルを生成します。
 
 ## デモ
 - https://seqhord.com/
-
-## Environment
-| dependencies   | version |
---|---
-| next           | 14.0.2  |
-| react          | 18      |
-| bootstrap      | 5.3.0   |
-| midi-writer-js | 3.1.1   |
-| xml-js         | 1.6.11  |
 
 ## 参考
 - [NEUTRINO](https://studio-neutrino.com/)
